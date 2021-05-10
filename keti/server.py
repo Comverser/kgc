@@ -90,29 +90,28 @@ class VideoTransformTrack(MediaStreamTrack):
             return frame
 
 
-# async def index(request):
-#     content = open(os.path.join(ROOT, "index.html"), "r").read()
-#     return web.Response(content_type="text/html", text=content)
-
-
-# async def get_test(request):
-#     return web.Response(
-#         text="get_test",
-#         headers={
-#             "X-Custom-Server-Header": "Custom data test",
-#         },
-#     )
-
-
-# async def post_test(request):
-#     params = await request.json()
-#     return web.Response(content_type="application/json", text=json.dumps(params))
+async def index(request):
+    content = open(os.path.join(ROOT, "index.html"), "r").read()
+    return web.Response(content_type="text/html", text=content)
 
 
 # async def javascript(request):
-#     # content = open(os.path.join(ROOT, "client.js"), "r").read()
-#     content = open("https://192.168.0.13:3000/client.js", "r").read()
+#     content = open(os.path.join(ROOT, "script.js"), "r").read()
 #     return web.Response(content_type="application/javascript", text=content)
+
+
+async def get_test(request):
+    return web.Response(
+        text="get_test",
+        headers={
+            "X-Custom-Server-Header": "Custom data test",
+        },
+    )
+
+
+async def post_test(request):
+    post_data = await request.json()
+    return web.Response(content_type="application/json", text=json.dumps(post_data))
 
 
 async def offer(request):
@@ -225,10 +224,11 @@ if __name__ == "__main__":
     app = web.Application()
     app.on_shutdown.append(on_shutdown)
     # app.router.add_get("/", index)
-    # app.router.add_get("/get_test", get_test)
-    # app.router.add_post("/post_test", post_test)
-    # app.router.add_get("/script.js", javascript)
+    # app.router.add_static("/", path="static")
     app.router.add_post("/offer", offer)
+
+    app.router.add_get("/get-test", get_test)
+    app.router.add_post("/post-test", post_test)
 
     # Configure default CORS settings.
     cors = aiohttp_cors.setup(
