@@ -2,6 +2,7 @@ const useDatachannel = document.getElementById("use-datachannel");
 const useAudio = document.getElementById("use-audio");
 const useVideo = document.getElementById("use-video");
 const useStun = document.getElementById("use-stun");
+
 const datachannelParameters = document.getElementById("datachannel-parameters");
 const audioCodec = document.getElementById("audio-codec");
 const videoCodec = document.getElementById("video-codec");

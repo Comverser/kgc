@@ -118,7 +118,7 @@ async def get_settings(request):
         "useAudio": settings["use-audio"],
         "useVideo": settings["use-video"],
         "useStun": settings["use-stun"],
-        "datachannelParameters": json.loads(settings["datachannel-parameters"]),
+        "datachannelParameters": settings["datachannel-parameters"],
         "audioCodec": settings["audio-codec"],
         "videoCodec": settings["video-codec"],
         "videoResolution": settings["video-resolution"],
@@ -139,7 +139,7 @@ async def post_settings(request):
     settings["video-resolution"] = params["videoResolution"]
     settings["video-transform"] = params["videoTransform"]
 
-    return web.json_response(params)
+    return web.json_response(settings)
 
 
 async def sdp(request):

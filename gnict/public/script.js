@@ -3,7 +3,7 @@ let useAudio = null;
 let useVideo = null;
 let useStun = null;
 
-let dataChannelParameters = null;
+let datachannelParameters = null;
 let audioCodec = null;
 let videoCodec = null;
 let videoResolution = null;
@@ -11,7 +11,18 @@ let videoTransform = null;
 
 fetch("https://192.168.0.13:8080/settings")
   .then((res) => res.json())
-  .then((answer) => console.log(answer))
+  .then((answer) => {
+    useDatachannel = answer["useDatachannel"];
+    useAudio = answer["useAudio"];
+    useVideo = answer["useVideo"];
+    useStun = answer["useStun"];
+    datachannelParameters = answer["datachannelParameters"];
+    audioCodec = answer["audioCodec"];
+    videoCodec = answer["videoCodec"];
+    videoResolution = answer["videoResolution"];
+    videoTransform = answer["videoTransform"];
+    console.log(answer);
+  })
   .catch(function (e) {
     alert(e);
   });
@@ -34,7 +45,7 @@ function createPeerConnection() {
     sdpSemantics: "unified-plan",
   };
 
-  if (document.getElementById("use-stun").checked) {
+  if (useStun) {
     config.iceServers = [{ urls: ["stun:stun.l.google.com:19302"] }];
   }
 
@@ -108,12 +119,12 @@ function negotiate() {
       let offer = pc.localDescription;
       let codec;
 
-      codec = document.getElementById("audio-codec").value;
+      codec = audioCodec;
       if (codec !== "default") {
         offer.sdp = sdpFilterCodec("audio", codec, offer.sdp);
       }
 
-      codec = document.getElementById("video-codec").value;
+      codec = videoCodec;
       if (codec !== "default") {
         offer.sdp = sdpFilterCodec("video", codec, offer.sdp);
       }
@@ -123,7 +134,7 @@ function negotiate() {
         body: JSON.stringify({
           sdp: offer.sdp,
           type: offer.type,
-          video_transform: document.getElementById("video-transform").value,
+          video_transform: videoTransform,
         }),
         headers: {
           "Content-Type": "application/json",
@@ -159,10 +170,8 @@ function start() {
     }
   }
 
-  if (document.getElementById("use-datachannel").checked) {
-    let parameters = JSON.parse(
-      document.getElementById("datachannel-parameters").value
-    );
+  if (useDatachannel) {
+    let parameters = JSON.parse(datachannelParameters);
 
     dc = pc.createDataChannel("chat", parameters);
     dc.onclose = function () {
@@ -188,12 +197,12 @@ function start() {
   }
 
   let constraints = {
-    audio: document.getElementById("use-audio").checked,
+    audio: useAudio,
     video: false,
   };
 
-  if (document.getElementById("use-video").checked) {
-    let resolution = document.getElementById("video-resolution").value;
+  if (useVideo) {
+    let resolution = videoResolution;
     if (resolution) {
       resolution = resolution.split("x");
       constraints.video = {
