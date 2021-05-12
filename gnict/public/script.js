@@ -1,18 +1,38 @@
+let useDatachannel = null;
+let useAudio = null;
+let useVideo = null;
+let useStun = null;
+
+let dataChannelParameters = null;
+let audioCodec = null;
+let videoCodec = null;
+let videoResolution = null;
+let videoTransform = null;
+
+// fetch("https://192.168.0.13:8080/get-test")
+//   .then((res) => {
+//     return res.json();
+//   })
+//   .then((answer) => console.log(answer))
+//   .catch(function (e) {
+//     alert(e);
+//   });
+
 // get DOM elements
-var dataChannelLog = document.getElementById("data-channel"),
+let dataChannelLog = document.getElementById("data-channel"),
   iceConnectionLog = document.getElementById("ice-connection-state"),
   iceGatheringLog = document.getElementById("ice-gathering-state"),
   signalingLog = document.getElementById("signaling-state");
 
 // peer connection
-var pc = null;
+let pc = null;
 
 // data channel
-var dc = null,
+let dc = null,
   dcInterval = null;
 
 function createPeerConnection() {
-  var config = {
+  let config = {
     sdpSemantics: "unified-plan",
   };
 
@@ -52,9 +72,13 @@ function createPeerConnection() {
 
   // connect audio / video
   pc.addEventListener("track", function (evt) {
-    if (evt.track.kind == "video")
+    if (evt.track.kind == "video") {
       document.getElementById("video").srcObject = evt.streams[0];
-    else document.getElementById("audio").srcObject = evt.streams[0];
+      console.log("video received! -------->", evt.streams);
+    } else {
+      document.getElementById("audio").srcObject = evt.streams[0];
+      console.log("Audio received! -------->", evt.streams);
+    }
   });
 
   return pc;
@@ -83,8 +107,8 @@ function negotiate() {
       });
     })
     .then(function () {
-      var offer = pc.localDescription;
-      var codec;
+      let offer = pc.localDescription;
+      let codec;
 
       codec = document.getElementById("audio-codec").value;
       if (codec !== "default") {
@@ -126,7 +150,7 @@ function start() {
 
   pc = createPeerConnection();
 
-  var time_start = null;
+  let time_start = null;
 
   function current_stamp() {
     if (time_start === null) {
@@ -138,7 +162,7 @@ function start() {
   }
 
   if (document.getElementById("use-datachannel").checked) {
-    var parameters = JSON.parse(
+    let parameters = JSON.parse(
       document.getElementById("datachannel-parameters").value
     );
 
@@ -150,7 +174,7 @@ function start() {
     dc.onopen = function () {
       dataChannelLog.textContent += "- open\n";
       dcInterval = setInterval(function () {
-        var message = "ping " + current_stamp();
+        let message = "ping " + current_stamp();
         dataChannelLog.textContent += "> " + message + "\n";
         dc.send(message);
       }, 1000);
@@ -159,19 +183,19 @@ function start() {
       dataChannelLog.textContent += "< " + evt.data + "\n";
 
       if (evt.data.substring(0, 4) === "pong") {
-        var elapsed_ms = current_stamp() - parseInt(evt.data.substring(5), 10);
+        let elapsed_ms = current_stamp() - parseInt(evt.data.substring(5), 10);
         dataChannelLog.textContent += " RTT " + elapsed_ms + " ms\n";
       }
     };
   }
 
-  var constraints = {
+  let constraints = {
     audio: document.getElementById("use-audio").checked,
     video: false,
   };
 
   if (document.getElementById("use-video").checked) {
-    var resolution = document.getElementById("video-resolution").value;
+    let resolution = document.getElementById("video-resolution").value;
     if (resolution) {
       resolution = resolution.split("x");
       constraints.video = {
@@ -179,6 +203,7 @@ function start() {
         height: parseInt(resolution[1], 0),
       };
     } else {
+      console.log("video and audio");
       constraints.video = true;
     }
   }
@@ -186,11 +211,13 @@ function start() {
   if (constraints.audio || constraints.video) {
     if (constraints.video) {
       document.getElementById("media").style.display = "block";
+      console.log("video!");
     }
     navigator.mediaDevices.getUserMedia(constraints).then(
       function (stream) {
         stream.getTracks().forEach(function (track) {
           pc.addTrack(track, stream);
+          console.log("-------------->", track);
         });
         return negotiate();
       },
@@ -234,15 +261,15 @@ function stop() {
 }
 
 function sdpFilterCodec(kind, codec, realSdp) {
-  var allowed = [];
-  var rtxRegex = new RegExp("a=fmtp:(\\d+) apt=(\\d+)\r$");
-  var codecRegex = new RegExp("a=rtpmap:([0-9]+) " + escapeRegExp(codec));
-  var videoRegex = new RegExp("(m=" + kind + " .*?)( ([0-9]+))*\\s*$");
+  let allowed = [];
+  let rtxRegex = new RegExp("a=fmtp:(\\d+) apt=(\\d+)\r$");
+  let codecRegex = new RegExp("a=rtpmap:([0-9]+) " + escapeRegExp(codec));
+  let videoRegex = new RegExp("(m=" + kind + " .*?)( ([0-9]+))*\\s*$");
 
-  var lines = realSdp.split("\n");
+  let lines = realSdp.split("\n");
 
-  var isKind = false;
-  for (var i = 0; i < lines.length; i++) {
+  let isKind = false;
+  for (let i = 0; i < lines.length; i++) {
     if (lines[i].startsWith("m=" + kind + " ")) {
       isKind = true;
     } else if (lines[i].startsWith("m=")) {
@@ -250,7 +277,7 @@ function sdpFilterCodec(kind, codec, realSdp) {
     }
 
     if (isKind) {
-      var match = lines[i].match(codecRegex);
+      let match = lines[i].match(codecRegex);
       if (match) {
         allowed.push(parseInt(match[1]));
       }
@@ -262,11 +289,11 @@ function sdpFilterCodec(kind, codec, realSdp) {
     }
   }
 
-  var skipRegex = "a=(fmtp|rtcp-fb|rtpmap):([0-9]+)";
-  var sdp = "";
+  let skipRegex = "a=(fmtp|rtcp-fb|rtpmap):([0-9]+)";
+  let sdp = "";
 
   isKind = false;
-  for (var i = 0; i < lines.length; i++) {
+  for (let i = 0; i < lines.length; i++) {
     if (lines[i].startsWith("m=" + kind + " ")) {
       isKind = true;
     } else if (lines[i].startsWith("m=")) {
@@ -274,7 +301,7 @@ function sdpFilterCodec(kind, codec, realSdp) {
     }
 
     if (isKind) {
-      var skipMatch = lines[i].match(skipRegex);
+      let skipMatch = lines[i].match(skipRegex);
       if (skipMatch && !allowed.includes(parseInt(skipMatch[2]))) {
         continue;
       } else if (lines[i].match(videoRegex)) {

@@ -2,10 +2,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WebRTC demo</title>
+    <title>KETI</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <h1 style="color: #006400">KETI</h1>
     <h2>Options</h2>
     <div class="option">
       <input id="use-datachannel" checked="checked" type="checkbox" />
@@ -31,7 +32,7 @@
       </select>
     </div>
     <div class="option">
-      <input id="use-video" type="checkbox" />
+      <input id="use-video" checked="checked" type="checkbox" />
       <label for="use-video">Use video</label>
       <select id="video-resolution">
         <option value="" selected>Default resolution</option>
@@ -57,7 +58,7 @@
       <label for="use-stun">Use STUN server</label>
     </div>
 
-    <button id="start" onclick="start()">Start</button>
+    <button id="start" onclick="start()">Update</button>
     <button id="stop" style="display: none" onclick="stop()">Stop</button>
 
     <h2>State</h2>
@@ -82,7 +83,6 @@
 
     <h3>Answer</h3>
     <pre id="answer-sdp"></pre>
-
-    <script src="script.js"></script>
   </body>
+  <script src="script.js"></script>
 </html>

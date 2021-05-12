@@ -2,10 +2,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WebRTC demo</title>
+    <title>GNICT</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <h1 style="color: #310485">GNICT</h1>
     <h2>Options</h2>
     <div class="option">
       <input id="use-datachannel" checked="checked" type="checkbox" />
@@ -31,7 +32,7 @@
       </select>
     </div>
     <div class="option">
-      <input id="use-video" type="checkbox" />
+      <input id="use-video" checked="checked" type="checkbox" />
       <label for="use-video">Use video</label>
       <select id="video-resolution">
         <option value="" selected>Default resolution</option>
@@ -83,6 +84,6 @@
     <h3>Answer</h3>
     <pre id="answer-sdp"></pre>
 
-    <script src="client.js"></script>
+    <script src="script.js"></script>
   </body>
 </html>

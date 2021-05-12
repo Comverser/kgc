@@ -12,12 +12,17 @@ import aiohttp_cors
 from av import VideoFrame
 
 from aiortc import MediaStreamTrack, RTCPeerConnection, RTCSessionDescription
-from aiortc.contrib.media import MediaBlackhole, MediaPlayer, MediaRecorder
+from aiortc.contrib.media import MediaBlackhole, MediaRecorder
 
 ROOT = os.path.dirname(__file__)
 
 logger = logging.getLogger("pc")
+hshin = logging.getLogger("HS")  # HShin
 pcs = set()
+
+
+def log_debug(msg):
+    hshin.info(f"\033[93m{msg}\033[0m")
 
 
 class VideoTransformTrack(MediaStreamTrack):
@@ -114,23 +119,57 @@ async def post_test(request):
     return web.Response(content_type="application/json", text=json.dumps(post_data))
 
 
+async def settings(request):
+    params = await request.json()
+    print(params)
+
+    return web.Response(
+        content_type="application/json",
+        text=json.dumps(
+            {
+                "use-datachannel": "dd",
+                "use-audio": "myTest",
+                "use-video": "dd",
+                "use-stun": "dd",
+            }
+        ),
+    )
+
+
+async def sdp(request):
+    params = await request.json()
+    print(params)
+
+    return web.Response(
+        content_type="application/json",
+        text=json.dumps(
+            {
+                "use-datachannel": "dd",
+                "use-audio": "myTest",
+                "use-video": "dd",
+                "use-stun": "dd",
+            }
+        ),
+    )
+
+
 async def offer(request):
     params = await request.json()
     offer = RTCSessionDescription(sdp=params["sdp"], type=params["type"])
 
     pc = RTCPeerConnection()
-    pc_id = "PeerConnection(%s)" % uuid.uuid4()
+    pc_id = f"PeerConnection({uuid.uuid4()})"
     pcs.add(pc)
+    log_debug(pcs)
 
     def log_info(msg, *args):
-        logger.info(pc_id + " " + msg, *args)
+        logger.info(f"\033[35m{pc_id}:{msg}\033[0m", *args)
 
     log_info("Created for %s", request.remote)
 
     # prepare local media
-    player = MediaPlayer(os.path.join(ROOT, "demo-instruct.wav"))
-    if args.write_audio:
-        recorder = MediaRecorder(args.write_audio)
+    if args.write:
+        recorder = MediaRecorder(args.write)
     else:
         recorder = MediaBlackhole()
 
@@ -153,13 +192,19 @@ async def offer(request):
         log_info("Track %s received", track.kind)
 
         if track.kind == "audio":
-            pc.addTrack(player.audio)
-            recorder.addTrack(track)
+            if args.write:
+                recorder.addTrack(track)
+            else:
+                pc.addTrack(track)
+
         elif track.kind == "video":
             local_video = VideoTransformTrack(
                 track, transform=params["video_transform"]
             )
-            pc.addTrack(local_video)
+            if args.write:
+                recorder.addTrack(local_video)
+            else:
+                pc.addTrack(local_video)
 
         @track.on("ended")
         async def on_ended():
@@ -185,8 +230,15 @@ async def offer(request):
 async def on_shutdown(app):
     # close peer connections
     coros = [pc.close() for pc in pcs]
+    log_debug("before???????????????")
+    log_debug(pcs)
+    log_debug(coros, *coros)
+    log_debug(pcs)
     await asyncio.gather(*coros)
     pcs.clear()
+    log_debug("after?????????????????")
+    log_debug(coros, *coros)
+    log_debug(pcs)
 
 
 if __name__ == "__main__":
@@ -203,9 +255,8 @@ if __name__ == "__main__":
         "--port", type=int, default=8080, help="Port for HTTP server (default: 8080)"
     )
     parser.add_argument("--verbose", "-v", action="count")
-    parser.add_argument(
-        "--write-audio", default="audio.mp4", help="Write received audio to a file"
-    )
+    parser.add_argument("--write", default="", help="Write received video to a file")
+
     args = parser.parse_args()
 
     if args.verbose:
@@ -223,12 +274,18 @@ if __name__ == "__main__":
 
     app = web.Application()
     app.on_shutdown.append(on_shutdown)
-    # app.router.add_get("/", index)
-    # app.router.add_static("/", path="static")
-    app.router.add_post("/offer", offer)
 
-    app.router.add_get("/get-test", get_test)
-    app.router.add_post("/post-test", post_test)
+    app.router.add_routes(
+        [
+            web.get("/", index),
+            web.post("/offer", offer),
+            web.post("/settings", settings),
+            web.post("/sdp", sdp),
+            web.get("/get-test", get_test),
+            web.post("/post-test", post_test),
+        ]
+    )
+    app.router.add_static("/", path="static")
 
     # Configure default CORS settings.
     cors = aiohttp_cors.setup(
