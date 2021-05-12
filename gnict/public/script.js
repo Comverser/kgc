@@ -9,14 +9,12 @@ let videoCodec = null;
 let videoResolution = null;
 let videoTransform = null;
 
-// fetch("https://192.168.0.13:8080/get-test")
-//   .then((res) => {
-//     return res.json();
-//   })
-//   .then((answer) => console.log(answer))
-//   .catch(function (e) {
-//     alert(e);
-//   });
+fetch("https://192.168.0.13:8080/settings")
+  .then((res) => res.json())
+  .then((answer) => console.log(answer))
+  .catch(function (e) {
+    alert(e);
+  });
 
 // get DOM elements
 let dataChannelLog = document.getElementById("data-channel"),

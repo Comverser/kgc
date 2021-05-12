@@ -2,23 +2,21 @@ const useDatachannel = document.getElementById("use-datachannel");
 const useAudio = document.getElementById("use-audio");
 const useVideo = document.getElementById("use-video");
 const useStun = document.getElementById("use-stun");
-
-const dataChannelParameters = document.getElementById("datachannel-parameters");
+const datachannelParameters = document.getElementById("datachannel-parameters");
 const audioCodec = document.getElementById("audio-codec");
 const videoCodec = document.getElementById("video-codec");
 const videoResolution = document.getElementById("video-resolution");
 const videoTransform = document.getElementById("video-transform");
 
 function start() {
-  fetch("https://192.168.0.13:8080/settings", {
+  fetch("/settings", {
     method: "POST",
     body: JSON.stringify({
-      user: "KETI",
       useDatachannel: useDatachannel.checked,
       useAudio: useAudio.checked,
       useVideo: useVideo.checked,
       useStun: useStun.checked,
-      dataChannelParameters: dataChannelParameters.value,
+      datachannelParameters: datachannelParameters.value,
       audioCodec: audioCodec.value,
       videoCodec: videoCodec.value,
       videoResolution: videoResolution.value,

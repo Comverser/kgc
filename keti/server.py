@@ -20,6 +20,18 @@ logger = logging.getLogger("pc")
 hshin = logging.getLogger("HS")  # HShin
 pcs = set()
 
+settings = {
+    "use-datachannel": True,
+    "use-audio": True,
+    "use-video": True,
+    "use-stun": False,
+    "datachannel-parameters": '{"ordered": true}',
+    "audio-codec": "default",
+    "video-codec": "default",
+    "video-resolution": "",
+    "video-transform": "none",
+}
+
 
 def log_debug(msg):
     hshin.info(f"\033[93m{msg}\033[0m")
@@ -100,40 +112,34 @@ async def index(request):
     return web.Response(content_type="text/html", text=content)
 
 
-# async def javascript(request):
-#     content = open(os.path.join(ROOT, "script.js"), "r").read()
-#     return web.Response(content_type="application/javascript", text=content)
+async def get_settings(request):
+    data = {
+        "useDatachannel": settings["use-datachannel"],
+        "useAudio": settings["use-audio"],
+        "useVideo": settings["use-video"],
+        "useStun": settings["use-stun"],
+        "datachannelParameters": json.loads(settings["datachannel-parameters"]),
+        "audioCodec": settings["audio-codec"],
+        "videoCodec": settings["video-codec"],
+        "videoResolution": settings["video-resolution"],
+        "videoTransform": settings["video-transform"],
+    }
+    return web.json_response(data)
 
 
-async def get_test(request):
-    return web.Response(
-        text="get_test",
-        headers={
-            "X-Custom-Server-Header": "Custom data test",
-        },
-    )
-
-
-async def post_test(request):
-    post_data = await request.json()
-    return web.Response(content_type="application/json", text=json.dumps(post_data))
-
-
-async def settings(request):
+async def post_settings(request):
     params = await request.json()
-    print(params)
+    settings["use-datachannel"] = params["useDatachannel"]
+    settings["use-audio"] = params["useAudio"]
+    settings["use-video"] = params["useVideo"]
+    settings["use-stun"] = params["useStun"]
+    settings["datachannel-parameters"] = params["datachannelParameters"]
+    settings["audio-codec"] = params["audioCodec"]
+    settings["video-codec"] = params["videoCodec"]
+    settings["video-resolution"] = params["videoResolution"]
+    settings["video-transform"] = params["videoTransform"]
 
-    return web.Response(
-        content_type="application/json",
-        text=json.dumps(
-            {
-                "use-datachannel": "dd",
-                "use-audio": "myTest",
-                "use-video": "dd",
-                "use-stun": "dd",
-            }
-        ),
-    )
+    return web.json_response(params)
 
 
 async def sdp(request):
@@ -231,14 +237,9 @@ async def on_shutdown(app):
     # close peer connections
     coros = [pc.close() for pc in pcs]
     log_debug("before???????????????")
-    log_debug(pcs)
-    log_debug(coros, *coros)
-    log_debug(pcs)
     await asyncio.gather(*coros)
     pcs.clear()
     log_debug("after?????????????????")
-    log_debug(coros, *coros)
-    log_debug(pcs)
 
 
 if __name__ == "__main__":
@@ -279,10 +280,9 @@ if __name__ == "__main__":
         [
             web.get("/", index),
             web.post("/offer", offer),
-            web.post("/settings", settings),
+            web.post("/settings", post_settings),
+            web.get("/settings", get_settings),
             web.post("/sdp", sdp),
-            web.get("/get-test", get_test),
-            web.post("/post-test", post_test),
         ]
     )
     app.router.add_static("/", path="static")
