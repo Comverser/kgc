@@ -142,23 +142,6 @@ async def post_settings(request):
     return web.json_response(settings)
 
 
-async def sdp(request):
-    params = await request.json()
-    print(params)
-
-    return web.Response(
-        content_type="application/json",
-        text=json.dumps(
-            {
-                "use-datachannel": "dd",
-                "use-audio": "myTest",
-                "use-video": "dd",
-                "use-stun": "dd",
-            }
-        ),
-    )
-
-
 async def offer(request):
     params = await request.json()
     offer = RTCSessionDescription(sdp=params["sdp"], type=params["type"])
@@ -282,7 +265,6 @@ if __name__ == "__main__":
             web.post("/offer", offer),
             web.post("/settings", post_settings),
             web.get("/settings", get_settings),
-            web.post("/sdp", sdp),
         ]
     )
     app.router.add_static("/", path="static")

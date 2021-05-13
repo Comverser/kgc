@@ -9,7 +9,7 @@ const videoCodec = document.getElementById("video-codec");
 const videoResolution = document.getElementById("video-resolution");
 const videoTransform = document.getElementById("video-transform");
 
-function start() {
+function update() {
   fetch("/settings", {
     method: "POST",
     body: JSON.stringify({
