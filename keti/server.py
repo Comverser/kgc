@@ -22,14 +22,14 @@ pcs = set()
 
 settings = {
     "recordVideo": True,
-    "useDatachannel": True,
+    "useDatachannel": False,
     "useAudio": True,
     "useVideo": True,
     "useStun": False,
     "datachannelParameters": '{"ordered": true}',
     "audioCodec": "default",
-    "videoCodec": "default",
-    "videoResolution": "",
+    "videoCodec": "H264/90000",
+    "videoResolution": "320x240",
     "videoTransform": "none",
 }
 
