@@ -1,3 +1,5 @@
+const recordVideo = document.getElementById("record-video");
+
 const useDatachannel = document.getElementById("use-datachannel");
 const useAudio = document.getElementById("use-audio");
 const useVideo = document.getElementById("use-video");
@@ -13,6 +15,7 @@ function update() {
   fetch("/settings", {
     method: "POST",
     body: JSON.stringify({
+      recordVideo: recordVideo.checked,
       useDatachannel: useDatachannel.checked,
       useAudio: useAudio.checked,
       useVideo: useVideo.checked,

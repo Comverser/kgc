@@ -21,15 +21,16 @@ hshin = logging.getLogger("HS")  # HShin
 pcs = set()
 
 settings = {
-    "use-datachannel": True,
-    "use-audio": True,
-    "use-video": True,
-    "use-stun": False,
-    "datachannel-parameters": '{"ordered": true}',
-    "audio-codec": "default",
-    "video-codec": "default",
-    "video-resolution": "",
-    "video-transform": "none",
+    "recordVideo": True,
+    "useDatachannel": True,
+    "useAudio": True,
+    "useVideo": True,
+    "useStun": False,
+    "datachannelParameters": '{"ordered": true}',
+    "audioCodec": "default",
+    "videoCodec": "default",
+    "videoResolution": "",
+    "videoTransform": "none",
 }
 
 
@@ -114,30 +115,31 @@ async def index(request):
 
 async def get_settings(request):
     data = {
-        "useDatachannel": settings["use-datachannel"],
-        "useAudio": settings["use-audio"],
-        "useVideo": settings["use-video"],
-        "useStun": settings["use-stun"],
-        "datachannelParameters": settings["datachannel-parameters"],
-        "audioCodec": settings["audio-codec"],
-        "videoCodec": settings["video-codec"],
-        "videoResolution": settings["video-resolution"],
-        "videoTransform": settings["video-transform"],
+        "useDatachannel": settings["useDatachannel"],
+        "useAudio": settings["useAudio"],
+        "useVideo": settings["useVideo"],
+        "useStun": settings["useStun"],
+        "datachannelParameters": settings["datachannelParameters"],
+        "audioCodec": settings["audioCodec"],
+        "videoCodec": settings["videoCodec"],
+        "videoResolution": settings["videoResolution"],
+        "videoTransform": settings["videoTransform"],
     }
     return web.json_response(data)
 
 
 async def post_settings(request):
     params = await request.json()
-    settings["use-datachannel"] = params["useDatachannel"]
-    settings["use-audio"] = params["useAudio"]
-    settings["use-video"] = params["useVideo"]
-    settings["use-stun"] = params["useStun"]
-    settings["datachannel-parameters"] = params["datachannelParameters"]
-    settings["audio-codec"] = params["audioCodec"]
-    settings["video-codec"] = params["videoCodec"]
-    settings["video-resolution"] = params["videoResolution"]
-    settings["video-transform"] = params["videoTransform"]
+    settings["recordVideo"] = params["recordVideo"]  # local setting
+    settings["useDatachannel"] = params["useDatachannel"]
+    settings["useAudio"] = params["useAudio"]
+    settings["useVideo"] = params["useVideo"]
+    settings["useStun"] = params["useStun"]
+    settings["datachannelParameters"] = params["datachannelParameters"]
+    settings["audioCodec"] = params["audioCodec"]
+    settings["videoCodec"] = params["videoCodec"]
+    settings["videoResolution"] = params["videoResolution"]
+    settings["videoTransform"] = params["videoTransform"]
 
     return web.json_response(settings)
 
@@ -181,7 +183,7 @@ async def offer(request):
         log_info("Track %s received", track.kind)
 
         if track.kind == "audio":
-            if args.write:
+            if settings["recordVideo"]:
                 recorder.addTrack(track)
             else:
                 pc.addTrack(track)
@@ -190,7 +192,7 @@ async def offer(request):
             local_video = VideoTransformTrack(
                 track, transform=params["video_transform"]
             )
-            if args.write:
+            if settings["recordVideo"]:
                 recorder.addTrack(local_video)
             else:
                 pc.addTrack(local_video)
@@ -239,7 +241,9 @@ if __name__ == "__main__":
         "--port", type=int, default=8080, help="Port for HTTP server (default: 8080)"
     )
     parser.add_argument("--verbose", "-v", action="count")
-    parser.add_argument("--write", default="", help="Write received video to a file")
+    parser.add_argument(
+        "--write", default="video.mp4", help="Write received video to a file"
+    )
 
     args = parser.parse_args()
 

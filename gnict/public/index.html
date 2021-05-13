@@ -6,7 +6,40 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1 style="color: #310485">GNICT</h1>
+    <h1>Animation example</h1>
+
+    <div class="container">
+      <div class="row">
+        <button id="btn1">Neutral</button>
+        <button id="btn2">Happiness</button>
+        <button id="btn3">Sadness</button>
+      </div>
+
+      <div class="row">
+        <div class="anime-container">
+          <svg>
+            <path
+              class="face"
+              fill="#CACA50"
+              d="M299.231 52.2563C367.573 120.598 367.573 231.402 299.231 299.744C230.889 368.085 120.085 368.085 51.7437 299.744C-16.5981 231.402 -16.5981 120.598 51.7437 52.2563C120.085 -16.0854 230.889 -16.0854 299.231 52.2563Z"
+            />
+          </svg>
+          <svg>
+            <path
+              transform="translate(70,100)"
+              class="eyes"
+              fill="#000000"
+              d="M77
+          18.5C77 28.7173 59.763 37 38.5 37C17.237 37 0 28.7173 0 18.5C0 8.28273
+          17.237 0 38.5 0C59.763 0 77 8.28273 77 18.5Z"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <h1>WebRTC example</h1>
+
     <button id="start" onclick="start()">Start</button>
     <button id="stop" style="display: none" onclick="stop()">Stop</button>
 
@@ -32,7 +65,8 @@
 
     <h3>Answer</h3>
     <pre id="answer-sdp"></pre>
-
-    <script src="script.js"></script>
   </body>
+  <script src="script.js"></script>
+  <script src="anime.min.js"></script>
+  <script src="morph.js"></script>
 </html>

@@ -6,7 +6,13 @@
   </head>
   <body>
     <h1>KETI</h1>
-    <h2>Options</h2>
+    <h2>Local settings</h2>
+    <div class="option">
+      <input id="record-video" checked="checked" type="checkbox" />
+      <label for="record-video">Record video (or send back)</label>
+    </div>
+
+    <h2>WebRTC settings</h2>
     <div class="option">
       <input id="use-datachannel" checked="checked" type="checkbox" />
       <label for="use-datachannel">Use datachannel</label>
@@ -56,6 +62,9 @@
       <input id="use-stun" type="checkbox" />
       <label for="use-stun">Use STUN server</label>
     </div>
+
+    <br />
+    <br />
 
     <button onclick="update()">Update</button>
   </body>

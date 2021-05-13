@@ -1,9 +1,39 @@
 body {
-  background-color: gray;
+  margin: 0;
+  padding: 0;
+  background-color: #4d4d4d;
+  height: 100%;
+  width: 100%;
 }
 
 button {
-  padding: 8px 16px;
+  margin: 5px 5px;
+}
+
+div.row {
+  display: flex;
+  justify-content: center;
+}
+
+div.container {
+  border: 3px solid #000000;
+}
+
+div.anime-container {
+  /* border: 3px solid black; */
+  display: flex;
+  justify-content: center;
+  width: 800px;
+  height: 480px;
+}
+
+svg {
+  /* border: 3px solid black; */
+  display: flex;
+  margin: 10px auto;
+  position: absolute;
+  width: 350px;
+  height: 350px;
 }
 
 pre {

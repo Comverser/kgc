@@ -5,7 +5,7 @@
 ### To run
 
 - npm i
-- npm run devStart
+- npm start
 
 ### Address
 
