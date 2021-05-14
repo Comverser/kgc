@@ -12,7 +12,7 @@ import aiohttp_cors
 from av import VideoFrame
 
 from aiortc import MediaStreamTrack, RTCPeerConnection, RTCSessionDescription
-from aiortc.contrib.media import MediaBlackhole, MediaRecorder
+from aiortc.contrib.media import MediaBlackhole, MediaRecorder, MediaPlayer
 
 ROOT = os.path.dirname(__file__)
 
@@ -159,6 +159,7 @@ async def offer(request):
     log_info("Created for %s", request.remote)
 
     # prepare local media
+    player = MediaPlayer(os.path.join(ROOT, "server-sent-demo.wav"))
     if args.write:
         recorder = MediaRecorder(args.write)
     else:
@@ -184,6 +185,7 @@ async def offer(request):
 
         if track.kind == "audio":
             if settings["recordVideo"]:
+                pc.addTrack(player.audio)
                 recorder.addTrack(track)
             else:
                 pc.addTrack(track)
@@ -242,7 +244,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("--verbose", "-v", action="count")
     parser.add_argument(
-        "--write", default="video.mp4", help="Write received video to a file"
+        "--write", default="video-saved.mp4", help="Write received video to a file"
     )
 
     args = parser.parse_args()
