@@ -1,25 +1,62 @@
+html {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  padding: 0;
-  background-color: #4d4d4d;
+}
+
+/* Layout */
+div.grid-container {
+  display: grid;
+  grid-template-areas:
+    "header"
+    "main"
+    "footer";
+  grid-template-columns: 1fr;
+  grid-template-rows: 3rem 1fr 3rem;
   height: 100%;
-  width: 100%;
+}
+header {
+  grid-area: header;
+  background-color: #203040;
+}
+main {
+  grid-area: main;
+  padding: 1rem;
+  background-color: gray;
+}
+footer {
+  grid-area: footer;
+  background-color: #203040;
+  color: #ffffff;
 }
 
-button {
-  margin: 5px 5px;
-}
-
-div.row {
+.main-container {
+  /* Fit for 800x480 (7 inches) display */
   display: flex;
-  justify-content: center;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 100%;
 }
 
-div.container {
-  border: 3px solid #000000;
+/* Common */
+.animation {
+  height: 300px;
+  width: 300px;
+  border: 1px solid black;
 }
 
-div.anime-container {
+.speech {
+  height: 200px;
+  width: 300px;
+  border: 1px solid black;
+}
+
+/* Not yet */
+
+.anime-container {
   /* border: 3px solid black; */
   display: flex;
   justify-content: center;
