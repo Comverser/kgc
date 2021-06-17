@@ -21,7 +21,7 @@ hshin = logging.getLogger("HS")  # HShin
 pcs = set()
 
 settings = {
-    "recordVideo": True,
+    "recordVideo": False,
     "useDatachannel": False,
     "useAudio": True,
     "useVideo": True,

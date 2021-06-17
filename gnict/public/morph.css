@@ -1,0 +1,37 @@
+.neutral .r_eye,
+.neutral .l_eye {
+  transform-origin: 50%;
+  animation: _blink 3s infinite;
+  animation-delay: 3s;
+}
+
+.neutral .talk {
+  transform-origin: 50%;
+  transform-box: fill-box;
+  animation: _talk 2s infinite;
+}
+
+@keyframes _blink {
+  0%,
+  100% {
+    transform: scale(1, 0.05);
+  }
+  5%,
+  95% {
+    transform: scale(1, 1);
+  }
+}
+
+@keyframes _talk {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  20%,
+  80% {
+    transform: scale(1, 2);
+  }
+  50% {
+    transform: scale(1, 1);
+  }
+}

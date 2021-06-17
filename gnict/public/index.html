@@ -1,49 +1,103 @@
+<!DOCTYPE html>
+
 <html>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GNICT</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./morph.css" />
+    <script
+      src="https://kit.fontawesome.com/c3cb1bab44.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
-    <div class="grid-container">
-      <header>kgc</header>
-      <main>
-        <div class="main-container">
-          <div class="animation">left</div>
-          <div class="speech">안녕하세요. 오늘 날씨가 참 좋아요.</div>
-        </div>
-      </main>
-      <footer>All right reserved</footer>
+    <div class="loading">
+      <svg
+        width="297"
+        height="297"
+        viewBox="0 0 297 297"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          class="loading_bar"
+          d="M297 148.5C297 116.319 286.546 85.0097 267.213 59.2841C247.88 33.5585 220.712 14.8093 189.802 5.8591C158.891 -3.09113 125.909 -1.75805 95.8212 9.65767C65.7335 21.0734 40.1682 41.9539 22.974 69.1559C5.77985 96.3579 -2.11275 128.409 0.484411 160.485C3.08157 192.56 16.0279 222.924 37.3745 247.006C58.7211 271.087 87.3127 287.583 118.845 294.009C150.377 300.435 183.144 296.445 212.212 282.638L195.727 247.931C174.18 258.165 149.892 261.123 126.518 256.359C103.145 251.596 81.9509 239.368 66.1276 221.518C50.3043 203.667 40.7078 181.16 38.7826 157.384C36.8574 133.608 42.7079 109.849 55.4532 89.6857C68.1985 69.5221 87.1488 54.0443 109.452 45.5823C131.754 37.1204 156.202 36.1322 179.115 42.7666C202.028 49.401 222.166 63.2989 236.497 82.3682C250.828 101.437 258.576 124.646 258.576 148.5H297Z"
+          fill="#9c9c9c"
+        />
+      </svg>
+      <p>...loading...</p>
+      <p>잠시만 기다려주세요.</p>
     </div>
-
-    <h1>Animation example</h1>
-
-    <div class="container">
-      <div class="row">
-        <button id="btn1">Neutral</button>
-        <button id="btn2">Happiness</button>
-        <button id="btn3">Sadness</button>
+    <nav class="menuBar">
+      <ul class="btn-emotions">
+        <li><a id="btn1" class="btn_emotion">NEUTRAL</a></li>
+        <li><a id="btn2" class="btn_emotion">HAPPY</a></li>
+        <li><a id="btn3" class="btn_emotion">DISGUST</a></li>
+        <li><a id="btn4" class="btn_emotion">SURPRISE</a></li>
+        <li><a id="btn5" class="btn_emotion">ANGER</a></li>
+        <li><a id="btn6" class="btn_emotion">SADNESS</a></li>
+        <li><a id="btn7" class="btn_emotion">FEAR</a></li>
+        <li><a id="btn8" class="btn_emotion">WORRY</a></li>
+        <li><a id="btn9" class="btn_emotion">CONTEMPT</a></li>
+      </ul>
+      <a href="#" class="btn-toggle">
+        <i class="fas fa-bars"></i>
+      </a>
+    </nav>
+    <div id="mainZone">
+      <div id="imgZone" class="items">
+        <svg
+          class="neutral"
+          id="_face"
+          width="250"
+          height="250"
+          viewBox="0 0 250 250"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle class="face" cx="125" cy="125" r="125" fill="#FFE600" />
+          <path
+            class="l_eye"
+            d="M88.5 113C88.5 125.703 86.7025 136 74 136C61.2975 136 59 125.703 59 113C59 100.297 61.2975 90 74 90C86.7025 90 88.5 100.297 88.5 113Z"
+            fill="black"
+          />
+          <path
+            class="r_eye"
+            d="M189.5 113C189.5 125.703 187.703 136 175 136C162.297 136 160 125.703 160 113C160 100.297 162.297 90 175 90C187.703 90 189.5 100.297 189.5 113Z"
+            fill="black"
+          />
+          <path
+            class="mouse"
+            id="mouse"
+            d="M141 184.582C141 192.942 133.837 194 125 194C116.163 194 109 192.942 109 184.582C109 176.223 116.163 178.205 125 178.205C133.837 178.205 141 176.223 141 184.582Z"
+            fill="#FF3D3D"
+          />
+          <path
+            class="r_eyebrow"
+            d="M199.5 67.5789C199.5 67.5789 188.307 48.5789 174.5 48.5789C160.693 48.5789 149.5 67.5789 149.5 67.5789C149.5 53.7717 160.693 42.5789 174.5 42.5789C188.307 42.5789 199.5 53.7717 199.5 67.5789Z"
+            fill="black"
+          />
+          <path
+            class="l_eyebrow"
+            d="M99 68C99 68 87.8071 49 74 49C60.1929 49 49 68 49 68C49 54.1929 60.1929 43 74 43C87.8071 43 99 54.1929 99 68Z"
+            fill="black"
+          />
+          <path class="option_sad1" d="" fill="black" />
+          <path class="option_sad2" d="" fill="black" />
+          <path class="option_fear1" d="" fill="black" />
+          <path class="option_fear2" d="" fill="black" />
+          <path class="option_disgust" d="" fill="black" />
+        </svg>
       </div>
-
-      <div class="anime-container">
-        <svg>
-          <path
-            class="face"
-            fill="#CACA50"
-            d="M299.231 52.2563C367.573 120.598 367.573 231.402 299.231 299.744C230.889 368.085 120.085 368.085 51.7437 299.744C-16.5981 231.402 -16.5981 120.598 51.7437 52.2563C120.085 -16.0854 230.889 -16.0854 299.231 52.2563Z"
-          />
-        </svg>
-        <svg>
-          <path
-            transform="translate(70,100)"
-            class="eyes"
-            fill="#000000"
-            d="M77
-          18.5C77 28.7173 59.763 37 38.5 37C17.237 37 0 28.7173 0 18.5C0 8.28273
-          17.237 0 38.5 0C59.763 0 77 8.28273 77 18.5Z"
-          />
-        </svg>
+      <div id="msgZone" class="items btn_talk">
+        <div id="msgBox">
+          Lorem Ipsum is simply dummy text of the printing and typesetting
+          industry. Lorem Ipsum has been the industry's standard dummy text ever
+          since the 1500s, when an unknown printer took a galley of type and
+          scrambled it to make a type specimen book.
+        </div>
       </div>
     </div>
 
@@ -74,8 +128,37 @@
 
     <h3>Answer</h3>
     <pre id="answer-sdp"></pre>
+
+    <h1>WebRTC example</h1>
+
+    <button id="start" onclick="start()">Start</button>
+    <button id="stop" style="display: none" onclick="stop()">Stop</button>
+
+    <h2>State</h2>
+    <p>ICE gathering state: <span id="ice-gathering-state"></span></p>
+    <p>ICE connection state: <span id="ice-connection-state"></span></p>
+    <p>Signaling state: <span id="signaling-state"></span></p>
+
+    <div id="media" style="display: none">
+      <h2>Media</h2>
+
+      <audio id="audio" autoplay="true"></audio>
+      <video id="video" autoplay="true" playsinline="true"></video>
+    </div>
+
+    <h2>Data channel</h2>
+    <pre id="data-channel" style="height: 200px"></pre>
+
+    <h2>SDP</h2>
+
+    <h3>Offer</h3>
+    <pre id="offer-sdp"></pre>
+
+    <h3>Answer</h3>
+    <pre id="answer-sdp"></pre>
+
+    <script type="module" src="./main.js"></script>
+    <script src="webrtc.js"></script>
+    <script src="./anime.min.js"></script>
   </body>
-  <script src="script.js"></script>
-  <script src="anime.min.js"></script>
-  <script src="morph.js"></script>
 </html>
