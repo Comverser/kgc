@@ -4,7 +4,7 @@
 
 ### To run
 
-- config.js 내 API 주소 알맞게 수정 필요 --> fetch("https://192.168.0.13:8080/settings")
+- config.js 내 API 주소 알맞게 수정 필요
 - npm i
 - npm start
 

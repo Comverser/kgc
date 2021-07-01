@@ -1,15 +1,14 @@
 import { settingsEndpoint, offerEndpoint } from "./config.js";
 
-let useDatachannel = null;
-let useAudio = null;
-let useVideo = null;
-let useStun = null;
-
-let datachannelParameters = null;
-let audioCodec = null;
-let videoCodec = null;
-let videoResolution = null;
-let videoTransform = null;
+let useDatachannel;
+let useAudio;
+let useVideo;
+let useStun;
+let datachannelParameters;
+let audioCodec;
+let videoCodec;
+let videoResolution;
+let videoTransform;
 
 fetch(settingsEndpoint)
   .then((res) => res.json())
@@ -23,7 +22,6 @@ fetch(settingsEndpoint)
     videoCodec = answer["videoCodec"];
     videoResolution = answer["videoResolution"];
     videoTransform = answer["videoTransform"];
-    console.log(answer);
   })
   .catch(function (e) {
     alert(e);
@@ -38,11 +36,10 @@ const dataChannelLog = document.getElementById("data-channel"),
   signalingLog = document.getElementById("signaling-state");
 
 // peer connection
-let pc = null;
+let pc;
 
 // data channel
-let dc = null,
-  dcInterval = null;
+let dc, dcInterval;
 
 function createPeerConnection() {
   let config = {
@@ -163,10 +160,10 @@ function start() {
 
   pc = createPeerConnection();
 
-  let time_start = null;
+  let time_start;
 
   function current_stamp() {
-    if (time_start === null) {
+    if (time_start === undefined) {
       time_start = new Date().getTime();
       return 0;
     } else {
