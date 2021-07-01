@@ -1,3 +1,5 @@
+import { talkEndpoint } from "./config.js";
+
 // set up basic variables for app
 const status = document.querySelector(".status");
 const soundClips = document.querySelector(".sound-clips");
@@ -74,7 +76,7 @@ if (navigator.mediaDevices.getUserMedia) {
       };
 
       postButton.onclick = function (e) {
-        fetch("http://127.0.0.1:4000/posts", {
+        fetch(talkEndpoint, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -189,11 +191,11 @@ function voiceTracking(stream, mediaRecorder) {
         );
         noiseLevelParam *= 1.1;
       }
-      console.log(
-        `${Math.floor(voiceAmp)}\t${Math.floor(maShort[0])}\t${Math.floor(
-          maLong[0]
-        )}`
-      );
+      // console.log(
+      //   `${Math.floor(voiceAmp)}\t${Math.floor(maShort[0])}\t${Math.floor(
+      //     maLong[0]
+      //   )}`
+      // );
     }
   }, vadInterval);
 
@@ -206,7 +208,7 @@ function voiceTracking(stream, mediaRecorder) {
     const WIDTH = canvas.width;
     const HEIGHT = canvas.height;
 
-    drawVisual = requestAnimationFrame(draw);
+    requestAnimationFrame(draw);
 
     /* -------------------------------------------------------------------------- */
     /*                                Frequency-domain                                */

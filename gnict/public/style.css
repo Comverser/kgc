@@ -228,3 +228,9 @@ nav {
     margin: 5px;
   }
 }
+
+.status {
+  height: 10px;
+  display: block;
+  background-color: gray;
+}
