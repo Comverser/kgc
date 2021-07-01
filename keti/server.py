@@ -144,6 +144,12 @@ async def post_settings(request):
     return web.json_response(settings)
 
 
+async def post_talk(request):
+    base64data = await request.json()
+
+    return web.json_response(base64data)
+
+
 async def offer(request):
     params = await request.json()
     offer = RTCSessionDescription(sdp=params["sdp"], type=params["type"])
@@ -271,6 +277,7 @@ if __name__ == "__main__":
             web.post("/offer", offer),
             web.post("/settings", post_settings),
             web.get("/settings", get_settings),
+            web.post("/talk", post_talk),
         ]
     )
     app.router.add_static("/", path="static")

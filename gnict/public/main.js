@@ -18,12 +18,12 @@ const reader = new FileReader();
 let base64data;
 
 // VAD
-const vadInterval = 50;
-const vadThreshold = 127; // should be automated
+const vadInterval = 10;
+const vadThreshold = 100; // should be automated
 let noiseLevelParam = 0.8;
 let noiseLevelMax = vadThreshold * noiseLevelParam;
-let maBufLong = new Array(2500 / vadInterval).fill(0);
-let maBufShort = new Array(1500 / vadInterval).fill(0);
+let maBufLong = new Array(2000 / vadInterval).fill(0);
+let maBufShort = new Array(1000 / vadInterval).fill(0);
 let maIdxLong = 0;
 let maIdxShort = 0;
 
@@ -73,6 +73,24 @@ if (navigator.mediaDevices.getUserMedia) {
       reader.readAsDataURL(blob);
       reader.onloadend = () => {
         base64data = reader.result;
+
+        fetch(talkEndpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            audio: base64data,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            let snd = new Audio(data.audio);
+            snd.play();
+          })
+          .catch((err) => {
+            alert(err);
+          });
       };
 
       postButton.onclick = function (e) {
