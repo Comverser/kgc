@@ -66,10 +66,10 @@ function createPeerConnection() {
   // connect audio / video
   pc.addEventListener("track", function (evt) {
     if (evt.track.kind == "video") {
-      document.getElementById("video").srcObject = evt.streams[0];
+      document.getElementById("webrtc_video").srcObject = evt.streams[0];
       // console.log("video received! -------->", evt.streams);
     } else {
-      document.getElementById("audio").srcObject = evt.streams[0];
+      document.getElementById("webrtc_audio").srcObject = evt.streams[0];
       // console.log("Audio received! -------->", evt.streams);
     }
   });
@@ -139,7 +139,6 @@ function negotiate() {
 }
 
 function start() {
-  console.log("start");
   document.getElementById("start").style.display = "none";
 
   pc = createPeerConnection();
@@ -202,7 +201,7 @@ function start() {
       function (stream) {
         stream.getTracks().forEach(function (track) {
           pc.addTrack(track, stream);
-          console.log("-------------->", track);
+          // console.log("-------------->", track);
         });
         return negotiate();
       },
