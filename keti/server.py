@@ -23,7 +23,7 @@ pcs = set()
 settings = {
     "recordVideo": False,
     "useDatachannel": False,
-    "useAudio": True,
+    "useAudio": False,
     "useVideo": True,
     "useStun": False,
     "datachannelParameters": '{"ordered": true}',

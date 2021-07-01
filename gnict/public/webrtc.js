@@ -1,35 +1,18 @@
 import { settingsEndpoint, offerEndpoint } from "./config.js";
 
-let useDatachannel;
-let useAudio;
-let useVideo;
-let useStun;
-let datachannelParameters;
-let audioCodec;
-let videoCodec;
-let videoResolution;
-let videoTransform;
-
-fetch(settingsEndpoint)
-  .then((res) => res.json())
-  .then((answer) => {
-    useDatachannel = answer["useDatachannel"];
-    useAudio = answer["useAudio"];
-    useVideo = answer["useVideo"];
-    useStun = answer["useStun"];
-    datachannelParameters = answer["datachannelParameters"];
-    audioCodec = answer["audioCodec"];
-    videoCodec = answer["videoCodec"];
-    videoResolution = answer["videoResolution"];
-    videoTransform = answer["videoTransform"];
-  })
-  .catch(function (e) {
-    alert(e);
-  });
+let useDatachannel,
+  useAudio,
+  useVideo,
+  useStun,
+  datachannelParameters,
+  audioCodec,
+  videoCodec,
+  videoResolution,
+  videoTransform;
 
 // get DOM elements
-const startBtn = document.getElementById("start");
-const stopBtn = document.getElementById("stop");
+const startBtn = document.getElementById("start"),
+  stopBtn = document.getElementById("stop");
 const dataChannelLog = document.getElementById("data-channel"),
   iceConnectionLog = document.getElementById("ice-connection-state"),
   iceGatheringLog = document.getElementById("ice-gathering-state"),
@@ -84,10 +67,10 @@ function createPeerConnection() {
   pc.addEventListener("track", function (evt) {
     if (evt.track.kind == "video") {
       document.getElementById("video").srcObject = evt.streams[0];
-      console.log("video received! -------->", evt.streams);
+      // console.log("video received! -------->", evt.streams);
     } else {
       document.getElementById("audio").srcObject = evt.streams[0];
-      console.log("Audio received! -------->", evt.streams);
+      // console.log("Audio received! -------->", evt.streams);
     }
   });
 
@@ -156,6 +139,7 @@ function negotiate() {
 }
 
 function start() {
+  console.log("start");
   document.getElementById("start").style.display = "none";
 
   pc = createPeerConnection();
@@ -199,27 +183,20 @@ function start() {
 
   let constraints = {
     audio: useAudio,
-    video: false,
+    video: useVideo,
   };
 
   if (useVideo) {
-    let resolution = videoResolution;
-    if (resolution) {
-      resolution = resolution.split("x");
-      constraints.video = {
-        width: parseInt(resolution[0], 0),
-        height: parseInt(resolution[1], 0),
-      };
-    } else {
-      console.log("video and audio");
-      constraints.video = true;
-    }
+    videoResolution = videoResolution.split("x");
+    constraints.video = {
+      width: parseInt(videoResolution[0], 0),
+      height: parseInt(videoResolution[1], 0),
+    };
   }
 
   if (constraints.audio || constraints.video) {
     if (constraints.video) {
       document.getElementById("media").style.display = "block";
-      console.log("video!");
     }
     navigator.mediaDevices.getUserMedia(constraints).then(
       function (stream) {
@@ -329,5 +306,23 @@ function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
 }
 
-startBtn.onclick = () => start();
+fetch(settingsEndpoint)
+  .then((res) => res.json())
+  .then((answer) => {
+    useDatachannel = answer["useDatachannel"];
+    useAudio = answer["useAudio"];
+    useVideo = answer["useVideo"];
+    useStun = answer["useStun"];
+    datachannelParameters = answer["datachannelParameters"];
+    audioCodec = answer["audioCodec"];
+    videoCodec = answer["videoCodec"];
+    videoResolution = answer["videoResolution"];
+    videoTransform = answer["videoTransform"];
+  })
+  .then(start)
+  .catch(function (e) {
+    alert(e);
+  });
+
+// startBtn.onclick = () => start();
 stopBtn.onclick = () => stop();
