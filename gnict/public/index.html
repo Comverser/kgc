@@ -5,12 +5,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GNICT</title>
-    <link rel="stylesheet" href="./style.css" />
-    <link rel="stylesheet" href="./morph.css" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="morph.css" />
     <script
       src="https://kit.fontawesome.com/c3cb1bab44.js"
       crossorigin="anonymous"
     ></script>
+    <!-- resolve favicon.ico error -->
+    <link rel="shortcut icon" href="#" />
   </head>
   <body>
     <div class="loading">
@@ -152,8 +154,8 @@
 
     <h1>WebRTC example</h1>
 
-    <button id="start" onclick="start()">Start</button>
-    <button id="stop" style="display: none" onclick="stop()">Stop</button>
+    <button id="start">Start</button>
+    <button id="stop" style="display: none">Stop</button>
 
     <h2>State</h2>
     <p>ICE gathering state: <span id="ice-gathering-state"></span></p>
@@ -178,8 +180,8 @@
     <h3>Answer</h3>
     <pre id="answer-sdp"></pre>
 
-    <script src="webrtc.js"></script>
-    <script type="module" src="./main.js"></script>
-    <script src="./anime.min.js"></script>
+    <script type="module" src="webrtc.js"></script>
+    <script type="module" src="amm.js"></script>
+    <script src="anime.min.js"></script>
   </body>
 </html>

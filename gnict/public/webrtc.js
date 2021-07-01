@@ -1,3 +1,5 @@
+import { settingsEndpoint, offerEndpoint } from "./config.js";
+
 let useDatachannel = null;
 let useAudio = null;
 let useVideo = null;
@@ -9,7 +11,7 @@ let videoCodec = null;
 let videoResolution = null;
 let videoTransform = null;
 
-fetch("https://192.168.0.13:8080/settings")
+fetch(settingsEndpoint)
   .then((res) => res.json())
   .then((answer) => {
     useDatachannel = answer["useDatachannel"];
@@ -28,7 +30,9 @@ fetch("https://192.168.0.13:8080/settings")
   });
 
 // get DOM elements
-let dataChannelLog = document.getElementById("data-channel"),
+const startBtn = document.getElementById("start");
+const stopBtn = document.getElementById("stop");
+const dataChannelLog = document.getElementById("data-channel"),
   iceConnectionLog = document.getElementById("ice-connection-state"),
   iceGatheringLog = document.getElementById("ice-gathering-state"),
   signalingLog = document.getElementById("signaling-state");
@@ -130,7 +134,7 @@ function negotiate() {
       }
 
       document.getElementById("offer-sdp").textContent = offer.sdp;
-      return fetch("https://192.168.0.13:8080/offer", {
+      return fetch(offerEndpoint, {
         body: JSON.stringify({
           sdp: offer.sdp,
           type: offer.type,
@@ -327,3 +331,6 @@ function sdpFilterCodec(kind, codec, realSdp) {
 function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
 }
+
+startBtn.onclick = () => start();
+stopBtn.onclick = () => stop();
