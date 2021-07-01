@@ -46,6 +46,25 @@
         <i class="fas fa-bars"></i>
       </a>
     </nav>
+    <div class="fontZone">
+      <ul class="btns_font">
+        <li>
+          <a class="btn_font" id="small_font" style="font-size: 16pt"
+            >작은<br />글씨</a
+          >
+        </li>
+        <li>
+          <a class="btn_font clicked" id="normal_font" style="font-size: 20pt"
+            >보통<br />글씨</a
+          >
+        </li>
+        <li>
+          <a class="btn_font" id="big_font" style="font-size: 24pt"
+            >큰<br />글씨</a
+          >
+        </li>
+      </ul>
+    </div>
     <div id="mainZone">
       <div id="imgZone" class="items">
         <svg
@@ -84,11 +103,41 @@
             d="M99 68C99 68 87.8071 49 74 49C60.1929 49 49 68 49 68C49 54.1929 60.1929 43 74 43C87.8071 43 99 54.1929 99 68Z"
             fill="black"
           />
-          <path class="option_sad1" d="" fill="black" />
-          <path class="option_sad2" d="" fill="black" />
-          <path class="option_fear1" d="" fill="black" />
-          <path class="option_fear2" d="" fill="black" />
-          <path class="option_disgust" d="" fill="black" />
+          <path
+            class="option_sad1"
+            style="display: none"
+            d="M194 115L199.735 134.007C200.488 136.504 199.539 139.202 197.388 140.677C195.346 142.077 192.654 142.077 190.612 140.677C188.461 139.202 187.512 136.504 188.265 134.007L194 115Z"
+            fill="#0073ff"
+          />
+          <path
+            class="option_sad2"
+            style="display: none"
+            d="M56 115L61.7348 134.007C62.4883 136.504 61.539 139.202 59.3876 140.677C57.3461 142.077 54.6539 142.077 52.6124 140.677C50.4611 139.202 49.5117 136.504 50.2653 134.007L56 115Z"
+            fill="#0073ff"
+          />
+          <path
+            class="option_fear1"
+            style="display: none"
+            d="M35 84L40.7348 103.007C41.4883 105.504 40.539 108.202 38.3876 109.677V109.677C36.3461 111.077 33.6539 111.077 31.6124 109.677V109.677C29.4611 108.202 28.5117 105.504 29.2653 103.007L35 84Z"
+            fill="#fbfff0"
+          />
+          <path
+            class="option_fear2"
+            style="display: none"
+            d="M17 113L22.7348 132.007C23.4883 134.504 22.539 137.202 20.3876 138.677V138.677C18.3461 140.077 15.6539 140.077 13.6124 138.677V138.677C11.4611 137.202 10.5117 134.504 11.2653 132.007L17 113Z"
+            fill="#fbfff0"
+          />
+          <path
+            class="option_disgust"
+            style="display: none"
+            d="M130.617 181.553C134.43 184.427 130.687 186.255 126.662 183.686C124.299 182.179 121.606 181.024 118.666 180.702C115.727 180.38 112.847 180.924 110.215 181.884C105.728 183.52 102.47 180.925 106.815 178.945C110.317 177.349 114.574 176.637 119.058 177.128C123.542 177.62 127.543 179.236 130.617 181.553Z"
+            fill="black"
+          />
+          <path
+            id="_bubble"
+            d="M281.527 177.738L391.62 102.15L409.853 140.772L281.527 177.738Z"
+            fill="#2B2B2B"
+          />
         </svg>
       </div>
       <div id="msgZone" class="items btn_talk">
@@ -129,8 +178,8 @@
     <h3>Answer</h3>
     <pre id="answer-sdp"></pre>
 
-    <script type="module" src="./main.js"></script>
     <script src="webrtc.js"></script>
+    <script type="module" src="./main.js"></script>
     <script src="./anime.min.js"></script>
   </body>
 </html>

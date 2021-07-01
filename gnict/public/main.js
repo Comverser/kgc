@@ -7,15 +7,13 @@ function loading_out(){
     loading.setAttribute('style', 'display:none');
 }
 
-// 표정메뉴
+// 표정메뉴: 테스트용 추후 삭제
 const toggleBtn = document.querySelector('.btn-toggle');
 const menu = document.querySelector('.btn-emotions');
-const page = document.querySelector('.btn-pages');
 
 toggleBtn.addEventListener('click', ()=>{
     console.log('click');
     menu.classList.toggle('active');
-    page.classList.toggle('active');
 });
 
 // 표정 svg path
@@ -57,7 +55,7 @@ const path = [
         r_eyebrow : "M149.661 40.7056C149.661 40.7056 152.694 62.5479 165.441 67.8536C178.188 73.1592 195.822 59.9191 195.822 59.9191C190.517 72.6661 175.882 78.6986 163.135 73.3929C150.388 68.0873 144.356 53.4527 149.661 40.7056Z",
         l_eye : "M95.5 107C95.5 119.703 93.7025 130 81 130C68.2975 130 66 119.703 66 107C66 94.2975 68.2975 84 81 84C93.7025 84 95.5 94.2975 95.5 107Z",
         r_eye : "M185.5 107C185.5 119.703 183.703 130 171 130C158.297 130 156 119.703 156 107C156 94.2975 158.297 84 171 84C183.703 84 185.5 94.2975 185.5 107Z",
-        mouse : "M96.0061 210.014C96.0027 195.654 109.327 184.011 125.767 184.007C142.207 184.003 155.537 195.64 155.54 210C155.54 210 142.213 210.003 125.773 210.007C109.333 210.011 96.0061 210.014 96.0061 210.014Z",
+        mouse : "M155 185.846C155 192.943 149.38 193.5 122.397 193.5C95.4131 193.5 89 192.943 89 185.846C89 178.748 95.4131 167 122.397 167C149.38 167 155 178.748 155 185.846Z",
         option_sad1 : "",
         option_sad2 : "",
         option_fear1 : "",
@@ -85,9 +83,9 @@ const path = [
         face : "#FFE600",
         r_eyebrow : "M199.5 42.5789C199.5 42.5789 188.307 23.5789 174.5 23.5789C160.693 23.5789 149.5 42.5789 149.5 42.5789C149.5 28.7717 160.693 17.5789 174.5 17.5789C188.307 17.5789 199.5 28.7717 199.5 42.5789Z",
         l_eyebrow : "M99 43C99 43 87.8071 24 74 24C60.1929 24 49 43 49 43C49 29.1929 60.1929 18 74 18C87.8071 18 99 29.1929 99 43Z",
-        r_eye : "M182 96.5C182 103.956 180.964 110 173.644 110C166.324 110 165 103.956 165 96.5C165 89.0442 166.324 83 173.644 83C180.964 83 182 89.0442 182 96.5Z",
-        l_eye : "M82 96.5C82 103.956 81.0251 110 74.1356 110C67.2461 110 66 103.956 66 96.5C66 89.0442 67.2461 83 74.1356 83C81.0251 83 82 89.0442 82 96.5Z",
-        mouse : "M149 194.058C149 213.539 144.828 215 124.794 215C104.761 215 100 213.539 100 194.058C100 174.577 104.761 171 124.794 171C144.828 171 149 174.577 149 194.058Z",
+        r_eye : "M189 94C189 107.807 187.233 119 174.746 119C162.259 119 160 107.807 160 94C160 80.1929 162.259 69 174.746 69C187.233 69 189 80.1929 189 94Z",
+        l_eye : "M88 94C88 107.807 86.233 119 73.7458 119C61.2585 119 59 107.807 59 94C59 80.1929 61.2585 69 73.7458 69C86.233 69 88 80.1929 88 94Z",
+        mouse : "M171 209.832C171 252.778 163.166 256 125.553 256C87.9395 256 79 252.778 79 209.832C79 166.887 87.9395 159 125.553 159C163.166 159 171 166.887 171 209.832Z",
         option_sad1 : "",
         option_sad2 : "",
         option_fear1 : "",
@@ -187,3 +185,90 @@ btn_talk.addEventListener('click', (event) => {
     
 });
 
+// 글씨크기조절
+const btn_fonts = document.querySelectorAll(".btn_font");
+const msg = document.querySelector('#msgBox');
+var size = '';
+for(let btn_font of btn_fonts){
+    btn_font.addEventListener('click', (event)=>{
+        for(var i = 0; i < btn_fonts.length; i++){
+            btn_fonts[i].classList.remove('clicked');
+        }
+        size = event.target.id;
+        event.target.classList.add('clicked');
+        
+        if(size == "big_font"){
+            msg.setAttribute('style', 'font-size:24pt');
+        }else if(size == "small_font"){
+            msg.setAttribute('style', 'font-size:16pt');
+        }else if(size == "normal_font"){
+            msg.setAttribute('style', 'font-size:20pt');
+        }
+
+    });
+}
+
+// 메세지: 테스트용
+const sample_msg = [
+    {
+        id: '1',
+        text: 'Hello! How are you today?'
+    },
+    {
+        id: '2',
+        text: 'Wow!!!'
+    },
+    {
+        id: '3',
+        text: 'What?!'
+    },
+    {
+        id: '4',
+        text: 'Huh...'
+    },
+    {
+        id: '5',
+        text: 'Um...'
+    },
+    {
+        id: '6',
+        text: 'Yes!!'
+    },
+    {
+        id: '7',
+        text: 'Nope!'
+    },
+    {
+        id: '8',
+        text: 'Oh My God!!!!! What’s going on here?'
+    },
+    {
+        id: '9',
+        text: 'LOL'
+    },
+]
+function random_msg(){
+    let random_num = Math.floor(Math.random()*10);
+
+    if(sample_msg[random_num] != undefined) {msg.innerText = sample_msg[random_num].text;}
+    return msg;
+}
+random_msg();
+setInterval(random_msg, 5000);
+
+//말풍선 꼬리: 반응형 web
+const bubble = document.querySelector('#_bubble');
+const _window = window.matchMedia("screen and (max-width: 768px) and (orientation: portrait)");
+
+fn_bubble(_window);
+_window.addEventListener('change', ()=>{
+    fn_bubble(_window);
+});
+
+function fn_bubble( _window ){
+    if (_window.matches) {
+        bubble.setAttribute('d', 'M58.6451 254.298L29.4936 311.56L7.43998 293.115L58.6451 254.298Z');
+    } else {
+        bubble.setAttribute('d', 'M281.527 177.738L391.62 102.15L409.853 140.772L281.527 177.738Z');
+    }
+}

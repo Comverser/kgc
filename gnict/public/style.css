@@ -2,6 +2,7 @@
   --text-color: #f0f4f5;
   --background-color: #2b2b2b;
   --point-color: #ffae00;
+  --btn-color: #9c9c9c;
 }
 
 * {
@@ -13,6 +14,8 @@
 
 body {
   -ms-overflow-style: none;
+  min-width: 360px;
+  margin: auto;
 }
 ::-webkit-scrollbar {
   display: none;
@@ -26,7 +29,6 @@ nav {
   background-color: var(--background-color);
   color: var(--text-color);
   padding: 20px 0px;
-  align-items: center;
 }
 
 .items {
@@ -40,18 +42,21 @@ nav {
   overflow: auto;
   margin: 0 auto;
   width: 100%;
-  align-items: center;
 }
 
 .btn-emotions li {
   float: left;
   list-style: none;
   width: 11%;
-  text-align: center;
   margin-bottom: 5px;
 }
 
-.btn-emotions li:hover {
+.btn_emotion {
+  width: 100%;
+  display: block;
+}
+
+.btn_emotion:hover {
   background-color: var(--point-color);
   border-radius: 5px;
   font-weight: bolder;
@@ -64,16 +69,11 @@ nav {
   padding-right: 20px;
 }
 
-button {
-  cursor: pointer;
-  background: none;
-  border: none;
-}
-
 #mainZone {
   width: 100%;
+  max-width: 1024px;
+  margin: auto;
   overflow: hidden;
-  box-sizing: border-box;
 }
 
 #imgZone {
@@ -82,31 +82,96 @@ button {
   float: left;
 }
 #_face {
-  width: 80%;
-  height: 80%;
-  max-width: 400px;
-  max-height: 400px;
+  width: 300px;
+  height: 300px;
+  overflow: visible;
 }
 #msgZone {
   width: 50%;
   float: left;
   flex-direction: column;
+  position: relative;
+  overflow: visible;
 }
 
 #msgBox {
   width: 90%;
-  height: 50%;
+  height: max-content;
+  max-height: 50%;
   border-radius: 10px;
   background-color: var(--background-color);
   color: var(--text-color);
   font-weight: bolder;
   font-size: 25px;
-  padding: 50px;
+  padding: 40px;
   overflow: auto;
 }
 
 #msgBox::-webkit-scrollbar {
   display: none;
+}
+
+.loading {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  background: #fff;
+  z-index: 10000;
+  padding-top: 20%;
+}
+.loading svg {
+  width: 150px;
+  height: 150px;
+  margin-bottom: 20px;
+}
+.loading_bar {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: _rotate 2s infinite;
+}
+
+@keyframes _rotate {
+  from {
+    transform: rotateZ(0deg);
+  }
+  to {
+    transform: rotateZ(360deg);
+  }
+}
+
+.btns_font {
+  position: absolute;
+  right: 20px;
+  z-index: 9999;
+}
+
+.btns_font li {
+  list-style-type: none;
+  float: left;
+}
+
+.btn_font {
+  margin: 10px;
+  padding: 5px;
+  width: 80px;
+  height: 80px;
+  font-weight: bolder;
+  background-color: var(--btn-color);
+  display: block;
+  line-height: 35px;
+  border-radius: 5px;
+}
+
+.clicked {
+  background-color: var(--point-color);
+  /* background-color: #db0000; */
+  /* color: #fff; */
+}
+
+#_bubble {
+  position: absolute;
 }
 
 @media screen and (max-width: 768px) and (orientation: portrait) {
@@ -115,8 +180,8 @@ button {
   }
 
   #_face {
-    width: 100%;
-    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
   }
 
   .btn-emotions,
@@ -137,9 +202,8 @@ button {
   }
 
   #msgBox {
-    padding: 20px;
-    height: 100px;
-    font-size: 16px;
+    padding: 10px;
+    font-size: 20pt;
   }
 
   .btn-toggle {
@@ -154,34 +218,13 @@ button {
   .btn-pages.active {
     display: block;
   }
-}
 
-.loading {
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  left: 0px;
-  top: 0px;
-  background: #fff;
-  z-index: 1000;
-  padding-top: 20%;
-}
-.loading svg {
-  width: 150px;
-  height: 150px;
-  margin-bottom: 20px;
-}
-.loading_bar {
-  transform-origin: center;
-  transform-box: fill-box;
-  animation: _rotate 2s infinite;
-}
-
-@keyframes _rotate {
-  from {
-    transform: rotateZ(0deg);
+  .btns_font {
+    float: right;
+    position: inherit;
   }
-  to {
-    transform: rotateZ(360deg);
+
+  .btn_font {
+    margin: 5px;
   }
 }

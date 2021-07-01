@@ -1,6 +1,6 @@
 function morph(emotion){
+
     const time = 1000;
-    const sad_color = "#0073ff", fear_color = "#fbfff0", disgust_color = "#212121";
 
     const timeline0 = anime.timeline({
         duration: time,
@@ -23,7 +23,8 @@ function morph(emotion){
         targets: ".r_eye",
         d: [
             {value: emotion.r_eye},
-        ]        
+        ]       
+
     });
 
     const timeline2 = anime.timeline({
@@ -85,101 +86,42 @@ function morph(emotion){
         ]      
     });
 
-    const timeline6 = anime.timeline({
+    anime.timeline({
+        duration: 200,
+    }).add({
+        begin: function(){
+            if(emotion.id != 'sadness'){ document.querySelector('.option_sad1').style.display = 'none'; 
+            document.querySelector('.option_sad2').style.display = 'none';}
+        },
+        complete: function() {
+            if(emotion.id == 'sadness'){ document.querySelector('.option_sad1').style.display = 'block'; 
+            document.querySelector('.option_sad2').style.display = 'block';}
+        }
+    });
+
+    anime.timeline({
+        duration: 200
+    }).add({
+        begin: function(){
+            if(emotion.id != 'fear'){ document.querySelector('.option_fear1').style.display = 'none'; 
+            document.querySelector('.option_fear2').style.display = 'none';}
+        },
+        complete: function() {
+            if(emotion.id == 'fear'){ document.querySelector('.option_fear1').style.display = 'block'; 
+            document.querySelector('.option_fear2').style.display = 'block';}
+        }
+    });
+
+    anime.timeline({
         duration: 300
+    }).add({
+        begin: function(){
+            if(emotion.id != 'disgust'){ document.querySelector('.option_disgust').style.display = 'none'; }
+        },
+        complete: function() {
+            if(emotion.id == 'disgust'){ document.querySelector('.option_disgust').style.display = 'block'; }
+        }
     });
-
-    timeline6.add({
-        targets: ".option_sad1",
-        d: [
-            {value: emotion.option_sad1},
-        ],
-        keyframes: [
-            { opacity:0 },
-            { opacity:0 },
-            { opacity:1 }
-        ],
-        fill: [
-            {value: sad_color}
-        ]      
-    });
-
-    const timeline7 = anime.timeline({
-        duration: 300
-    });
-
-    timeline7.add({
-        targets: ".option_sad2",
-        d: [
-            {value: emotion.option_sad2},
-        ],
-        keyframes: [
-            { opacity:0 },
-            { opacity:0 },
-            { opacity:1 }
-        ],
-        fill: [
-            {value: sad_color}
-        ]      
-    });
-
-    const timeline8 = anime.timeline({
-        duration: 500
-    });
-
-    timeline8.add({
-        targets: ".option_fear1",
-        d: [
-            {value: emotion.option_fear1},
-        ],
-        keyframes: [
-            { opacity:0 },
-            { opacity:0 },
-            { opacity:1 }
-        ],
-        fill: [
-            {value: fear_color}
-        ]      
-    });
-
-    const timeline9 = anime.timeline({
-        duration: 500
-    });
-
-    timeline9.add({
-        targets: ".option_fear2",
-        d: [
-            {value: emotion.option_fear2},
-        ],
-        keyframes: [
-            { opacity:0 },
-            { opacity:0 },
-            { opacity:1 }
-        ],
-        fill: [
-            {value: fear_color}
-        ]      
-    });
-
-    const timeline10 = anime.timeline({
-        duration: 500
-    });
-
-    timeline10.add({
-        targets: ".option_disgust",
-        d: [
-            {value: emotion.option_disgust},
-        ],
-        keyframes: [
-            { opacity:0 },
-            { opacity:0 },
-            { opacity:1 }
-        ],
-        fill: [
-            {value: disgust_color}
-        ]      
-    });
-
 }
 
 export { morph };
