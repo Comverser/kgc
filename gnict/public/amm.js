@@ -1,274 +1,141 @@
-import { morph } from './morph.js'
+import { morph, path } from "./morph.js";
 
 // 로딩화면
-const loading = document.querySelector('.loading');
+const loading = document.querySelector(".loading");
 window.onload = loading_out();
-function loading_out(){
-    loading.setAttribute('style', 'display:none');
+function loading_out() {
+  loading.setAttribute("style", "display:none");
 }
 
 // 표정메뉴: 테스트용 추후 삭제
-const toggleBtn = document.querySelector('.btn-toggle');
-const menu = document.querySelector('.btn-emotions');
+const toggleBtn = document.querySelector(".btn-toggle");
+const menu = document.querySelector(".btn-emotions");
 
-toggleBtn.addEventListener('click', ()=>{
-    console.log('click');
-    menu.classList.toggle('active');
+toggleBtn.addEventListener("click", () => {
+  console.log("click");
+  menu.classList.toggle("active");
 });
-
-// 표정 svg path
-const path = [
-    {
-        id : "neutral",
-        face : "#FFE600",
-        r_eyebrow : "M199.5 67.5789C199.5 67.5789 188.307 48.5789 174.5 48.5789C160.693 48.5789 149.5 67.5789 149.5 67.5789C149.5 53.7717 160.693 42.5789 174.5 42.5789C188.307 42.5789 199.5 53.7717 199.5 67.5789Z",
-        l_eyebrow : "M99 68C99 68 87.8071 49 74 49C60.1929 49 49 68 49 68C49 54.1929 60.1929 43 74 43C87.8071 43 99 54.1929 99 68Z",
-        l_eye : "M88.5 113C88.5 125.703 86.7025 136 74 136C61.2975 136 59 125.703 59 113C59 100.297 61.2975 90 74 90C86.7025 90 88.5 100.297 88.5 113Z",
-        r_eye : "M189.5 113C189.5 125.703 187.703 136 175 136C162.297 136 160 125.703 160 113C160 100.297 162.297 90 175 90C187.703 90 189.5 100.297 189.5 113Z",
-        mouse : "M141 184.582C141 192.942 133.837 194 125 194C116.163 194 109 192.942 109 184.582C109 176.223 116.163 178.205 125 178.205C133.837 178.205 141 176.223 141 184.582Z",
-        option_sad1 : "",
-        option_sad2 : "",
-        option_fear1 : "",
-        option_fear2 : "",
-        option_disgust : ""
-    },
-
-    {
-        id : "happy",
-        face : "#FFE600",
-        r_eye : "M201 105C201 105 189.807 93.0788 176 93.0788C162.193 93.0788 151 105 151 105C151 91.1929 162.193 80 176 80C189.807 80 201 91.1929 201 105Z",
-        l_eye : "M100 105.421C100 105.421 88.8071 93.5 75 93.5C61.1929 93.5 50 105.421 50 105.421C50 91.6141 61.1929 80.4212 75 80.4212C88.8071 80.4212 100 91.6141 100 105.421Z",
-        l_eyebrow : "M100 72.4212C100 72.4212 88.8071 53.4212 75 53.4212C61.1929 53.4212 50 72.4212 50 72.4212C50 58.6141 61.1929 47.4212 75 47.4212C88.8071 47.4212 100 58.6141 100 72.4212Z",
-        r_eyebrow : "M200.5 72C200.5 72 189.307 53 175.5 53C161.693 53 150.5 72 150.5 72C150.5 58.1929 161.693 47 175.5 47C189.307 47 200.5 58.1929 200.5 72Z",
-        mouse : "M208 144C208 190.116 170.616 227.5 124.5 227.5C78.3842 227.5 41 190.116 41 144C41 144 78.3842 144 124.5 144C170.616 144 208 144 208 144Z",
-        option_sad1 : "",
-        option_sad2 : "",
-        option_fear1 : "",
-        option_fear2 : "",
-        option_disgust : ""
-    },
-
-    {
-        id : "worry",
-        face : "#FFE600",
-        l_eyebrow : "M54 57.4035C54 57.4035 71.1063 71.3195 84.05 66.5136C96.9938 61.7078 100.873 40 100.873 40C105.679 52.9437 99.0822 67.3326 86.1385 72.1385C73.1947 76.9443 58.8058 70.3472 54 57.4035Z",
-        r_eyebrow : "M149.661 40.7056C149.661 40.7056 152.694 62.5479 165.441 67.8536C178.188 73.1592 195.822 59.9191 195.822 59.9191C190.517 72.6661 175.882 78.6986 163.135 73.3929C150.388 68.0873 144.356 53.4527 149.661 40.7056Z",
-        l_eye : "M95.5 107C95.5 119.703 93.7025 130 81 130C68.2975 130 66 119.703 66 107C66 94.2975 68.2975 84 81 84C93.7025 84 95.5 94.2975 95.5 107Z",
-        r_eye : "M185.5 107C185.5 119.703 183.703 130 171 130C158.297 130 156 119.703 156 107C156 94.2975 158.297 84 171 84C183.703 84 185.5 94.2975 185.5 107Z",
-        mouse : "M155 185.846C155 192.943 149.38 193.5 122.397 193.5C95.4131 193.5 89 192.943 89 185.846C89 178.748 95.4131 167 122.397 167C149.38 167 155 178.748 155 185.846Z",
-        option_sad1 : "",
-        option_sad2 : "",
-        option_fear1 : "",
-        option_fear2 : "",
-        option_disgust : ""
-    },
-
-    {
-        id : "anger",
-        face : "#FF3D3D",
-        l_eye : "M87.5 110C87.5 122.703 85.7025 133 73 133C60.2975 133 58 122.703 58 110C58 97.2975 60.2975 87 73 87C85.7025 87 87.5 97.2975 87.5 110Z",
-        r_eye : "M194.5 110C194.5 122.703 192.703 133 180 133C167.297 133 165 122.703 165 110C165 97.2975 167.297 87 180 87C192.703 87 194.5 97.2975 194.5 110Z",
-        l_eyebrow : "M27.3913 11C27.3913 11 33.841 37.2786 54.3516 55.7681C74.8622 74.2576 101.667 77.9564 101.667 77.9564C94.2709 86.1607 71.6483 77.8228 51.1377 59.3333C30.6271 40.8438 19.9955 19.2042 27.3913 11Z",
-        r_eyebrow : "M151 78.0755C151 78.0755 177.846 74.6931 198.574 56.4469C219.301 38.2006 226.06 12 226.06 12C233.359 20.2909 222.473 41.8035 201.745 60.0498C181.018 78.296 158.299 86.3664 151 78.0755Z",
-        mouse : "M178 201C178 231.992 158.705 209 127.224 209C95.7429 209 77.5 231.992 77.5 201C77.5 170.008 95.7429 193.5 127.224 193.5C158.705 193.5 178 170.008 178 201Z",
-        option_sad1 : "",
-        option_sad2 : "",
-        option_fear1 : "",
-        option_fear2 : "",
-        option_disgust : ""
-    },
-
-    {
-        id : "surprise",
-        face : "#FFE600",
-        r_eyebrow : "M199.5 42.5789C199.5 42.5789 188.307 23.5789 174.5 23.5789C160.693 23.5789 149.5 42.5789 149.5 42.5789C149.5 28.7717 160.693 17.5789 174.5 17.5789C188.307 17.5789 199.5 28.7717 199.5 42.5789Z",
-        l_eyebrow : "M99 43C99 43 87.8071 24 74 24C60.1929 24 49 43 49 43C49 29.1929 60.1929 18 74 18C87.8071 18 99 29.1929 99 43Z",
-        r_eye : "M189 94C189 107.807 187.233 119 174.746 119C162.259 119 160 107.807 160 94C160 80.1929 162.259 69 174.746 69C187.233 69 189 80.1929 189 94Z",
-        l_eye : "M88 94C88 107.807 86.233 119 73.7458 119C61.2585 119 59 107.807 59 94C59 80.1929 61.2585 69 73.7458 69C86.233 69 88 80.1929 88 94Z",
-        mouse : "M171 209.832C171 252.778 163.166 256 125.553 256C87.9395 256 79 252.778 79 209.832C79 166.887 87.9395 159 125.553 159C163.166 159 171 166.887 171 209.832Z",
-        option_sad1 : "",
-        option_sad2 : "",
-        option_fear1 : "",
-        option_fear2 : "",
-        option_disgust : ""
-    },
-
-    {
-        id : "sadness",
-        face : "#FFE600",
-        r_eye : "M194 111.058C194 119.927 191.928 111.058 177.288 111.058C162.648 111.058 160 119.927 160 111.058C160 102.19 162.648 95 177.288 95C191.928 95 194 102.19 194 111.058Z",
-        l_eye : "M90 111.058C90 119.927 87.9284 111.058 73.2881 111.058C58.6479 111.058 56 119.927 56 111.058C56 102.19 58.6479 95 73.2881 95C87.9284 95 90 102.19 90 111.058Z",
-        r_eyebrow : "M166.203 40C166.203 40 166.698 62.0463 178.748 68.786C190.798 75.5257 209.842 64.4067 209.842 64.4067C203.102 76.4572 187.87 80.7623 175.819 74.0226C163.769 67.2829 159.464 52.0504 166.203 40Z",
-        l_eyebrow : "M40 63.2016C40 63.2016 58.991 74.4098 71.0729 67.7267C83.1548 61.0436 83.7525 39 83.7525 39C90.4356 51.0819 86.059 66.2939 73.9771 72.977C61.8951 79.6601 46.6831 75.2835 40 63.2016Z",
-        mouse : "M158 188.846C158 214 152.38 202.5 125.397 202.5C98.4131 202.5 92 213.5 92 188.846C92 181.748 98.4131 170 125.397 170C152.38 170 158 181.748 158 188.846Z",
-        option_sad1 : "M194 115L199.735 134.007C200.488 136.504 199.539 139.202 197.388 140.677C195.346 142.077 192.654 142.077 190.612 140.677C188.461 139.202 187.512 136.504 188.265 134.007L194 115Z",
-        option_sad2 : "M56 115L61.7348 134.007C62.4883 136.504 61.539 139.202 59.3876 140.677C57.3461 142.077 54.6539 142.077 52.6124 140.677C50.4611 139.202 49.5117 136.504 50.2653 134.007L56 115Z",
-        option_fear1 : "",
-        option_fear2 : "",
-        option_disgust : ""
-    },
-
-    {
-        id : "fear",
-        face : "#FFE600",
-        r_eye : "M193 118.525C193 137.593 190.928 118.525 176.288 118.525C161.648 118.525 159 137.593 159 118.525C159 99.4575 161.648 84 176.288 84C190.928 84 193 99.4575 193 118.525Z",
-        l_eye : "M96 118.525C96 137.593 93.9284 118.525 79.2881 118.525C64.6479 118.525 62 137.593 62 118.525C62 99.4575 64.6479 84 79.2881 84C93.9284 84 96 99.4575 96 118.525Z",
-        r_eyebrow : "M158.782 43.9658C158.782 43.9658 159.277 66.0121 171.327 72.7518C183.378 79.4915 202.421 68.3726 202.421 68.3726C195.681 80.423 180.449 84.7281 168.398 77.9884C156.348 71.2487 152.043 56.0163 158.782 43.9658Z",
-        l_eyebrow : "M46.0734 68.6627C46.0734 68.6627 65.0644 79.8709 77.1463 73.1878C89.2282 66.5047 89.8259 44.4611 89.8259 44.4611C96.509 56.543 92.1324 71.755 80.0505 78.4381C67.9686 85.1212 52.7565 80.7446 46.0734 68.6627Z",
-        mouse : "M158 204.846C158 211.943 152.38 204.846 125.397 204.846C98.4131 204.846 92 211.943 92 204.846C92 197.748 98.4131 186 125.397 186C152.38 186 158 197.748 158 204.846Z",
-        option_fear1 : "M35 84L40.7348 103.007C41.4883 105.504 40.539 108.202 38.3876 109.677V109.677C36.3461 111.077 33.6539 111.077 31.6124 109.677V109.677C29.4611 108.202 28.5117 105.504 29.2653 103.007L35 84Z",
-        option_fear2 : "M17 113L22.7348 132.007C23.4883 134.504 22.539 137.202 20.3876 138.677V138.677C18.3461 140.077 15.6539 140.077 13.6124 138.677V138.677C11.4611 137.202 10.5117 134.504 11.2653 132.007L17 113Z",
-        option_sad1 : "",
-        option_sad2 : "",
-        option_disgust : ""
-    },
-
-    {
-        id : "disgust",
-        face : "#FFE600",
-        l_eye : "M91 109.011C91 116.198 88 116.5 71.339 111.5C53.5 116.5 51 116.198 51 109.011C51 101.825 54.1152 96 71.339 96C88.5628 96 91 101.825 91 109.011Z",
-        r_eye : "M198 109.011C198 116.198 195 116.5 178.339 111.5C160.5 116.5 158 116.198 158 109.011C158 101.825 161.115 96 178.339 96C195.563 96 198 101.825 198 109.011Z",
-        r_eyebrow : "M203 87.1365C203 87.1365 184.807 92.1365 171 92.1365C157.193 92.1365 153 87.1365 153 87.1365C153 73.3294 157.193 87.1365 171 87.1365C184.807 87.1365 203 73.3294 203 87.1365Z",
-        l_eyebrow : "M95.995 80.713C95.995 80.713 90.4768 83.0614 76.7714 81.3878C63.0661 79.7142 46.3637 74.6522 46.3637 74.6522C48.0373 60.9469 65.1612 74.9328 78.8665 76.6065C92.5718 78.2801 97.6686 67.0077 95.995 80.713Z",
-        mouse : "M171 168.446C171 191.449 152.137 168.446 119 168.446C85.8629 168.446 59 185.657 59 159.396C59 159.396 59 124.4 119 150.946C179 150.946 171 168.446 171 168.446Z",
-        option_disgust : "M130.617 181.553C134.43 184.427 130.687 186.255 126.662 183.686C124.299 182.179 121.606 181.024 118.666 180.702C115.727 180.38 112.847 180.924 110.215 181.884C105.728 183.52 102.47 180.925 106.815 178.945C110.317 177.349 114.574 176.637 119.058 177.128C123.542 177.62 127.543 179.236 130.617 181.553Z",
-        option_sad1 : "",
-        option_sad2 : "",
-        option_fear1 : "",
-        option_fear2 : ""
-    },
-
-    {
-        id : "contempt",
-        face : "#FFE600",
-        l_eye : "M89.5 110C89.5 122.703 87.7025 133 75 133C62.2975 133 60 122.703 60 110C60 110 62.2975 110 75 110C87.7025 110 89.5 110 89.5 110Z",
-        r_eye : "M189.5 110C189.5 122.703 187.703 133 175 133C162.297 133 160 122.703 160 110C160 110 162.297 110 175 110C187.703 110 189.5 110 189.5 110Z",
-        r_eyebrow : "M200 100C200 100 188.807 81 175 81C161.193 81 150 100 150 100C150 86.1929 161.193 75 175 75C188.807 75 200 86.1929 200 100Z",
-        l_eyebrow : "M100 80C100 80 88.8071 61 75 61C61.1929 61 50 80 50 80C50 66.1929 61.1929 55 75 55C88.8071 55 100 66.1929 100 80Z",
-        mouse : "M167.705 196.257C166.864 201.503 158.814 200.615 120.464 194.463C82.1143 188.311 73.063 186.455 73.9046 181.209C74.7461 175.963 84.0151 176.462 122.365 182.614C160.714 188.766 168.547 191.011 167.705 196.257Z",
-        option_disgust : "",
-        option_sad1 : "",
-        option_sad2 : "",
-        option_fear1 : "",
-        option_fear2 : ""
-    }
-    
-]
 
 const btn_emotions = document.querySelectorAll(".btn_emotion");
 
-for( let btn_emotion of btn_emotions){
-    
-    btn_emotion.addEventListener('click', (event) =>{
-        document.getElementById("mouse").setAttribute('class', 'mouse');
-        var emotion = event.target.innerText.toLowerCase();
+for (let btn_emotion of btn_emotions) {
+  btn_emotion.addEventListener("click", (event) => {
+    document.getElementById("mouse").setAttribute("class", "mouse");
+    var emotion = event.target.innerText.toLowerCase();
 
-        for (var i = 0; i < path.length; i++){
-
-            if(emotion == path[i]['id']){
-                document.getElementById("_face").setAttribute('class', emotion);
-                morph(path[i]);
-            }
-        }
-    });
+    for (var i = 0; i < path.length; i++) {
+      if (emotion == path[i]["id"]) {
+        document.getElementById("_face").setAttribute("class", emotion);
+        morph(path[i]);
+      }
+    }
+  });
 }
 
 // 입모양 애니메이션
 const btn_talk = document.querySelector("#msgBox");
-btn_talk.addEventListener('click', (event) => {
-    var mouseClassName = document.getElementById("mouse").getAttribute('class');
-    if(mouseClassName != 'talk'){
-        document.getElementById("mouse").setAttribute('class', 'talk');
-    }else{
-        document.getElementById("mouse").setAttribute('class', 'mouse');
-    }
-    
+btn_talk.addEventListener("click", (event) => {
+  var mouseClassName = document.getElementById("mouse").getAttribute("class");
+  if (mouseClassName != "talk") {
+    document.getElementById("mouse").setAttribute("class", "talk");
+  } else {
+    document.getElementById("mouse").setAttribute("class", "mouse");
+  }
 });
 
 // 글씨크기조절
 const btn_fonts = document.querySelectorAll(".btn_font");
-const msg = document.querySelector('#msgBox');
-var size = '';
-for(let btn_font of btn_fonts){
-    btn_font.addEventListener('click', (event)=>{
-        for(var i = 0; i < btn_fonts.length; i++){
-            btn_fonts[i].classList.remove('clicked');
-        }
-        size = event.target.id;
-        event.target.classList.add('clicked');
-        
-        if(size == "big_font"){
-            msg.setAttribute('style', 'font-size:24pt');
-        }else if(size == "small_font"){
-            msg.setAttribute('style', 'font-size:16pt');
-        }else if(size == "normal_font"){
-            msg.setAttribute('style', 'font-size:20pt');
-        }
+const msg = document.querySelector("#msgBox");
+var size = "";
+for (let btn_font of btn_fonts) {
+  btn_font.addEventListener("click", (event) => {
+    for (var i = 0; i < btn_fonts.length; i++) {
+      btn_fonts[i].classList.remove("clicked");
+    }
+    size = event.target.id;
+    event.target.classList.add("clicked");
 
-    });
+    if (size == "big_font") {
+      msg.setAttribute("style", "font-size:24pt");
+    } else if (size == "small_font") {
+      msg.setAttribute("style", "font-size:16pt");
+    } else if (size == "normal_font") {
+      msg.setAttribute("style", "font-size:20pt");
+    }
+  });
 }
 
 // 메세지: 테스트용
 const sample_msg = [
-    {
-        id: '1',
-        text: 'Hello! How are you today?'
-    },
-    {
-        id: '2',
-        text: 'Wow!!!'
-    },
-    {
-        id: '3',
-        text: 'What?!'
-    },
-    {
-        id: '4',
-        text: 'Huh...'
-    },
-    {
-        id: '5',
-        text: 'Um...'
-    },
-    {
-        id: '6',
-        text: 'Yes!!'
-    },
-    {
-        id: '7',
-        text: 'Nope!'
-    },
-    {
-        id: '8',
-        text: 'Oh My God!!!!! What’s going on here?'
-    },
-    {
-        id: '9',
-        text: 'LOL'
-    },
-]
-function random_msg(){
-    let random_num = Math.floor(Math.random()*10);
+  {
+    id: "1",
+    text: "Hello! How are you today?",
+  },
+  {
+    id: "2",
+    text: "Wow!!!",
+  },
+  {
+    id: "3",
+    text: "What?!",
+  },
+  {
+    id: "4",
+    text: "Huh...",
+  },
+  {
+    id: "5",
+    text: "Um...",
+  },
+  {
+    id: "6",
+    text: "Yes!!",
+  },
+  {
+    id: "7",
+    text: "Nope!",
+  },
+  {
+    id: "8",
+    text: "Oh My God!!!!! What’s going on here?",
+  },
+  {
+    id: "9",
+    text: "LOL",
+  },
+];
+function random_msg() {
+  let random_num = Math.floor(Math.random() * 10);
 
-    if(sample_msg[random_num] != undefined) {msg.innerText = sample_msg[random_num].text;}
-    return msg;
+  if (sample_msg[random_num] != undefined) {
+    msg.innerText = sample_msg[random_num].text;
+  }
+  return msg;
 }
 random_msg();
 setInterval(random_msg, 5000);
 
 //말풍선 꼬리: 반응형 web
-const bubble = document.querySelector('#_bubble');
-const _window = window.matchMedia("screen and (max-width: 768px) and (orientation: portrait)");
+const bubble = document.querySelector("#_bubble");
+const _window = window.matchMedia(
+  "screen and (max-width: 768px) and (orientation: portrait)"
+);
 
 fn_bubble(_window);
-_window.addEventListener('change', ()=>{
-    fn_bubble(_window);
+_window.addEventListener("change", () => {
+  fn_bubble(_window);
 });
 
-function fn_bubble( _window ){
-    if (_window.matches) {
-        bubble.setAttribute('d', 'M58.6451 254.298L29.4936 311.56L7.43998 293.115L58.6451 254.298Z');
-    } else {
-        bubble.setAttribute('d', 'M281.527 177.738L391.62 102.15L409.853 140.772L281.527 177.738Z');
-    }
+function fn_bubble(_window) {
+  if (_window.matches) {
+    bubble.setAttribute(
+      "d",
+      "M58.6451 254.298L29.4936 311.56L7.43998 293.115L58.6451 254.298Z"
+    );
+  } else {
+    bubble.setAttribute(
+      "d",
+      "M281.527 177.738L391.62 102.15L409.853 140.772L281.527 177.738Z"
+    );
+  }
 }

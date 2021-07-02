@@ -1,4 +1,5 @@
 import { talkEndpoint, debugMode } from "./config.js";
+import { morph, path } from "./morph.js";
 
 // set up basic variables for app
 const status = document.querySelector(".status");
@@ -28,6 +29,7 @@ let maIdxLong = 0;
 let maIdxShort = 0;
 
 // system status management: init -> idle -> listen -> wait -> speak -> idle -> ...
+let emotion = "";
 let systemStatus = "init";
 let previous;
 setInterval(() => {
@@ -35,6 +37,7 @@ setInterval(() => {
     if (systemStatus === "init") {
       status.style.background = "white";
     } else if (systemStatus === "idle") {
+      emotion = "neutral";
       status.style.background = "gray";
     } else if (systemStatus === "listen") {
       status.style.background = "green";
@@ -43,10 +46,23 @@ setInterval(() => {
     } else if (systemStatus === "speak") {
       status.style.background = "red";
     }
-    console.log(`[systemStatus: ${systemStatus.padStart(6)}]`);
+    changeEmo(emotion);
+    console.log(
+      `[systemStatus: ${systemStatus.padStart(6)}, ${emotion.padStart(8)}]`
+    );
   }
   previous = systemStatus;
 }, vadInterval * 5);
+
+// emotion control
+function changeEmo(pEmo = "neutral") {
+  for (let i = 0; i < path.length; i++) {
+    if (pEmo == path[i]["id"]) {
+      document.getElementById("_face").setAttribute("class", pEmo);
+      morph(path[i]);
+    }
+  }
+}
 
 //main block for doing the audio recording
 if (navigator.mediaDevices.getUserMedia) {
@@ -69,7 +85,7 @@ if (navigator.mediaDevices.getUserMedia) {
 
     setTimeout(() => {
       systemStatus = "idle";
-    }, 5000);
+    }, 3000);
 
     mediaRecorder.onstop = function (e) {
       const clipContainer = document.createElement("article");
@@ -115,6 +131,7 @@ if (navigator.mediaDevices.getUserMedia) {
           .then((response) => response.json())
           .then((data) => {
             let snd = new Audio(data.audio);
+            emotion = data.emotion;
             systemStatus = "speak";
             snd.onended = () => {
               systemStatus = "idle";

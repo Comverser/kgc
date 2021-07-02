@@ -15,9 +15,10 @@ from aiortc import MediaStreamTrack, RTCPeerConnection, RTCSessionDescription
 from aiortc.contrib.media import MediaBlackhole, MediaRecorder, MediaPlayer
 
 # voice processing
-import json
 import base64
 import time
+
+flag = True
 
 ROOT = os.path.dirname(__file__)
 
@@ -150,11 +151,10 @@ async def post_settings(request):
 
 
 async def post_talk(request):
-    json_in = await request.json()
-    # dict_in = json.load(json_in)
+    dict_in = await request.json()
+    base64_in = dict_in["audio"].split("data:audio/webm; codecs=pcm;base64,", 1)[1]
+    wav_data = base64.b64decode(base64_in)
 
-    # print("==========================================", dict_in.audio)
-    # wav_data = base64.b64decode(dict_in.audio)
     # STT
 
     # Model
@@ -163,17 +163,16 @@ async def post_talk(request):
 
     # TTS
 
-    # base64_out = base64.b64encode(open(wav_data, "rb").read())
-
-    # return web.json_response(base64_out)
-    return web.json_response(json_in)
-
-    # return web.Response(
-    #     content_type="application/json",
-    #     text=json.dumps(
-    #         {"sdp": pc.localDescription.sdp, "type": pc.localDescription.type}
-    #     ),
-    # )
+    base64_out = "data:audio/webm; codecs=pcm;base64," + base64.b64encode(
+        wav_data
+    ).decode("ascii")
+    global flag
+    flag = not flag
+    if flag:
+        dict_out = dict({"audio": base64_out, "emotion": "happy"})
+    else:
+        dict_out = dict({"audio": base64_out, "emotion": "surprise"})
+    return web.json_response(dict_out)
 
 
 async def offer(request):
