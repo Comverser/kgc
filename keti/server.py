@@ -14,6 +14,11 @@ from av import VideoFrame
 from aiortc import MediaStreamTrack, RTCPeerConnection, RTCSessionDescription
 from aiortc.contrib.media import MediaBlackhole, MediaRecorder, MediaPlayer
 
+# voice processing
+import json
+import base64
+import time
+
 ROOT = os.path.dirname(__file__)
 
 logger = logging.getLogger("pc")
@@ -145,9 +150,30 @@ async def post_settings(request):
 
 
 async def post_talk(request):
-    base64data = await request.json()
+    json_in = await request.json()
+    # dict_in = json.load(json_in)
 
-    return web.json_response(base64data)
+    # print("==========================================", dict_in.audio)
+    # wav_data = base64.b64decode(dict_in.audio)
+    # STT
+
+    # Model
+    print("predicting...")
+    time.sleep(1)
+
+    # TTS
+
+    # base64_out = base64.b64encode(open(wav_data, "rb").read())
+
+    # return web.json_response(base64_out)
+    return web.json_response(json_in)
+
+    # return web.Response(
+    #     content_type="application/json",
+    #     text=json.dumps(
+    #         {"sdp": pc.localDescription.sdp, "type": pc.localDescription.type}
+    #     ),
+    # )
 
 
 async def offer(request):

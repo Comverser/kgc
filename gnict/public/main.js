@@ -32,6 +32,17 @@ let systemStatus = "init";
 let previous;
 setInterval(() => {
   if (previous !== systemStatus) {
+    if (systemStatus === "init") {
+      status.style.background = "white";
+    } else if (systemStatus === "idle") {
+      status.style.background = "gray";
+    } else if (systemStatus === "listen") {
+      status.style.background = "green";
+    } else if (systemStatus === "wait") {
+      status.style.background = "orange";
+    } else if (systemStatus === "speak") {
+      status.style.background = "red";
+    }
     console.log(`[systemStatus: ${systemStatus.padStart(6)}]`);
   }
   previous = systemStatus;
@@ -212,7 +223,6 @@ function voiceTracking(stream, mediaRecorder) {
     ) {
       mediaRecorder.start();
       systemStatus = "listen";
-      status.style.background = "red";
     } else if (
       systemStatus === "listen" &&
       voiceAmp <= noiseLevelMax &&
@@ -224,7 +234,6 @@ function voiceTracking(stream, mediaRecorder) {
       systemStatus = "wait";
       // mediaRecorder.requestData();
     } else if (systemStatus === "idle" && mediaRecorder.state === "inactive") {
-      status.style.background = "black";
       if (
         maShort[0] < maLong[0] * 1.05 &&
         maShort[0] > maLong[0] * 0.95 &&
