@@ -1,4 +1,4 @@
-import { settingsEndpoint, offerEndpoint } from "./config.js";
+import { settingsEndpoint, offerEndpoint, debugMode } from "./config.js";
 
 let useDatachannel,
   useAudio,
@@ -65,7 +65,7 @@ function createPeerConnection() {
 
   // connect audio / video
   pc.addEventListener("track", function (evt) {
-    if (evt.track.kind == "video") {
+    if (evt.track.kind == "video" && debugMode) {
       document.getElementById("webrtc_video").srcObject = evt.streams[0];
       // console.log("video received! -------->", evt.streams);
     } else {
@@ -113,7 +113,10 @@ function negotiate() {
         offer.sdp = sdpFilterCodec("video", codec, offer.sdp);
       }
 
-      document.getElementById("offer-sdp").textContent = offer.sdp;
+      if (debugMode) {
+        document.getElementById("offer-sdp").textContent = offer.sdp;
+      }
+
       return fetch(offerEndpoint, {
         body: JSON.stringify({
           sdp: offer.sdp,
@@ -130,7 +133,9 @@ function negotiate() {
       return response.json();
     })
     .then(function (answer) {
-      document.getElementById("answer-sdp").textContent = answer.sdp;
+      if (debugMode) {
+        document.getElementById("answer-sdp").textContent = answer.sdp;
+      }
       return pc.setRemoteDescription(answer);
     })
     .catch(function (e) {

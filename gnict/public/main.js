@@ -1,4 +1,4 @@
-import { talkEndpoint } from "./config.js";
+import { talkEndpoint, debugMode } from "./config.js";
 
 // set up basic variables for app
 const status = document.querySelector(".status");
@@ -18,10 +18,13 @@ const reader = new FileReader();
 let base64data;
 
 // VAD
-const vadInterval = 10;
-const vadThreshold = 100; // should be automated
-let noiseLevelParam = 0.8;
-let noiseLevelMax = vadThreshold * noiseLevelParam;
+const vadThreshold = 220; // should be automated
+let vadInterval = 50;
+if (debugMode) {
+  vadInterval = 500;
+}
+let noiseLevelParam = 0.75;
+let noiseLevelMax = vadThreshold * noiseLevelParam * 0.8;
 let maBufLong = new Array(2000 / vadInterval).fill(0);
 let maBufShort = new Array(1000 / vadInterval).fill(0);
 let maIdxLong = 0;
@@ -167,10 +170,10 @@ function voiceTracking(stream, mediaRecorder) {
     analyser.getByteFrequencyData(dataArray);
 
     let sum = 0;
-    for (let i = 0; i < dataArray.length; i++) {
+    for (let i = 1; i < 5; i++) {
       sum += dataArray[i];
     }
-    const voiceAmp = sum / dataArray.length;
+    const voiceAmp = sum / 4;
 
     // moving average voice amplitude
     const maLong = calMa(maBufLong, maIdxLong, voiceAmp);
@@ -202,22 +205,32 @@ function voiceTracking(stream, mediaRecorder) {
       mediaRecorder.state === "inactive"
     ) {
       status.style.background = "black";
-      noiseLevelMax = Math.max(maShort[0], maLong[0]) * 1.15;
+      if (
+        maShort[0] < maLong[0] * 1.05 &&
+        maShort[0] > maLong[0] * 0.95 &&
+        maShort[0] < noiseLevelMax * 1.05
+      ) {
+        noiseLevelMax = Math.max(maShort[0], maLong[0]) * 1.15;
+      }
       if (noiseLevelMax > vadThreshold * noiseLevelParam) {
         alert(
           `It is too noisy. Voice and noise level is ${vadThreshold} and ${noiseLevelMax} respectively`
         );
         noiseLevelParam *= 1.1;
       }
-      // console.log(
-      //   `${Math.floor(voiceAmp)}\t${Math.floor(maShort[0])}\t${Math.floor(
-      //     maLong[0]
-      //   )}`
-      // );
+      if (debugMode) {
+        console.log(
+          `${Math.floor(voiceAmp)}\t${Math.floor(maShort[0])}\t${Math.floor(
+            maLong[0]
+          )}\t|\t${Math.floor(noiseLevelMax)}`
+        );
+      }
     }
   }, vadInterval);
 
-  draw();
+  if (debugMode) {
+    draw();
+  }
 
   function draw() {
     /* -------------------------------------------------------------------------- */
