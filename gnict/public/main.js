@@ -6,9 +6,6 @@ const soundClips = document.querySelector(".sound-clips");
 const canvas = document.querySelector(".visualizer");
 const mainSection = document.querySelector(".main-controls");
 
-// system
-let systemStatus = "init"; // init, listen, speak, idle, wait
-
 // visualiser setup - create web audio api context and canvas
 let audioCtx;
 const canvasCtx = canvas.getContext("2d");
@@ -18,23 +15,40 @@ const reader = new FileReader();
 let base64data;
 
 // VAD
-const vadThreshold = 220; // should be automated
-let vadInterval = 50;
+const vadThreshold = 225; // should be automated later
+let vadInterval = 20;
 if (debugMode) {
-  vadInterval = 500;
+  vadInterval = 200;
 }
-let noiseLevelParam = 0.75;
-let noiseLevelMax = vadThreshold * noiseLevelParam * 0.8;
+let noiseLevelParam = 0.8;
+let noiseLevelMax = vadThreshold * 0.5;
 let maBufLong = new Array(2000 / vadInterval).fill(0);
 let maBufShort = new Array(1000 / vadInterval).fill(0);
 let maIdxLong = 0;
 let maIdxShort = 0;
 
+// system status management: init -> idle -> listen -> wait -> speak -> idle -> ...
+let systemStatus = "init";
+let previous;
+setInterval(() => {
+  if (previous !== systemStatus) {
+    console.log(`[systemStatus: ${systemStatus.padStart(6)}]`);
+  }
+  previous = systemStatus;
+}, vadInterval * 5);
+
 //main block for doing the audio recording
 if (navigator.mediaDevices.getUserMedia) {
   // console.log("getUserMedia supported.");
+  // console.log(navigator.mediaDevices.getSupportedConstraints()); // may return false positives
 
-  const constraints = { audio: true };
+  const constraints = {
+    audio: {
+      channelCount: 1,
+      sampleRate: 16000,
+      sampleSize: 16,
+    },
+  };
   let chunks = [];
 
   let onSuccess = function (stream) {
@@ -43,7 +57,7 @@ if (navigator.mediaDevices.getUserMedia) {
     voiceTracking(stream, mediaRecorder);
 
     setTimeout(() => {
-      systemStatus = "listen";
+      systemStatus = "idle";
     }, 5000);
 
     mediaRecorder.onstop = function (e) {
@@ -66,7 +80,8 @@ if (navigator.mediaDevices.getUserMedia) {
       soundClips.appendChild(clipContainer);
 
       audio.controls = true;
-      const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
+      // const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
+      const blob = new Blob(chunks, { type: "audio/webm; codecs=pcm" });
 
       chunks = [];
       const audioURL = window.URL.createObjectURL(blob);
@@ -89,6 +104,10 @@ if (navigator.mediaDevices.getUserMedia) {
           .then((response) => response.json())
           .then((data) => {
             let snd = new Audio(data.audio);
+            systemStatus = "speak";
+            snd.onended = () => {
+              systemStatus = "idle";
+            };
             snd.play();
           })
           .catch((err) => {
@@ -164,16 +183,18 @@ function voiceTracking(stream, mediaRecorder) {
   source.connect(analyser);
   // analyser.connect(audioCtx.destination);
 
+  // console.log(`AudioContext sampleRate: ${audioCtx.sampleRate}`);
+
   // VAD
   setInterval(() => {
     // voice amplitude
     analyser.getByteFrequencyData(dataArray);
 
     let sum = 0;
-    for (let i = 1; i < 5; i++) {
+    for (let i = 0; i < 3; i++) {
       sum += dataArray[i];
     }
-    const voiceAmp = sum / 4;
+    const voiceAmp = sum / 3;
 
     // moving average voice amplitude
     const maLong = calMa(maBufLong, maIdxLong, voiceAmp);
@@ -183,13 +204,14 @@ function voiceTracking(stream, mediaRecorder) {
 
     // VAD
     if (
-      systemStatus === "listen" &&
+      systemStatus === "idle" &&
       voiceAmp >= vadThreshold &&
       maShort[0] < vadThreshold &&
       maLong[0] < vadThreshold &&
       mediaRecorder.state === "inactive"
     ) {
       mediaRecorder.start();
+      systemStatus = "listen";
       status.style.background = "red";
     } else if (
       systemStatus === "listen" &&
@@ -199,11 +221,9 @@ function voiceTracking(stream, mediaRecorder) {
       mediaRecorder.state === "recording"
     ) {
       mediaRecorder.stop();
+      systemStatus = "wait";
       // mediaRecorder.requestData();
-    } else if (
-      systemStatus === "listen" &&
-      mediaRecorder.state === "inactive"
-    ) {
+    } else if (systemStatus === "idle" && mediaRecorder.state === "inactive") {
       status.style.background = "black";
       if (
         maShort[0] < maLong[0] * 1.05 &&
@@ -211,6 +231,8 @@ function voiceTracking(stream, mediaRecorder) {
         maShort[0] < noiseLevelMax * 1.05
       ) {
         noiseLevelMax = Math.max(maShort[0], maLong[0]) * 1.15;
+      } else {
+        noiseLevelMax *= 1.01;
       }
       if (noiseLevelMax > vadThreshold * noiseLevelParam) {
         alert(
