@@ -15,7 +15,7 @@ const reader = new FileReader();
 let base64data;
 
 // VAD
-const vadThreshold = 225; // should be automated later
+const vadThreshold = 200; // should be automated later
 let vadInterval = 20;
 if (debugMode) {
   vadInterval = 200;
@@ -239,8 +239,8 @@ function voiceTracking(stream, mediaRecorder) {
         maShort[0] > maLong[0] * 0.95 &&
         maShort[0] < noiseLevelMax * 1.05
       ) {
-        noiseLevelMax = Math.max(maShort[0], maLong[0]) * 1.15;
-      } else {
+        noiseLevelMax = Math.max(maShort[0], maLong[0]) * 1.1;
+      } else if (Math.max(maShort[0], maLong[0]) >= noiseLevelMax * 1.05) {
         noiseLevelMax *= 1.01;
       }
       if (noiseLevelMax > vadThreshold * noiseLevelParam) {
@@ -249,6 +249,7 @@ function voiceTracking(stream, mediaRecorder) {
         );
         noiseLevelParam *= 1.1;
       }
+
       if (debugMode) {
         console.log(
           `${Math.floor(voiceAmp)}\t${Math.floor(maShort[0])}\t${Math.floor(
