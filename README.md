@@ -1,19 +1,15 @@
-### Smartphone setup
-- None
+# Demo devices
+### 1. Smartphone
 
-### RPI setup
+### 2. RPI
+1. Peripherals needed
+    - Video/audio input devices (e.g. webcam)
+    - Audio output device (e.g. speaker)
+1.  Korean language setting
+    - sudo apt-get install fonts-unfonts-core
+    - sudo apt-get install ibus ibus-hangul
 
-##### HW required
-
-- Video/audio input devices (e.g. webcam)
-- Audio output device (e.g. speaker)
-
-##### Korean language setting
-
-- sudo apt-get install fonts-unfonts-core
-- sudo apt-get install ibus ibus-hangul
-
-### WebRTC references
+# WebRTC references
 
 - Python WebRTC basics with aiortc, https://dev.to/whitphx/python-webrtc-basics-with-aiortc-48id
 <!-- - Building a WebRTC video broadcast using Javascript, https://gabrieltanner.org/blog/webrtc-video-broadcast
