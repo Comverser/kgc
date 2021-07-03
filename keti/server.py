@@ -16,6 +16,7 @@ from aiortc.contrib.media import MediaBlackhole, MediaRecorder, MediaPlayer
 
 # voice processing
 import base64
+import ffmpeg
 import time
 
 flag = True
@@ -153,29 +154,45 @@ async def post_settings(request):
 async def post_talk(request):
     dict_in = await request.json()
     base64_in = dict_in["audio"].split("data:audio/webm; codecs=opus;base64,", 1)[1]
-    pcm_data = base64.b64decode(base64_in)
+    webm_in = base64.b64decode(base64_in)
+    
+    temp_file_webm = "temp.webm"
+    temp_file_wav = "temp.wav"
 
     # save audio data
-    with open("temp.webm", "wb") as file:
-        file.write(pcm_data)
-
+    with open(temp_file_webm, "wb") as f:
+        f.write(webm_in)
+    
+    # convert webm to wav
+    stream = ffmpeg.input(temp_file_webm)
+    stream = ffmpeg.output(stream, "temp.wav", ar=16000)
+    ffmpeg.run(stream, overwrite_output=True)
+    
     # STT
 
     # Model
-    print("predicting...")
-    time.sleep(1)
+    print("AI model predicting...")
 
     # TTS
 
+
+    # convert wav to webm
+    stream = ffmpeg.input(temp_file_wav)
+    stream = ffmpeg.output(stream, temp_file_webm, ar=48000)
+    ffmpeg.run(stream, overwrite_output=True)
+    with open(temp_file_webm, 'rb') as f:
+        webm_out = f.read()
+
+    # Response with emotion data
     base64_out = "data:audio/webm; codecs=opus;base64," + base64.b64encode(
-        pcm_data
+        webm_out
     ).decode("ascii")
     global flag
     flag = not flag
     if flag:
-        dict_out = dict({"audio": base64_out, "emotion": "happy"})
+        dict_out = dict({"audio": base64_out, "emotion": "happy", 'text': '안녕하세요'})
     else:
-        dict_out = dict({"audio": base64_out, "emotion": "surprise"})
+        dict_out = dict({"audio": base64_out, "emotion": "surprise", 'text': '반갑습니다'})
     return web.json_response(dict_out)
 
 
