@@ -70,11 +70,7 @@ if (navigator.mediaDevices.getUserMedia) {
   // console.log(navigator.mediaDevices.getSupportedConstraints()); // may return false positives
 
   const constraints = {
-    audio: {
-      channelCount: 1,
-      sampleRate: 16000,
-      sampleSize: 16,
-    },
+    audio: true
   };
   let chunks = [];
 
@@ -85,7 +81,7 @@ if (navigator.mediaDevices.getUserMedia) {
 
     setTimeout(() => {
       systemStatus = "idle";
-    }, 3000);
+    }, 5000);
 
     mediaRecorder.onstop = function (e) {
       const clipContainer = document.createElement("article");
@@ -107,8 +103,7 @@ if (navigator.mediaDevices.getUserMedia) {
       soundClips.appendChild(clipContainer);
 
       audio.controls = true;
-      // const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
-      const blob = new Blob(chunks, { type: "audio/webm; codecs=pcm" });
+      const blob = new Blob(chunks, { type: "audio/webm; codecs=opus" });
 
       chunks = [];
       const audioURL = window.URL.createObjectURL(blob);

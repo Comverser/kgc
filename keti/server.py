@@ -152,11 +152,11 @@ async def post_settings(request):
 
 async def post_talk(request):
     dict_in = await request.json()
-    base64_in = dict_in["audio"].split("data:audio/webm; codecs=pcm;base64,", 1)[1]
+    base64_in = dict_in["audio"].split("data:audio/webm; codecs=opus;base64,", 1)[1]
     pcm_data = base64.b64decode(base64_in)
 
     # save audio data
-    with open("temp.wav", "wb") as file:
+    with open("temp.webm", "wb") as file:
         file.write(pcm_data)
 
     # STT
@@ -167,7 +167,7 @@ async def post_talk(request):
 
     # TTS
 
-    base64_out = "data:audio/webm; codecs=pcm;base64," + base64.b64encode(
+    base64_out = "data:audio/webm; codecs=opus;base64," + base64.b64encode(
         pcm_data
     ).decode("ascii")
     global flag
