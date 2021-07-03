@@ -163,7 +163,7 @@ async def post_talk(request):
     with open(temp_file_webm, "wb") as f:
         f.write(webm_in)
     
-    # convert webm to wav
+    # convert webm (48 khz, 32 bits, 1 channel, opus) to wav (16 khz, 16 bits, 1 channel, pcm)
     stream = ffmpeg.input(temp_file_webm)
     stream = ffmpeg.output(stream, "temp.wav", ar=16000)
     ffmpeg.run(stream, overwrite_output=True)
@@ -176,9 +176,9 @@ async def post_talk(request):
     # TTS
 
 
-    # convert wav to webm
+    # convert wav (16 khz, 16 bits, 1 channel, pcm) to webm (16 khz, 16 bits, 1 channel, opus)
     stream = ffmpeg.input(temp_file_wav)
-    stream = ffmpeg.output(stream, temp_file_webm, ar=48000)
+    stream = ffmpeg.output(stream, temp_file_webm)
     ffmpeg.run(stream, overwrite_output=True)
     with open(temp_file_webm, 'rb') as f:
         webm_out = f.read()
