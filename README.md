@@ -1,3 +1,6 @@
+### Smartphone setup
+- None
+
 ### RPI setup
 
 ##### HW required
