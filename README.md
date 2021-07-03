@@ -9,6 +9,14 @@
     - sudo apt-get install fonts-unfonts-core
     - sudo apt-get install ibus ibus-hangul
 
+# API settings
+### Talk endpoints
+- Replace the API endpoints in gnict/public/config.js with your API endpoints
+
+### Kakao OpenAPI for STT/TTS
+- Create a .env file at the keti directory and add your API_KEY to it
+- https://ai-creator.tistory.com/70
+
 # WebRTC references
 
 - Python WebRTC basics with aiortc, https://dev.to/whitphx/python-webrtc-basics-with-aiortc-48id
