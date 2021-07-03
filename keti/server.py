@@ -17,7 +17,9 @@ from aiortc.contrib.media import MediaBlackhole, MediaRecorder, MediaPlayer
 # voice processing
 import base64
 import ffmpeg
-import time
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 flag = True
 
@@ -169,6 +171,7 @@ async def post_talk(request):
     ffmpeg.run(stream, overwrite_output=True)
     
     # STT
+    print(os.environ.get('API_KEY'))
 
     # Model
     print("AI model predicting...")
