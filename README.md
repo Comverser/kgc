@@ -1,5 +1,5 @@
 # Demo devices
-### 1. Smartphone
+### 1. Smartphone/laptop
 
 ### 2. RPI
 1. Peripherals needed
