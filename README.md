@@ -1,7 +1,7 @@
 # Demo devices
-### 1. Smartphone/laptop
+### 1. Smartphone or laptop
 
-### 2. RPI/PC
+### 2. Raspberry Pi 3/4 or PC
 1. Peripherals needed
     - Video/audio input devices (e.g. webcam)
     - Display/audio output device (e.g. touch display/speaker)
