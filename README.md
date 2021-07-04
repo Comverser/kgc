@@ -1,11 +1,11 @@
 # Demo devices
 ### 1. Smartphone/laptop
 
-### 2. RPI
+### 2. RPI/PC
 1. Peripherals needed
     - Video/audio input devices (e.g. webcam)
     - Display/audio output device (e.g. touch display/speaker)
-1.  Korean language setting
+1.  Korean language setting for Raspberry Pi OS
     - sudo apt-get install fonts-unfonts-core
     - sudo apt-get install ibus ibus-hangul
     - reboot
