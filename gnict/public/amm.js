@@ -112,8 +112,8 @@ function random_msg() {
   }
   return msg;
 }
-random_msg();
-setInterval(random_msg, 5000);
+// random_msg();
+// setInterval(random_msg, 5000);
 
 //말풍선 꼬리: 반응형 web
 const bubble = document.querySelector("#_bubble");

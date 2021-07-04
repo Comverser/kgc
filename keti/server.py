@@ -16,10 +16,22 @@ from aiortc.contrib.media import MediaBlackhole, MediaRecorder, MediaPlayer
 
 # voice processing
 import base64
+import requests
 import ffmpeg
 import os
 from dotenv import load_dotenv
 load_dotenv()
+recognize_url = "https://kakaoi-newtone-openapi.kakao.com/v1/recognize"
+synthesize_url = "https://kakaoi-newtone-openapi.kakao.com/v1/synthesize"
+rest_api_key = os.environ.get('API_KEY')
+headers_recog = {
+    "Content-Type": "application/octet-stream",
+    "Authorization": "KakaoAK " + rest_api_key,
+}
+headers_synth = {
+    "Content-Type": "application/xml",
+    "Authorization": "KakaoAK " + rest_api_key,
+}
 
 flag = True
 
@@ -170,32 +182,63 @@ async def post_talk(request):
     stream = ffmpeg.output(stream, "temp.wav", ar=16000)
     ffmpeg.run(stream, overwrite_output=True)
     
-    # STT
-    print(os.environ.get('API_KEY'))
+    #######
+    # STT #
+    #######
+    with open('temp.wav', 'rb') as f:
+        recog_in = f.read()
+    res_stt = requests.post(recognize_url, headers=headers_recog, data=recog_in)
+    if res_stt.raise_for_status():
+        print('REST API ERR: ', res.raise_for_status())
 
-    # Model
+    try:
+        result_stt_json_str = res_stt.text[res_stt.text.index('{"type":"finalResult"'):res_stt.text.rindex('}')+1]
+        result_stt = json.loads(result_stt_json_str)
+    except Exception as e:
+        result_stt = {'value': '다시 말씀해주시겠어요?'}
+        print(e)
+
+    #########
+    # Model #
+    #########
     print("AI model predicting...")
 
-    # TTS
+    #######
+    # TTS #
+    #######
+    tts_in = result_stt['value']
+    synth_in = f"<speak> <voice name='WOMAN_DIALOG_BRIGHT'> {tts_in} </voice> </speak>".encode('utf-8')
 
+    res_tts = requests.post(synthesize_url, headers=headers_synth, data=synth_in)
+    if res_tts.raise_for_status():
+        print('REST API ERR: ', res_tts.raise_for_status())
 
-    # convert wav (16 khz, 16 bits, 1 channel, pcm) to webm (16 khz, 16 bits, 1 channel, opus)
-    stream = ffmpeg.input(temp_file_wav)
+    with open('temp.mp3', "wb") as f:
+        f.write(res_tts.content)
+
+    # convert wav (16 khz, 16 bits, 1 channel, pcm) to webm (24 khz, 32 bits, 1 channel, opus)
+    stream = ffmpeg.input('temp.mp3')
     stream = ffmpeg.output(stream, temp_file_webm)
     ffmpeg.run(stream, overwrite_output=True)
+    
     with open(temp_file_webm, 'rb') as f:
         webm_out = f.read()
 
-    # Response with emotion data
+    ##############################
+    # Response with emotion data #
+    ##############################
     base64_out = "data:audio/webm; codecs=opus;base64," + base64.b64encode(
         webm_out
     ).decode("ascii")
+    
     global flag
     flag = not flag
     if flag:
-        dict_out = dict({"audio": base64_out, "emotion": "happy", 'text': '안녕하세요'})
+        emotion = 'happy'
     else:
-        dict_out = dict({"audio": base64_out, "emotion": "surprise", 'text': '반갑습니다'})
+        emotion = "surprise"
+    
+    dict_out = dict({"audio": base64_out, "emotion": emotion, 'text': tts_in})
     return web.json_response(dict_out)
 
 

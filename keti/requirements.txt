@@ -4,3 +4,4 @@ opencv-python
 aiohttp_cors
 ffmpeg-python
 python-dotenv
+requests

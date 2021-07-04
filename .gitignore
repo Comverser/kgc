@@ -1,6 +1,8 @@
 node_modules
 .env
 
+*.wav
+!server-sent-demo.wav
 *.mp4
-temp.webm
-temp.wav
+*.webm
+*.mp3

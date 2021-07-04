@@ -29,9 +29,21 @@ let maIdxLong = 0;
 let maIdxShort = 0;
 
 // system status management: init -> idle -> listen -> wait -> speak -> idle -> ...
-let emotion = "";
+let emotion = "happy";
+let message = "안녕하세요.";
+const msg = document.querySelector("#msgBox");
 let systemStatus = "init";
 let previous;
+function changeEmo(pEmo = "neutral") {
+  for (let i = 0; i < path.length; i++) {
+    if (pEmo == path[i]["id"]) {
+      document.getElementById("_face").setAttribute("class", pEmo);
+      morph(path[i]);
+    }
+  }
+}
+
+// Status handler
 setInterval(() => {
   if (previous !== systemStatus) {
     if (systemStatus === "init") {
@@ -47,6 +59,7 @@ setInterval(() => {
       status.style.background = "red";
     }
     changeEmo(emotion);
+    msg.innerText = message;
     console.log(
       `[systemStatus: ${systemStatus.padStart(6)}, ${emotion.padStart(8)}]`
     );
@@ -54,15 +67,6 @@ setInterval(() => {
   previous = systemStatus;
 }, vadInterval * 5);
 
-// emotion control
-function changeEmo(pEmo = "neutral") {
-  for (let i = 0; i < path.length; i++) {
-    if (pEmo == path[i]["id"]) {
-      document.getElementById("_face").setAttribute("class", pEmo);
-      morph(path[i]);
-    }
-  }
-}
 
 //main block for doing the audio recording
 if (navigator.mediaDevices.getUserMedia) {
@@ -84,33 +88,65 @@ if (navigator.mediaDevices.getUserMedia) {
     }, 5000);
 
     mediaRecorder.onstop = function (e) {
-      const clipContainer = document.createElement("article");
+      if (debugMode) {
+        const clipContainer = document.createElement("article");
+        const audio = document.createElement("audio");
+        const postButton = document.createElement("button");
+        const deleteButton = document.createElement("button");
+  
+        clipContainer.classList.add("clip");
+        audio.setAttribute("controls", "");
+        postButton.textContent = "Post";
+        postButton.className = "post";
+        deleteButton.textContent = "Delete";
+        deleteButton.className = "delete";
+  
+        clipContainer.appendChild(audio);
+        clipContainer.appendChild(postButton);
+        clipContainer.appendChild(deleteButton);
+        soundClips.appendChild(clipContainer);
+  
+        audio.controls = true;
+        const blob = new Blob(chunks, { type: "audio/webm; codecs=opus" });
+  
+        chunks = [];
+        const audioURL = window.URL.createObjectURL(blob);
+        audio.src = audioURL;
+        console.log("recorder stopped");
 
-      const audio = document.createElement("audio");
-      const postButton = document.createElement("button");
-      const deleteButton = document.createElement("button");
+        reader.readAsDataURL(blob);
 
-      clipContainer.classList.add("clip");
-      audio.setAttribute("controls", "");
-      postButton.textContent = "Post";
-      postButton.className = "post";
-      deleteButton.textContent = "Delete";
-      deleteButton.className = "delete";
+        postButton.onclick = function (e) {
+          fetch(talkEndpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              audio: base64data,
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              let snd = new Audio(data.audio);
+              snd.play();
+            })
+            .catch((err) => {
+              alert(err);
+            });
+        };
+  
+        deleteButton.onclick = function (e) {
+          let evtTgt = e.target;
+          evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode);
+        };
+  
+      } else {
+        const blob = new Blob(chunks, { type: "audio/webm; codecs=opus" });
+        chunks = [];
+        reader.readAsDataURL(blob);
+      }
 
-      clipContainer.appendChild(audio);
-      clipContainer.appendChild(postButton);
-      clipContainer.appendChild(deleteButton);
-      soundClips.appendChild(clipContainer);
-
-      audio.controls = true;
-      const blob = new Blob(chunks, { type: "audio/webm; codecs=opus" });
-
-      chunks = [];
-      const audioURL = window.URL.createObjectURL(blob);
-      audio.src = audioURL;
-      // console.log("recorder stopped");
-
-      reader.readAsDataURL(blob);
       reader.onloadend = () => {
         base64data = reader.result;
 
@@ -127,6 +163,7 @@ if (navigator.mediaDevices.getUserMedia) {
           .then((data) => {
             let snd = new Audio(data.audio);
             emotion = data.emotion;
+            message = data.text
             systemStatus = "speak";
             snd.onended = () => {
               systemStatus = "idle";
@@ -138,30 +175,7 @@ if (navigator.mediaDevices.getUserMedia) {
           });
       };
 
-      postButton.onclick = function (e) {
-        fetch(talkEndpoint, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            audio: base64data,
-          }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            let snd = new Audio(data.audio);
-            snd.play();
-          })
-          .catch((err) => {
-            alert(err);
-          });
-      };
-
-      deleteButton.onclick = function (e) {
-        let evtTgt = e.target;
-        evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode);
-      };
+      
     };
 
     mediaRecorder.ondataavailable = function (e) {

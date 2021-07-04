@@ -15,6 +15,9 @@
 
 ### Kakao OpenAPI for STT/TTS
 - Create a .env file at the keti directory and add your API_KEY to it
+- https://speech-api.kakao.com/
+- https://developers.kakao.com/docs/latest/ko/voice/rest-api
+- https://docs.kakaoi.ai/skill/ssml_guide/
 - https://ai-creator.tistory.com/70
 
 # WebRTC references
