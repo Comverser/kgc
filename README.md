@@ -4,10 +4,11 @@
 ### 2. RPI
 1. Peripherals needed
     - Video/audio input devices (e.g. webcam)
-    - Audio output device (e.g. speaker)
+    - Display/audio output device (e.g. touch display/speaker)
 1.  Korean language setting
     - sudo apt-get install fonts-unfonts-core
     - sudo apt-get install ibus ibus-hangul
+    - reboot
 
 # API settings
 ### Talk endpoints
