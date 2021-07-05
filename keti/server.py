@@ -216,7 +216,7 @@ async def post_talk(request):
     with open('temp.mp3', "wb") as f:
         f.write(res_tts.content)
 
-    # convert wav (16 khz, 16 bits, 1 channel, pcm) to webm (24 khz, 32 bits, 1 channel, opus)
+    # convert mp3 (1 channel) to webm (24 khz, 32 bits, 1 channel, opus)
     stream = ffmpeg.input('temp.mp3')
     stream = ffmpeg.output(stream, temp_file_webm)
     ffmpeg.run(stream, overwrite_output=True)
