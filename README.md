@@ -21,6 +21,9 @@
 - https://docs.kakaoi.ai/skill/ssml_guide/
 - https://ai-creator.tistory.com/70
 
+### keti server
+- FFMPEG install (https://www.gyan.dev/ffmpeg/builds/)
+
 # WebRTC references
 
 - Python WebRTC basics with aiortc, https://dev.to/whitphx/python-webrtc-basics-with-aiortc-48id
