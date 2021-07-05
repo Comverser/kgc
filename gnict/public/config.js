@@ -4,8 +4,8 @@
 const pathTalk = "talk"
 const pathOffer = "offer"
 const pathSettings = "settings"
-const port = "8080" // 0000
-const host = "192.168.219.102" // 000.000.000.000
+const port = "8080"
+const host = "192.168.219.102"
 const protocol = "https"
 
 /* -------------------------------------------------------------------------- */
