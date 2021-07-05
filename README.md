@@ -15,7 +15,7 @@
 - Replace the API endpoints in gnict/public/config.js with your API endpoints
 
 ### Kakao OpenAPI for STT/TTS
-- Create a .env file at the keti directory and add your API_KEY to it
+- Create a .env file at the keti directory and add your {API_KEY} to it (e.g. API_KEY=*************************)
 - https://speech-api.kakao.com/
 - https://developers.kakao.com/docs/latest/ko/voice/rest-api
 - https://docs.kakaoi.ai/skill/ssml_guide/
