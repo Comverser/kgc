@@ -21,8 +21,9 @@
 - https://docs.kakaoi.ai/skill/ssml_guide/
 - https://ai-creator.tistory.com/70
 
-### keti server
-- FFMPEG install (https://www.gyan.dev/ffmpeg/builds/)
+# keti server settings
+- FFmpeg install (https://www.gyan.dev/ffmpeg/builds/)
+    -  For Windows, add FFmpeg to Windows path using Environment variables
 
 # WebRTC references
 
