@@ -3,7 +3,7 @@
 </h1>
 
 ## Requirements
-### Demo devices
+### HW
 1. Smartphone or laptop
 
 2. Raspberry Pi 3/4 or PC
@@ -16,8 +16,16 @@
         sudo apt-get install ibus ibus-hangul
         sudo reboot
         ```
+### SW
+- Chromium based browsers
+- Node.js
+- Python
 
-# API settings
+#### keti server
+- FFmpeg install (https://www.gyan.dev/ffmpeg/builds/)
+    -  For Windows, add FFmpeg to Windows path using Environment variables
+
+## API settings
 ### Talk endpoints
 - Replace the API endpoints in gnict/public/config.js with your API endpoints
 
@@ -28,10 +36,6 @@
 - https://docs.kakaoi.ai/skill/ssml_guide/
 - https://ai-creator.tistory.com/70
 
-# Installation
-### keti server settings
-- FFmpeg install (https://www.gyan.dev/ffmpeg/builds/)
-    -  For Windows, add FFmpeg to Windows path using Environment variables
 
 # WebRTC references
 
