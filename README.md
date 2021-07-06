@@ -3,7 +3,7 @@
 </h1>
 
 ## Requirements
-### HW
+### Demo devices
 1. Smartphone or laptop
 
 2. Raspberry Pi 3/4 or PC
