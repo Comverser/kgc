@@ -17,7 +17,7 @@
         sudo reboot
         ```
 ### SW
-- Chromium based browsers
+- Chromium based browser
 - Node.js
 - Python
 
