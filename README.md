@@ -6,9 +6,11 @@
     - Video/audio input devices (e.g. webcam)
     - Display/audio output device (e.g. touch display/speaker)
 1.  Korean language setting for Raspberry Pi OS
-    - sudo apt-get install fonts-unfonts-core
-    - sudo apt-get install ibus ibus-hangul
-    - reboot
+```bash
+sudo apt-get install fonts-unfonts-core
+sudo apt-get install ibus ibus-hangul
+sudo reboot
+```
 
 # API settings
 ### Talk endpoints
@@ -21,7 +23,8 @@
 - https://docs.kakaoi.ai/skill/ssml_guide/
 - https://ai-creator.tistory.com/70
 
-# keti server settings
+# Installation
+### keti server settings
 - FFmpeg install (https://www.gyan.dev/ffmpeg/builds/)
     -  For Windows, add FFmpeg to Windows path using Environment variables
 
