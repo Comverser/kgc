@@ -6,11 +6,11 @@
     - Video/audio input devices (e.g. webcam)
     - Display/audio output device (e.g. touch display/speaker)
 1.  Korean language setting for Raspberry Pi OS
-```bash
-sudo apt-get install fonts-unfonts-core
-sudo apt-get install ibus ibus-hangul
-sudo reboot
-```
+    ```bash
+    sudo apt-get install fonts-unfonts-core
+    sudo apt-get install ibus ibus-hangul
+    sudo reboot
+    ```
 
 # API settings
 ### Talk endpoints
