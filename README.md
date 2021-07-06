@@ -4,13 +4,13 @@
 
 ## Requirements
 ### Demo devices
-### 1. Smartphone or laptop
+1. Smartphone or laptop
 
-### 2. Raspberry Pi 3/4 or PC
-1) Peripherals needed
+2. Raspberry Pi 3/4 or PC
+- Peripherals needed
     - Video/audio input devices (e.g. webcam)
     - Display/audio output device (e.g. touch display/speaker)
-1)  Korean language setting for Raspberry Pi OS
+-  Korean language setting for Raspberry Pi OS
     ```bash
     sudo apt-get install fonts-unfonts-core
     sudo apt-get install ibus ibus-hangul
