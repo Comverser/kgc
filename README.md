@@ -22,7 +22,10 @@
         ```
         Add this to what is already there:
         ```bash
-        @chromium-browser –kiosk https://YourServerURL.com
+        @xset s off
+        @xset -dpms
+        @xset s noblank
+        @chromium-browser –-kiosk https://YourServerURL.com
         ```
         Next press CTRL+X and type Y for saving the file
 
