@@ -22,10 +22,7 @@
         ```
         Add this to what is already there:
         ```bash
-        @xset s off
-        @xset -dpms
-        @xset s noblank
-        @chromium-browser –-kiosk https://YourServerURL.com
+        @chromium-browser --start-fullscreen https://YourServerURL.com
         ```
         Next press CTRL+X and type Y for saving the file
 
