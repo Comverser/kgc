@@ -13,7 +13,8 @@
 
     - Raspberry Pi OS settings
         - Go to the main menu and open the Raspberry Pi Configuration tool. Select the Interfaces tab and ensure that the camera is enabled. Reboot your Raspberry Pi.
-        - Adjust audio volume and screen resolution
+        - Adjust audio volume
+        - Screen resolution of 800 x 480 pixels
         - Korean language setting for Raspberry Pi OS
             ```bash
             sudo apt-get install fonts-unfonts-core
