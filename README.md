@@ -13,7 +13,7 @@
 
     - Raspberry Pi OS settings
         - Go to the main menu and open the Raspberry Pi Configuration tool. Select the Interfaces tab and ensure that the camera is enabled. Reboot your Raspberry Pi.
-        - Adjust system volume   
+        - Adjust audio volume and screen resolution
         - Korean language setting for Raspberry Pi OS
             ```bash
             sudo apt-get install fonts-unfonts-core
