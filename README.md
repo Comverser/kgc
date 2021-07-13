@@ -22,7 +22,7 @@
         ```
         Add this to what is already there:
         ```bash
-        @chromium-browser --start-fullscreen https://YourServerURL.com
+        @chromium-browser --start-fullscreen --kiosk https://YourServerURL.com
         ```
         Next press CTRL+X and type Y for saving the file
 
