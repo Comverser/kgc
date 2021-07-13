@@ -26,7 +26,7 @@
         ```
         Next press CTRL+X and type Y for saving the file
 
-    - How to Disable the Annoying SSH Password Warning on Raspberry Pi
+    - How to Disable the Annoying SSH Password Warning?
         ```bash
         sudo rm /etc/xdg/lxsession/LXDE-pi/sshpwd.sh
         ```
