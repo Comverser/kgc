@@ -13,30 +13,30 @@
 
     - Raspberry Pi OS settings
         - Go to the main menu and open the Raspberry Pi Configuration tool. Select the Interfaces tab and ensure that the camera is enabled. Reboot your Raspberry Pi.
-        - Adjust system volume
-        - (Optional) enable VNC/SSH
-        - (Optional) https://blog.r0b.io/post/minimal-rpi-kiosk/
-        
-    -  Korean language setting for Raspberry Pi OS
-        ```bash
-        sudo apt-get install fonts-unfonts-core
-        sudo apt-get install ibus ibus-hangul
-        sudo reboot
-        ```
-    -  How to start Chromium on Raspberry boot?
-        ```bash
-        sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
-        ```
-        - Add this to what is already there:
-        ```bash
-        @chromium-browser --start-fullscreen --kiosk https://YourServerURL.com
-        ```
-        - Next press CTRL+X and type Y for saving the file
+        - Adjust system volume   
+        - Korean language setting for Raspberry Pi OS
+            ```bash
+            sudo apt-get install fonts-unfonts-core
+            sudo apt-get install ibus ibus-hangul
+            sudo reboot
+            ```
+        - How to start Chromium on Raspberry boot?
+            ```bash
+            sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
+            ```
+            - Add this to what is already there:
+            ```bash
+            @chromium-browser --start-fullscreen --kiosk https://YourServerURL.com
+            ```
+            - Next press CTRL+X and type Y for saving the file
 
-    - How to Disable the Annoying SSH Password Warning?
-        ```bash
-        sudo rm /etc/xdg/lxsession/LXDE-pi/sshpwd.sh
-        ```
+        - How to Disable the Annoying SSH Password Warning?
+            ```bash
+            sudo rm /etc/xdg/lxsession/LXDE-pi/sshpwd.sh
+            ```
+        - Optional settings
+            - Enable VNC/SSH
+            - https://blog.r0b.io/post/minimal-rpi-kiosk/ 
 
 ### SW
 - Chromium based browser
