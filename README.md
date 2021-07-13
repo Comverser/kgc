@@ -16,6 +16,16 @@
         sudo apt-get install ibus ibus-hangul
         sudo reboot
         ```
+    -  How to start Chromium on Raspberry boot?
+        ```bash
+        sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
+        ```
+        Add this to what is already there:
+        ```bash
+        @chromium-browser –kiosk https://YourServerURL.com
+        ```
+        Next press CTRL+X and type Y for saving the file
+
 ### SW
 - Chromium based browser
 - Node.js
