@@ -10,6 +10,13 @@
     - Peripherals needed
         - Video/audio input devices (e.g. webcam)
         - Display/audio output device (e.g. touch display/speaker)
+
+    - Raspberry Pi OS settings
+        Go to the main menu and open the Raspberry Pi Configuration tool. Select the Interfaces tab and ensure that the camera is enabled. Reboot your Raspberry Pi.
+        volume up
+<!--         mis: vnc/ssh on -->
+<!--         https://blog.r0b.io/post/minimal-rpi-kiosk/ -->
+        
     -  Korean language setting for Raspberry Pi OS
         ```bash
         sudo apt-get install fonts-unfonts-core
@@ -30,6 +37,8 @@
         ```bash
         sudo rm /etc/xdg/lxsession/LXDE-pi/sshpwd.sh
         ```
+    
+
 
 
 
