@@ -12,7 +12,7 @@
         - Display/audio output device (e.g. touch display/speaker)
 
     - Raspberry Pi OS settings
-        - Set up WIFI with On-screen keyboard
+        - Set up WIFI with on-screen keyboard
         - Go to the main menu and open the Raspberry Pi Configuration tool. Select the Interfaces tab and ensure that the camera is enabled. Reboot your Raspberry Pi.
         - Adjust audio volume
         - Screen resolution of 800 x 480 pixels
