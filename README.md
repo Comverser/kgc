@@ -15,6 +15,8 @@
         - Go to the main menu and open the Raspberry Pi Configuration tool. Select the Interfaces tab and ensure that the camera is enabled. Reboot your Raspberry Pi.
         - Adjust audio volume
         - Screen resolution of 800 x 480 pixels
+        - Auto-hide taskbar
+            - Right-click on the taskbar and select "Panel Settings". Click on the "Advanced" tab, and check "Minimize panel when not in use".
         - Install Korean language
             ```bash
             sudo apt-get install fonts-unfonts-core
