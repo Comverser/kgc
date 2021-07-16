@@ -29,7 +29,8 @@ let maIdxLong = 0;
 let maIdxShort = 0;
 
 // system status management: init -> idle -> listen -> wait -> speak -> idle -> ...
-let emotion = "happy";
+// let emotion = "happy";
+let emotion = "neutral";
 let message = "안녕하세요.";
 const msg = document.querySelector("#msgBox");
 let systemStatus = "init";
@@ -59,12 +60,16 @@ setInterval(() => {
       status.style.background = "red";
     }
     changeEmo(emotion);
-    msg.innerText = message;
+    if(systemStatus !== "init"){
+      msg.innerText = message;
+    }
+
     console.log(
       `[systemStatus: ${systemStatus.padStart(6)}, ${emotion.padStart(8)}]`
     );
   }
   previous = systemStatus;
+  state_msg(systemStatus);
 }, vadInterval * 5);
 
 
@@ -163,19 +168,23 @@ if (navigator.mediaDevices.getUserMedia) {
           .then((data) => {
             let snd = new Audio(data.audio);
             emotion = data.emotion;
-            message = data.text
+            message = data.text;
+
             systemStatus = "speak";
+            changeEmo(emotion);
+            
             snd.onended = () => {
+              mouse_ani();
               systemStatus = "idle";
-            };
+            }
             snd.play();
+            mouse_ani();
           })
           .catch((err) => {
             alert(err);
           });
       };
 
-      
     };
 
     mediaRecorder.ondataavailable = function (e) {
@@ -284,9 +293,12 @@ function voiceTracking(stream, mediaRecorder) {
         );
       }
     }
+    // state_msg(systemStatus);
   }, vadInterval);
 
   if (debugMode) {
+    var debugZone = document.getElementById('debugZone');
+    debugZone.style.display='block';
     draw();
   }
 
@@ -326,5 +338,43 @@ function voiceTracking(stream, mediaRecorder) {
 
       x += barWidth + 1;
     }
+  }
+}
+
+// system state == talk
+function mouse_ani(){
+  var mouseClassName = document.getElementById("mouse").getAttribute("class");
+
+  if (mouseClassName != "talk") {
+    document.getElementById("mouse").setAttribute("class", "talk");
+    console.log('mouse animation start!');    
+  } else {
+    document.getElementById("mouse").setAttribute("class", "mouse");
+    console.log('mouse animation stop!');
+  }
+}
+
+// system state effect
+function state_msg(state){
+  var stateWait = document.getElementById("stateWait");
+  var stateListen = document.getElementById("stateListen");
+  var msgBox = document.getElementById("msgBox");
+  var bubble = document.getElementById("_bubble");
+
+  if(state == "wait"){
+    stateWait.style.display="block";
+    stateListen.style.display="none";
+    msgBox.style.display="none";
+    bubble.setAttribute('fill', '#41A201');
+  }else if(state == "listen"){
+    stateWait.style.display="none";
+    stateListen.style.display="block";
+    msgBox.style.display="none";
+    bubble.setAttribute('fill', '#0059FF');
+  }else {
+    stateWait.style.display="none";
+    stateListen.style.display="none";
+    msgBox.style.display="block";
+    bubble.setAttribute('fill', '#2b2b2b');
   }
 }

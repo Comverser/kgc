@@ -1,8 +1,15 @@
-node_modules
+# Ignore the node_modules directory
+node_modules/
+
+# The file containing environment variables 
 .env
 
+# temp files
 *.wav
 !server-sent-demo.wav
 *.mp4
 *.webm
 *.mp3
+
+# Ignore IDE specific files
+.vscode/

@@ -32,17 +32,6 @@ for (let btn_emotion of btn_emotions) {
   });
 }
 
-// 입모양 애니메이션
-const btn_talk = document.querySelector("#msgBox");
-btn_talk.addEventListener("click", (event) => {
-  var mouseClassName = document.getElementById("mouse").getAttribute("class");
-  if (mouseClassName != "talk") {
-    document.getElementById("mouse").setAttribute("class", "talk");
-  } else {
-    document.getElementById("mouse").setAttribute("class", "mouse");
-  }
-});
-
 // 글씨크기조절
 const btn_fonts = document.querySelectorAll(".btn_font");
 const msg = document.querySelector("#msgBox");
@@ -65,58 +54,58 @@ for (let btn_font of btn_fonts) {
   });
 }
 
-// 메세지: 테스트용
-const sample_msg = [
-  {
-    id: "1",
-    text: "Hello! How are you today?",
-  },
-  {
-    id: "2",
-    text: "Wow!!!",
-  },
-  {
-    id: "3",
-    text: "What?!",
-  },
-  {
-    id: "4",
-    text: "Huh...",
-  },
-  {
-    id: "5",
-    text: "Um...",
-  },
-  {
-    id: "6",
-    text: "Yes!!",
-  },
-  {
-    id: "7",
-    text: "Nope!",
-  },
-  {
-    id: "8",
-    text: "Oh My God!!!!! What’s going on here?",
-  },
-  {
-    id: "9",
-    text: "LOL",
-  },
-];
-function random_msg() {
-  let random_num = Math.floor(Math.random() * 10);
+// // 메세지: 테스트용
+// const sample_msg = [
+//   {
+//     id: "1",
+//     text: "Hello! How are you today?",
+//   },
+//   {
+//     id: "2",
+//     text: "Wow!!!",
+//   },
+//   {
+//     id: "3",
+//     text: "What?!",
+//   },
+//   {
+//     id: "4",
+//     text: "Huh...",
+//   },
+//   {
+//     id: "5",
+//     text: "Um...",
+//   },
+//   {
+//     id: "6",
+//     text: "Yes!!",
+//   },
+//   {
+//     id: "7",
+//     text: "Nope!",
+//   },
+//   {
+//     id: "8",
+//     text: "Oh My God!!!!! What’s going on here?",
+//   },
+//   {
+//     id: "9",
+//     text: "LOL",
+//   },
+// ];
+// function random_msg() {
+//   let random_num = Math.floor(Math.random() * 10);
 
-  if (sample_msg[random_num] != undefined) {
-    msg.innerText = sample_msg[random_num].text;
-  }
-  return msg;
-}
+//   if (sample_msg[random_num] != undefined) {
+//     msg.innerText = sample_msg[random_num].text;
+//   }
+//   return msg;
+// }
 // random_msg();
 // setInterval(random_msg, 5000);
 
 //말풍선 꼬리: 반응형 web
-const bubble = document.querySelector("#_bubble");
+var bubble = document.querySelector("#_bubble");
 const _window = window.matchMedia(
   "screen and (max-width: 768px) and (orientation: portrait)"
 );

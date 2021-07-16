@@ -2,7 +2,7 @@
   --text-color: #f0f4f5;
   --background-color: #2b2b2b;
   --point-color: #ffae00;
-  --btn-color: #9c9c9c;
+  --btn-color: #4a4a4a;
 }
 
 * {
@@ -94,12 +94,11 @@ nav {
   overflow: visible;
 }
 
-#msgBox {
+.msgBox {
   width: 90%;
   height: max-content;
   max-height: 50%;
   border-radius: 10px;
-  background-color: var(--background-color);
   color: var(--text-color);
   font-weight: bolder;
   font-size: 25px;
@@ -107,10 +106,59 @@ nav {
   overflow: auto;
 }
 
-#msgBox::-webkit-scrollbar {
+.msgBox::-webkit-scrollbar {
   display: none;
 }
 
+/* #msgBox, */
+#msgBox{
+  background-color: var(--background-color);
+}
+#stateWait{
+  display: none;
+  background-color: #41A201;
+}
+#stateListen{
+  display: none;
+  background-color: #0059FF;
+}
+
+/*    system state infomation animation   */
+.msgBox table {
+  margin: 0 auto;
+}
+.msgBox table tr:first-child td{
+  height: 20px;
+  padding-left: 8px;
+}
+.msgBox i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--point-color);
+  float: left;
+}
+.msgBox tr td:first-child i {
+  animation: _stateAni 3s infinite;
+}
+.msgBox tr td:nth-child(2) i {
+  animation: _stateAni 3s infinite;
+  animation-delay: 0.5s;
+}
+.msgBox tr td:last-child i {
+  animation: _stateAni 3s infinite;
+  animation-delay: 1s;
+}
+@keyframes _stateAni {
+  0%, 100%{
+    opacity: 1;
+  }
+  50%{
+    opacity: 0;
+  }
+}
+
+/*    loading animation   */
 .loading {
   width: 100%;
   height: 100%;
@@ -131,7 +179,6 @@ nav {
   transform-box: fill-box;
   animation: _rotate 2s infinite;
 }
-
 @keyframes _rotate {
   from {
     transform: rotateZ(0deg);
@@ -144,6 +191,7 @@ nav {
 .btns_font {
   position: absolute;
   right: 20px;
+  top: 20px;
   z-index: 9999;
 }
 
@@ -159,6 +207,7 @@ nav {
   height: 80px;
   font-weight: bolder;
   background-color: var(--btn-color);
+  color: var(--point-color);
   display: block;
   line-height: 35px;
   border-radius: 5px;
@@ -166,6 +215,7 @@ nav {
 
 .clicked {
   background-color: var(--point-color);
+  color: var(--btn-color);
   /* background-color: #db0000; */
   /* color: #fff; */
 }
@@ -201,7 +251,7 @@ nav {
     width: 100%;
   }
 
-  #msgBox {
+  .msgBox {
     padding: 10px;
     font-size: 20pt;
   }
@@ -233,4 +283,28 @@ nav {
   height: 10px;
   display: block;
   background-color: gray;
+}
+
+/* Light Control */
+
+#btn-lights {
+  overflow: auto;
+  margin: auto;
+  width: max-content;
+  margin-bottom: 10px;
+}
+
+#btn-lights li {
+  float: left;
+  list-style: none;
+  margin-left: 20px;
+}
+
+.btn-light {
+  width: 80px;
+  height: 30px;
+}
+
+.btn-light:hover {
+  cursor: pointer;
 }

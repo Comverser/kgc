@@ -32,22 +32,6 @@
       <p>...loading...</p>
       <p>잠시만 기다려주세요.</p>
     </div>
-    <nav class="menuBar">
-      <ul class="btn-emotions">
-        <li><a id="btn1" class="btn_emotion">NEUTRAL</a></li>
-        <li><a id="btn2" class="btn_emotion">HAPPY</a></li>
-        <li><a id="btn3" class="btn_emotion">DISGUST</a></li>
-        <li><a id="btn4" class="btn_emotion">SURPRISE</a></li>
-        <li><a id="btn5" class="btn_emotion">ANGER</a></li>
-        <li><a id="btn6" class="btn_emotion">SADNESS</a></li>
-        <li><a id="btn7" class="btn_emotion">FEAR</a></li>
-        <li><a id="btn8" class="btn_emotion">WORRY</a></li>
-        <li><a id="btn9" class="btn_emotion">CONTEMPT</a></li>
-      </ul>
-      <a href="#" class="btn-toggle">
-        <i class="fas fa-bars"></i>
-      </a>
-    </nav>
     <div class="fontZone">
       <ul class="btns_font">
         <li>
@@ -140,15 +124,59 @@
             d="M281.527 177.738L391.62 102.15L409.853 140.772L281.527 177.738Z"
             fill="#2B2B2B"
           />
-        </svg>
+      </svg>
+          
       </div>
       <div id="msgZone" class="items btn_talk">
-        <div id="msgBox"> Loading...
+        <div class="msgBox" id="stateWait">
+          <table>
+            <tr><td><i></i></td><td><i></i></td><td><i></i></td></tr>
+            <tr><td>생</td><td>각</td><td>중</td></tr>
+          </table>
+        </div>  
+        <div class="msgBox" id="stateListen">
+          <table>
+            <tr><td><i></i></td><td><i></i></td><td><i></i></td></tr>
+            <tr><td>듣</td><td>는</td><td>중</td></tr>
+          </table>
+        </div>
+        <div class="msgBox" id="msgBox">
+          ...연결중...<br/>잠시만 기다려주세요.
         </div>
       </div>
     </div>
+    <div id="debugZone" style="display: none;">
+    <h1>Emotion Control</h1>
+    <nav class="menuBar">
+      <ul class="btn-emotions">
+        <li><a id="btn1" class="btn_emotion">NEUTRAL</a></li>
+        <li><a id="btn2" class="btn_emotion">HAPPY</a></li>
+        <li><a id="btn3" class="btn_emotion">DISGUST</a></li>
+        <li><a id="btn4" class="btn_emotion">SURPRISE</a></li>
+        <li><a id="btn5" class="btn_emotion">ANGER</a></li>
+        <li><a id="btn6" class="btn_emotion">SADNESS</a></li>
+        <li><a id="btn7" class="btn_emotion">FEAR</a></li>
+        <li><a id="btn8" class="btn_emotion">WORRY</a></li>
+        <li><a id="btn9" class="btn_emotion">CONTEMPT</a></li>
+      </ul>
+      <a href="#" class="btn-toggle">
+        <i class="fas fa-bars"></i>
+      </a>
+    </nav>
+    <div id="lightControl">
+      <h1>Light Control</h1>
+      <ul id="btn-lights">
+        <li><button class="btn-light" id="lightOn">전원ON</button></>
+        <li><button class="btn-light" id="lightOff">전원OFF</button></li>
+        <li><button class="btn-light" id="lightRed">레드</button></li>
+        <li><button class="btn-light" id="lightGreen">그린</button></li>
+        <li><button class="btn-light" id="lightBlue">블루</button></li>
+        <li><button class="btn-light" id="lightPlus">+</button></li>
+        <li><button class="btn-light" id="lightMinus">-</button></li>
+      </ul>
+    </div>
 
-    <div class="status"></div>
+    <div class="status">
     <h1>Audio test</h1>
     <div class="wrapper">
       <section class="main-controls">
@@ -183,7 +211,7 @@
 
     <h3>Answer</h3>
     <pre id="answer-sdp"></pre>
-
+    </div>
     <script type="module" src="main.js"></script>
     <script type="module" src="webrtc.js"></script>
     <script type="module" src="amm.js"></script>

@@ -1,11 +1,11 @@
-.neutral .r_eye,
-.neutral .l_eye {
+.r_eye,
+.l_eye {
   transform-origin: 50%;
   animation: _blink 3s infinite;
   animation-delay: 3s;
 }
 
-.neutral .talk {
+.ta\ { 
   transform-origin: 50%;
   transform-box: fill-box;
   animation: _talk 2s infinite;
@@ -29,7 +29,191 @@
   }
   20%,
   80% {
-    transform: scale(1, 2);
+    transform: scale(1, 0.5);
+  }
+  50% {
+    transform: scale(1, 1);
+  }
+}
+
+.happy .talk,
+.surprise .talk{
+  transform-origin: top;
+  transform-box: fill-box;
+  animation: _bigmousetalk 2s infinite;
+}
+
+@keyframes _bigmousetalk {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  20%,
+  80% {
+    transform: scale(0.6, 0.4);
+  }
+  50% {
+    transform: scale(1, 1);
+  }
+}
+
+.surprise .r_eye,
+.surprise .l_eye {
+  transform-origin: 50%;
+  transform-box: fill-box;
+  animation: _small 2s infinite;
+}
+@keyframes _small {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  20%,
+  80% {
+    transform: scale(0.8, 0.8);
+  }
+  50% {
+    transform: scale(1, 1);
+  }
+}
+
+.disgust .talk {
+  transform-origin: 50%;
+  transform-box: fill-box;
+  animation: _disgusttalk 2s infinite;
+}
+@keyframes _disgusttalk {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  20%,
+  80% {
+    transform: scale(0.5, 0.8);
+  }
+  50% {
+    transform: scale(0.9, 0.9);
+  }
+}
+
+.option_sad1 {
+  animation: _drop 1.5s linear infinite both;
+  animation-delay: 0.3s;
+}
+.option_sad2 {
+  animation: _drop 1.5s linear infinite both;
+}
+@keyframes _drop {
+  0% {
+    transform: translate(0);
+    opacity: 1;
+  }
+  25% {
+    transform: translate(0px, 50px);
+  }
+  50% {
+    transform: translate(0px, 100px);
+    opacity: 0;
+  }
+  80%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.disgust .r_eye,
+.disgust .l_eye,
+.sadness .r_eye,
+.sadness .l_eye{
+  transform-origin: top;
+  transform-box: fill-box;
+  animation: _smallEye 2s infinite;
+}
+
+@keyframes _smallEye {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  20%,
+  80% {
+    transform: scale(1, 0.7);
+  }
+  50% {
+    transform: scale(1, 1);
+  }
+}
+
+.anger .r_eyebrow,
+.disgust .r_eyebrow,
+.sadness .r_eyebrow{
+  animation: eyebrow_R 1s linear infinite both;
+}
+.anger .l_eyebrow,
+.disgust .l_eyebrow,
+.sadness .l_eyebrow{
+  animation: eyebrow_L 1s linear infinite both;
+}
+
+@keyframes eyebrow_R {
+  0%, 100% {
+    transform: translate(0);
+  }
+  50% {
+    transform: translate(-5px, -5px);
+  }
+}
+@keyframes eyebrow_L {
+  0%, 100% {
+    transform: translate(0);
+  }
+  50% {
+    transform: translate(5px, -5px);
+  }
+}
+
+.contempt .l_eyebrow{
+  animation: upDown 2s linear infinite both;
+}
+
+.surprise .l_eyebrow,
+.surprise .r_eyebrow,
+.happy .r_eye,
+.happy .l_eye,
+.happy .r_eyebrow,
+.happy .l_eyebrow{
+  animation: upDown 2s linear infinite both;
+  animation-delay: 0.5s;
+}
+
+@keyframes upDown {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  20%,
+  80% {
+    transform: translateY(-10px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+}
+
+.contempt .talk{
+  transform-box: fill-box;
+  animation: _contemptTalk 3s linear infinite both;
+}
+
+@keyframes _contemptTalk {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  20%,
+  80% {
+    transform: scale(0.5, 2) rotate(-10deg);
+
   }
   50% {
     transform: scale(1, 1);
