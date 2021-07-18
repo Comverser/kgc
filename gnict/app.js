@@ -26,3 +26,7 @@ app.get("/", (req, res) => {
 server.listen(3000, () => {
   console.log("App listening on port 3000");
 });
+
+// setInterval(()=>{
+//   server.getConnections((err, cnt) => console.log("Connections: ", cnt))
+// }, 5000)

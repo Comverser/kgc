@@ -5,8 +5,7 @@ const pathTalk = "talk";
 const pathOffer = "offer";
 const pathSettings = "settings";
 const port = "8080";
-// const host = "192.168.0.73"
-const host = "192.168.0.5";
+const host = "127.0.0.1";
 const protocol = "https";
 
 /* -------------------------------------------------------------------------- */

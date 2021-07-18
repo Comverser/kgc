@@ -60,7 +60,7 @@ setInterval(() => {
       status.style.background = "red";
     }
     changeEmo(emotion);
-    if(systemStatus !== "init"){
+    if (systemStatus !== "init") {
       msg.innerText = message;
     }
 
@@ -72,14 +72,13 @@ setInterval(() => {
   state_msg(systemStatus);
 }, vadInterval * 5);
 
-
 //main block for doing the audio recording
 if (navigator.mediaDevices.getUserMedia) {
   // console.log("getUserMedia supported.");
   // console.log(navigator.mediaDevices.getSupportedConstraints()); // may return false positives
 
   const constraints = {
-    audio: true
+    audio: true,
   };
   let chunks = [];
 
@@ -98,22 +97,22 @@ if (navigator.mediaDevices.getUserMedia) {
         const audio = document.createElement("audio");
         const postButton = document.createElement("button");
         const deleteButton = document.createElement("button");
-  
+
         clipContainer.classList.add("clip");
         audio.setAttribute("controls", "");
         postButton.textContent = "Post";
         postButton.className = "post";
         deleteButton.textContent = "Delete";
         deleteButton.className = "delete";
-  
+
         clipContainer.appendChild(audio);
         clipContainer.appendChild(postButton);
         clipContainer.appendChild(deleteButton);
         soundClips.appendChild(clipContainer);
-  
+
         audio.controls = true;
         const blob = new Blob(chunks, { type: "audio/webm; codecs=opus" });
-  
+
         chunks = [];
         const audioURL = window.URL.createObjectURL(blob);
         audio.src = audioURL;
@@ -140,12 +139,11 @@ if (navigator.mediaDevices.getUserMedia) {
               alert(err);
             });
         };
-  
+
         deleteButton.onclick = function (e) {
           let evtTgt = e.target;
           evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode);
         };
-  
       } else {
         const blob = new Blob(chunks, { type: "audio/webm; codecs=opus" });
         chunks = [];
@@ -172,11 +170,11 @@ if (navigator.mediaDevices.getUserMedia) {
 
             systemStatus = "speak";
             changeEmo(emotion);
-            
+
             snd.onended = () => {
               mouse_ani();
               systemStatus = "idle";
-            }
+            };
             snd.play();
             mouse_ani();
           })
@@ -184,7 +182,6 @@ if (navigator.mediaDevices.getUserMedia) {
             alert(err);
           });
       };
-
     };
 
     mediaRecorder.ondataavailable = function (e) {
@@ -297,8 +294,8 @@ function voiceTracking(stream, mediaRecorder) {
   }, vadInterval);
 
   if (debugMode) {
-    var debugZone = document.getElementById('debugZone');
-    debugZone.style.display='block';
+    var debugZone = document.getElementById("debugZone");
+    debugZone.style.display = "block";
     draw();
   }
 
@@ -342,39 +339,39 @@ function voiceTracking(stream, mediaRecorder) {
 }
 
 // system state == talk
-function mouse_ani(){
+function mouse_ani() {
   var mouseClassName = document.getElementById("mouse").getAttribute("class");
 
   if (mouseClassName != "talk") {
     document.getElementById("mouse").setAttribute("class", "talk");
-    console.log('mouse animation start!');    
+    console.log("mouse animation start!");
   } else {
     document.getElementById("mouse").setAttribute("class", "mouse");
-    console.log('mouse animation stop!');
+    console.log("mouse animation stop!");
   }
 }
 
 // system state effect
-function state_msg(state){
+function state_msg(state) {
   var stateWait = document.getElementById("stateWait");
   var stateListen = document.getElementById("stateListen");
   var msgBox = document.getElementById("msgBox");
   var bubble = document.getElementById("_bubble");
 
-  if(state == "wait"){
-    stateWait.style.display="block";
-    stateListen.style.display="none";
-    msgBox.style.display="none";
-    bubble.setAttribute('fill', '#41A201');
-  }else if(state == "listen"){
-    stateWait.style.display="none";
-    stateListen.style.display="block";
-    msgBox.style.display="none";
-    bubble.setAttribute('fill', '#0059FF');
-  }else {
-    stateWait.style.display="none";
-    stateListen.style.display="none";
-    msgBox.style.display="block";
-    bubble.setAttribute('fill', '#2b2b2b');
+  if (state == "wait") {
+    stateWait.style.display = "block";
+    stateListen.style.display = "none";
+    msgBox.style.display = "none";
+    bubble.setAttribute("fill", "#41A201");
+  } else if (state == "listen") {
+    stateWait.style.display = "none";
+    stateListen.style.display = "block";
+    msgBox.style.display = "none";
+    bubble.setAttribute("fill", "#0059FF");
+  } else {
+    stateWait.style.display = "none";
+    stateListen.style.display = "none";
+    msgBox.style.display = "block";
+    bubble.setAttribute("fill", "#2b2b2b");
   }
 }

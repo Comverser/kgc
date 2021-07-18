@@ -111,23 +111,23 @@ nav {
 }
 
 /* #msgBox, */
-#msgBox{
+#msgBox {
   background-color: var(--background-color);
 }
-#stateWait{
+#stateWait {
   display: none;
-  background-color: #41A201;
+  background-color: #41a201;
 }
-#stateListen{
+#stateListen {
   display: none;
-  background-color: #0059FF;
+  background-color: #0059ff;
 }
 
 /*    system state infomation animation   */
 .msgBox table {
   margin: 0 auto;
 }
-.msgBox table tr:first-child td{
+.msgBox table tr:first-child td {
   height: 20px;
   padding-left: 8px;
 }
@@ -150,10 +150,11 @@ nav {
   animation-delay: 1s;
 }
 @keyframes _stateAni {
-  0%, 100%{
+  0%,
+  100% {
     opacity: 1;
   }
-  50%{
+  50% {
     opacity: 0;
   }
 }

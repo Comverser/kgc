@@ -5,7 +5,7 @@
   animation-delay: 3s;
 }
 
-.ta\ { 
+.ta\ {
   transform-origin: 50%;
   transform-box: fill-box;
   animation: _talk 2s infinite;
@@ -37,7 +37,7 @@
 }
 
 .happy .talk,
-.surprise .talk{
+.surprise .talk {
   transform-origin: top;
   transform-box: fill-box;
   animation: _bigmousetalk 2s infinite;
@@ -124,7 +124,7 @@
 .disgust .r_eye,
 .disgust .l_eye,
 .sadness .r_eye,
-.sadness .l_eye{
+.sadness .l_eye {
   transform-origin: top;
   transform-box: fill-box;
   animation: _smallEye 2s infinite;
@@ -146,17 +146,18 @@
 
 .anger .r_eyebrow,
 .disgust .r_eyebrow,
-.sadness .r_eyebrow{
+.sadness .r_eyebrow {
   animation: eyebrow_R 1s linear infinite both;
 }
 .anger .l_eyebrow,
 .disgust .l_eyebrow,
-.sadness .l_eyebrow{
+.sadness .l_eyebrow {
   animation: eyebrow_L 1s linear infinite both;
 }
 
 @keyframes eyebrow_R {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0);
   }
   50% {
@@ -164,7 +165,8 @@
   }
 }
 @keyframes eyebrow_L {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0);
   }
   50% {
@@ -172,7 +174,7 @@
   }
 }
 
-.contempt .l_eyebrow{
+.contempt .l_eyebrow {
   animation: upDown 2s linear infinite both;
 }
 
@@ -181,7 +183,7 @@
 .happy .r_eye,
 .happy .l_eye,
 .happy .r_eyebrow,
-.happy .l_eyebrow{
+.happy .l_eyebrow {
   animation: upDown 2s linear infinite both;
   animation-delay: 0.5s;
 }
@@ -200,7 +202,7 @@
   }
 }
 
-.contempt .talk{
+.contempt .talk {
   transform-box: fill-box;
   animation: _contemptTalk 3s linear infinite both;
 }
@@ -213,7 +215,6 @@
   20%,
   80% {
     transform: scale(0.5, 2) rotate(-10deg);
-
   }
   50% {
     transform: scale(1, 1);
