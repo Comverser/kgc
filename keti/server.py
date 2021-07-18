@@ -189,7 +189,7 @@ async def post_talk(request):
         recog_in = f.read()
     res_stt = requests.post(recognize_url, headers=headers_recog, data=recog_in)
     if res_stt.raise_for_status():
-        print('REST API ERR: ', res.raise_for_status())
+        print('REST API ERR: ', res_stt.raise_for_status())
 
     try:
         result_stt_json_str = res_stt.text[res_stt.text.index('{"type":"finalResult"'):res_stt.text.rindex('}')+1]
