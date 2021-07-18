@@ -1,32 +1,32 @@
 // import express, ejs, uuid
 const express = require("express");
 const app = express();
+const https = require("https");
+const http = require("http");
 
-// set up https, via letsencrypt
+// set up https
 const fs = require("fs");
 const path = require("path");
-const https = require("https");
-const server = https.createServer(
-  {
-    key: fs.readFileSync(path.join(__dirname, "cert", "key.pem")),
-    cert: fs.readFileSync(path.join(__dirname, "cert", "cert.pem")),
-    requestCert: false,
-    rejectUnauthorized: false,
-  },
-  app
-);
+const options = {
+  key: fs.readFileSync(path.join(__dirname, "cert", "key.pem")),
+  cert: fs.readFileSync(path.join(__dirname, "cert", "cert.pem")),
+  requestCert: false,
+  rejectUnauthorized: false,
+};
 
 app.use(express.static("public"));
 
-// redirect to random room url
 app.get("/", (req, res) => {
   res.render("index");
 });
 
-server.listen(3000, () => {
-  console.log("App listening on port 3000");
+function serInit(port) {
+  console.log(`App listening on port ${port}`);
+}
+
+const httpSer = http.createServer(app).listen(3080, serInit(3080));
+httpSer.on("connection", (client) => {
+  console.log(`Connected: ${client}`);
 });
 
-// setInterval(()=>{
-//   server.getConnections((err, cnt) => console.log("Connections: ", cnt))
-// }, 5000)
+const httpsSer = https.createServer(options, app).listen(3443, serInit(3443));

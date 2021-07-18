@@ -20,10 +20,11 @@ import requests
 import ffmpeg
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 recognize_url = "https://kakaoi-newtone-openapi.kakao.com/v1/recognize"
 synthesize_url = "https://kakaoi-newtone-openapi.kakao.com/v1/synthesize"
-rest_api_key = os.environ.get('API_KEY')
+rest_api_key = os.environ.get("API_KEY")
 headers_recog = {
     "Content-Type": "application/octet-stream",
     "Authorization": "KakaoAK " + rest_api_key,
@@ -169,33 +170,35 @@ async def post_talk(request):
     dict_in = await request.json()
     base64_in = dict_in["audio"].split("data:audio/webm; codecs=opus;base64,", 1)[1]
     webm_in = base64.b64decode(base64_in)
-    
+
     temp_file_webm = "temp.webm"
     temp_file_wav = "temp.wav"
 
     # save audio data
     with open(temp_file_webm, "wb") as f:
         f.write(webm_in)
-    
+
     # convert webm (48 khz, 32 bits, 1 channel, opus) to wav (16 khz, 16 bits, 1 channel, pcm)
     stream = ffmpeg.input(temp_file_webm)
     stream = ffmpeg.output(stream, "temp.wav", ar=16000)
     ffmpeg.run(stream, overwrite_output=True)
-    
+
     #######
     # STT #
     #######
-    with open('temp.wav', 'rb') as f:
+    with open("temp.wav", "rb") as f:
         recog_in = f.read()
     res_stt = requests.post(recognize_url, headers=headers_recog, data=recog_in)
     if res_stt.raise_for_status():
-        print('REST API ERR: ', res_stt.raise_for_status())
+        print("REST API ERR: ", res_stt.raise_for_status())
 
     try:
-        result_stt_json_str = res_stt.text[res_stt.text.index('{"type":"finalResult"'):res_stt.text.rindex('}')+1]
+        result_stt_json_str = res_stt.text[
+            res_stt.text.index('{"type":"finalResult"') : res_stt.text.rindex("}") + 1
+        ]
         result_stt = json.loads(result_stt_json_str)
     except Exception as e:
-        result_stt = {'value': '다시 말씀해주시겠어요?'}
+        result_stt = {"value": "다시 말씀해주시겠어요?"}
         print(e)
 
     #########
@@ -206,22 +209,26 @@ async def post_talk(request):
     #######
     # TTS #
     #######
-    tts_in = result_stt['value']
-    synth_in = f"<speak> <voice name='WOMAN_DIALOG_BRIGHT'> {tts_in} </voice> </speak>".encode('utf-8')
+    tts_in = result_stt["value"]
+    synth_in = (
+        f"<speak> <voice name='WOMAN_DIALOG_BRIGHT'> {tts_in} </voice> </speak>".encode(
+            "utf-8"
+        )
+    )
 
     res_tts = requests.post(synthesize_url, headers=headers_synth, data=synth_in)
     if res_tts.raise_for_status():
-        print('REST API ERR: ', res_tts.raise_for_status())
+        print("REST API ERR: ", res_tts.raise_for_status())
 
-    with open('temp.mp3', "wb") as f:
+    with open("temp.mp3", "wb") as f:
         f.write(res_tts.content)
 
     # convert mp3 (1 channel) to webm (24 khz, 32 bits, 1 channel, opus)
-    stream = ffmpeg.input('temp.mp3')
+    stream = ffmpeg.input("temp.mp3")
     stream = ffmpeg.output(stream, temp_file_webm)
     ffmpeg.run(stream, overwrite_output=True)
-    
-    with open(temp_file_webm, 'rb') as f:
+
+    with open(temp_file_webm, "rb") as f:
         webm_out = f.read()
 
     ##############################
@@ -230,15 +237,15 @@ async def post_talk(request):
     base64_out = "data:audio/webm; codecs=opus;base64," + base64.b64encode(
         webm_out
     ).decode("ascii")
-    
+
     global flag
     flag = not flag
     if flag:
-        emotion = 'happy'
+        emotion = "happy"
     else:
         emotion = "surprise"
-    
-    dict_out = dict({"audio": base64_out, "emotion": emotion, 'text': tts_in})
+
+    dict_out = dict({"audio": base64_out, "emotion": emotion, "text": tts_in})
     return web.json_response(dict_out)
 
 
@@ -337,9 +344,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "--key-file", default="cert/key.pem", help="SSL key file (for HTTPS)"
     )
-    parser.add_argument(
-        "--port", type=int, default=8080, help="Port for HTTP server (default: 8080)"
-    )
+    # parser.add_argument(
+    #     "--port", type=int, default=8080, help=f"Port for HTTP server (default: {8080})"
+    # )
     parser.add_argument("--verbose", "-v", action="count")
     parser.add_argument(
         "--write", default="video-saved.mp4", help="Write received video to a file"
@@ -390,4 +397,5 @@ if __name__ == "__main__":
     for route in list(app.router.routes()):
         cors.add(route)
 
-    web.run_app(app, access_log=None, port=args.port, ssl_context=ssl_context)
+    # web.run_app(app, access_log=None, port=4443, ssl_context=ssl_context)  # HTTPS
+    web.run_app(app, access_log=None, port=4080)  # HTTP
