@@ -21,7 +21,9 @@ import ffmpeg
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(dotenv_path=os.path.join(BASE_DIR, ".env"))
+
 recognize_url = "https://kakaoi-newtone-openapi.kakao.com/v1/recognize"
 synthesize_url = "https://kakaoi-newtone-openapi.kakao.com/v1/synthesize"
 rest_api_key = os.environ.get("API_KEY")
