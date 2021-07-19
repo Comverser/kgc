@@ -1,11 +1,15 @@
 <h1 align="center">
   <img src="icon.png"><br/>kgc
-  (https://hshin.ddns.net20443)
+  (https://hshin.ddns.net:20443)
 </h1>
 
 ## Requirements
+### SSL problem
+<img src="ssl.png"><br/>kgc
+
 ### Demo devices
-1. Smartphone or laptop
+<!-- 1. Smartphone or laptop -->
+1. Laptop
 
 2. Raspberry Pi 3/4 or PC
     - Peripherals needed
