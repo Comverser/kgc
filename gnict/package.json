@@ -4,7 +4,8 @@
   "description": "Audio, video and data channel server\r ====================================",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "node app.js",
+    "devStart": "nodemon app.js"
   },
   "keywords": [],
   "author": "",

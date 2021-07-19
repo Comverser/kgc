@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const https = require("https");
 // const http = require("http");
+const port = 20443;
 
 // set up https
 const fs = require("fs");
@@ -29,4 +30,4 @@ function serInit(port) {
 //   console.log(`Connected: ${client}`);
 // });
 
-https.createServer(options, app).listen(20443, serInit(20443));
+https.createServer(options, app).listen(port, serInit(port));
