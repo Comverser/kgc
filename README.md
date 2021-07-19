@@ -1,6 +1,6 @@
 <h1 align="center">
   <img src="icon.png"><br/>kgc
-  (httpshshin.ddns.net20443)
+  (https://hshin.ddns.net20443)
 </h1>
 
 ## Requirements
