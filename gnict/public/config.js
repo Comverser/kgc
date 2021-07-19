@@ -5,12 +5,10 @@ const pathTalk = "talk";
 const pathOffer = "offer";
 const pathSettings = "settings";
 
-const port = "4080";
-const protocol = "http";
-// const port = "4443";
-// const protocol = "https";
+const port = "8080";
+const protocol = "https";
 
-const host = "192.168.219.101";
+const host = "127.0.0.1";
 
 /* -------------------------------------------------------------------------- */
 /*                                Debug setting                               */

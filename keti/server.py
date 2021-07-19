@@ -344,9 +344,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "--key-file", default="cert/key.pem", help="SSL key file (for HTTPS)"
     )
-    # parser.add_argument(
-    #     "--port", type=int, default=8080, help=f"Port for HTTP server (default: {8080})"
-    # )
+    parser.add_argument(
+        "--port", type=int, default=8080, help=f"Port for HTTP server (default: {8080})"
+    )
     parser.add_argument("--verbose", "-v", action="count")
     parser.add_argument(
         "--write", default="video-saved.mp4", help="Write received video to a file"
@@ -397,5 +397,4 @@ if __name__ == "__main__":
     for route in list(app.router.routes()):
         cors.add(route)
 
-    # web.run_app(app, access_log=None, port=4443, ssl_context=ssl_context)  # HTTPS
-    web.run_app(app, access_log=None, port=4080)  # HTTP
+    web.run_app(app, access_log=None, port=args.port, ssl_context=ssl_context)  # HTTPS
