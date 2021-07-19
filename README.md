@@ -49,7 +49,11 @@
 
 #### keti server
 - FFmpeg install (https://www.gyan.dev/ffmpeg/builds/)
-    -  For Windows, add FFmpeg to Windows path using Environment variables
+    - For Ubuntu, 
+        ```bash
+        sudo apt install ffmpeg
+        ```
+    - For Windows, add FFmpeg to Windows path using Environment variables
 
 ## API settings
 ### Talk endpoints
