@@ -5,7 +5,7 @@
 
 ## Requirements
 ### SSL problem
-<img src="ssl.jpg"><br/>kgc
+<img src="ssl.jpg"><br/>
 
 ### Demo devices
 <!-- 1. Smartphone or laptop -->
