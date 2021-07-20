@@ -4,12 +4,8 @@
 </h1>
 
 ## Requirements
-### SSL problem
-<img src="ssl.jpg"><br/>
-
 ### Demo devices
-<!-- 1. Smartphone or laptop -->
-1. Laptop
+1. Smartphone or laptop
 
 2. Raspberry Pi 3/4 or PC
     - Peripherals needed
