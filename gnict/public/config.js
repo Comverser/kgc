@@ -8,7 +8,7 @@ const pathSettings = "settings";
 const port = "8080";
 const protocol = "https";
 
-const host = "192.168.0.20";
+const host = "hshin.ddns.net";
 
 /* -------------------------------------------------------------------------- */
 /*                                Debug setting                               */
