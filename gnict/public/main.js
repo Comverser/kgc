@@ -16,15 +16,15 @@ const reader = new FileReader();
 let base64data;
 
 // VAD
-const vadThreshold = 200; // should be automated later
+const vadThreshold = 220; // should be automated later
 let vadInterval = 20;
 if (debugMode) {
   vadInterval = 200;
 }
 let noiseLevelParam = 0.8;
 let noiseLevelMax = vadThreshold * 0.5;
-let maBufLong = new Array(2000 / vadInterval).fill(0);
-let maBufShort = new Array(1000 / vadInterval).fill(0);
+let maBufLong = new Array(1000 / vadInterval).fill(0);
+let maBufShort = new Array(600 / vadInterval).fill(0);
 let maIdxLong = 0;
 let maIdxShort = 0;
 
