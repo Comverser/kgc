@@ -2,8 +2,11 @@
 
 - Node.js
 
-## Setup
-- sudo apt install nodejs
+## Setup (Ubuntu)
+```
+sudo apt install nodejs
+sudo apt install npm
+```
 
 ### To run
 
