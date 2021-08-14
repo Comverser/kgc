@@ -51,7 +51,7 @@ If you want to enable verbose logging, run:
 
 .. code-block:: console
 
-    $ python server.py -v
+    $ python3 server.py -v
 
 Credits
 -------
