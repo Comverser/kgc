@@ -2,6 +2,9 @@
 
 - Node.js
 
+## Setup
+- sudo apt install nodejs
+
 ### To run
 
 - npm i
