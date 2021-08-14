@@ -9,6 +9,7 @@ Running
 -------
 
 For Windows 10, installation of Visual Studio Development with c++ is required
+
 For Ubuntu,
 
 .. code-block:: console
