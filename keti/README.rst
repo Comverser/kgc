@@ -15,6 +15,7 @@ For Ubuntu,
 .. code-block:: console
 
     $ sudo apt install python3-pip
+    $ pip3 install --upgrade pip
     $ sudo apt-get install python3-opencv
 
 First install the required packages:
