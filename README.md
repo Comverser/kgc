@@ -1,6 +1,6 @@
 <h1 align="center">
   <img src="icon.png"><br/>kgc
-  (https://hshin.ddns.net:20443)
+  (https://gnlabs.iptime.org:20443)
 </h1>
 
 ## Requirements
