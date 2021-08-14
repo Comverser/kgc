@@ -29,7 +29,7 @@ can connect to from your browser:
 
 .. code-block:: console
 
-    $ python server.py
+    $ python3 server.py
 
 You can then browse to the following page with your browser:
 
