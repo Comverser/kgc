@@ -13,11 +13,14 @@ For Windows 10, installation of Visual Studio Development with c++ is required
 For Ubuntu,
 
 .. code-block:: console
+
     $ sudo apt install python3-pip
+    $ sudo apt-get install python3-opencv
 
 First install the required packages:
 
 .. code-block:: console
+
     $ pip install -r requirements.txt
 
 When you start the example, it will create an HTTP server which you
