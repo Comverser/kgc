@@ -2,8 +2,11 @@
 
 - Node.js
 
-## Setup (Ubuntu)
-```
+## Installation
+
+### Ubuntu
+
+```bash
 sudo apt install nodejs
 sudo apt install npm
 ```
@@ -15,4 +18,4 @@ sudo apt install npm
 
 ### Address
 
-- https://0.0.0.0:3000/
+- https://gnlabs.iptime.org:20443/
