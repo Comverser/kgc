@@ -5,10 +5,10 @@ const pathTalk = "talk";
 const pathOffer = "offer";
 const pathSettings = "settings";
 
-const port = "8080";
+const port = "20080";
 const protocol = "https";
 
-const host = "hshin.ddns.net";
+const host = "gnlabs.iptime.org";
 
 /* -------------------------------------------------------------------------- */
 /*                                Debug setting                               */

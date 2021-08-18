@@ -345,7 +345,10 @@ if __name__ == "__main__":
         "--key-file", default="cert/key.pem", help="SSL key file (for HTTPS)"
     )
     parser.add_argument(
-        "--port", type=int, default=8080, help=f"Port for HTTP server (default: {8080})"
+        "--port",
+        type=int,
+        default=20080,
+        help=f"Port for HTTP server (default: {20080})",
     )
     parser.add_argument("--verbose", "-v", action="count")
     parser.add_argument(
