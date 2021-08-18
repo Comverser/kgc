@@ -1,21 +1,17 @@
-### Requirements
-
-- Node.js
-
-## Installation
-
-### Ubuntu
+## Installation (Ubuntu)
 
 ```bash
 sudo apt install nodejs
 sudo apt install npm
 ```
 
-### To run
+## Running
 
-- npm i
-- npm start
+```bash
+npm i
+npm start
+```
 
-### Address
+## Address
 
 - https://gnlabs.iptime.org:20443/
