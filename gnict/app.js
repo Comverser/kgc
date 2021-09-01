@@ -30,4 +30,51 @@ function serInit(port) {
 //   console.log(`Connected: ${client}`);
 // });
 
-https.createServer(options, app).listen(port, serInit(port));
+const server = https.createServer(options, app).listen(port, serInit(port));
+
+/* [Park's code below] */
+/* 
+
+function GetAddress(socket) {
+  var address = socket.request.connection.remoteAddress;
+  return address;
+}
+
+var io = require("socket.io")(server);
+var socketDic = {};
+io.on("connection", (socket) => {
+  var add = socket.request.connection.remoteAddress;
+  io.on("yeelight", (message) => {
+    //var address =socket.request.connection.remoteAddress;
+    var address = "::ffff:" + message;
+    console.log(address);
+    console.log("yeelight connect!!!");
+    socketDic[address] = socket;
+  });
+
+  socket.on("power", (message) => {
+    var address = GetAddress(socket);
+    console.log(address);
+    if (socketDic[address]) {
+      console.log("power : " + message);
+      socketDic[address].emit("power", message);
+    }
+  });
+  socket.on("color", (message) => {
+    var address = GetAddress(socket);
+    if (socketDic[address]) {
+      console.log("color : " + message);
+      socketDic[address].emit("color", message.toString());
+    }
+  });
+
+  socket.on("bright", (message) => {
+    var address = GetAddress(socket);
+    if (socketDic[address]) {
+      console.log("bright : " + message);
+      socketDic[address].emit("Brightness", message);
+    }
+  });
+});
+
+*/

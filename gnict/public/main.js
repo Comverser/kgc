@@ -53,8 +53,10 @@ setInterval(() => {
       emotion = "neutral";
       status.style.background = "gray";
     } else if (systemStatus === "listen") {
+      emotion = systemStatus;
       status.style.background = "green";
     } else if (systemStatus === "wait") {
+      emotion = systemStatus;
       status.style.background = "orange";
     } else if (systemStatus === "speak") {
       status.style.background = "red";
@@ -70,6 +72,7 @@ setInterval(() => {
   }
   previous = systemStatus;
   state_msg(systemStatus);
+  fontControl();
 }, vadInterval * 5);
 
 //main block for doing the audio recording
@@ -290,7 +293,6 @@ function voiceTracking(stream, mediaRecorder) {
         );
       }
     }
-    // state_msg(systemStatus);
   }, vadInterval);
 
   if (debugMode) {
@@ -338,40 +340,74 @@ function voiceTracking(stream, mediaRecorder) {
   }
 }
 
-// system state == talk
 function mouse_ani() {
   var mouseClassName = document.getElementById("mouse").getAttribute("class");
 
   if (mouseClassName != "talk") {
     document.getElementById("mouse").setAttribute("class", "talk");
-    console.log("mouse animation start!");
   } else {
     document.getElementById("mouse").setAttribute("class", "mouse");
-    console.log("mouse animation stop!");
   }
 }
 
-// system state effect
 function state_msg(state) {
-  var stateWait = document.getElementById("stateWait");
-  var stateListen = document.getElementById("stateListen");
   var msgBox = document.getElementById("msgBox");
   var bubble = document.getElementById("_bubble");
 
   if (state == "wait") {
-    stateWait.style.display = "block";
-    stateListen.style.display = "none";
-    msgBox.style.display = "none";
+    var table = `
+    <table>
+    <tr><td><i></i></td><td><i></i></td><td><i></i></td></tr>
+    <tr><td>생</td><td>각</td><td>중</td></tr>
+    </table>
+    `;
+
+    msgBox.innerText = "";
+    msgBox.innerHTML += table;
+
+    msgBox.classList.add("stateWait");
+    msgBox.classList.remove("stateListen");
     bubble.setAttribute("fill", "#41A201");
   } else if (state == "listen") {
-    stateWait.style.display = "none";
-    stateListen.style.display = "block";
-    msgBox.style.display = "none";
+    var table = `
+    <table>
+    <tr><td><i></i></td><td><i></i></td><td><i></i></td></tr>
+    <tr><td>듣</td><td>는</td><td>중</td></tr>
+    </table>
+    `;
+
+    msgBox.innerText = "";
+    msgBox.innerHTML += table;
+
+    msgBox.classList.add("stateListen");
+    msgBox.classList.remove("stateWait");
     bubble.setAttribute("fill", "#0059FF");
   } else {
-    stateWait.style.display = "none";
-    stateListen.style.display = "none";
-    msgBox.style.display = "block";
+    msgBox.classList.remove("stateListen");
+    msgBox.classList.remove("stateWait");
     bubble.setAttribute("fill", "#2b2b2b");
+  }
+}
+
+function fontControl() {
+  const btn_fonts = document.querySelectorAll(".btn_font");
+  const _msg = document.querySelector("#msgBox");
+  var size = "";
+  for (let btn_font of btn_fonts) {
+    btn_font.addEventListener("click", (event) => {
+      for (var i = 0; i < btn_fonts.length; i++) {
+        btn_fonts[i].classList.remove("clicked");
+      }
+      size = event.target.id;
+      event.target.classList.add("clicked");
+
+      if (size == "big_font") {
+        _msg.setAttribute("style", "font-size:24pt");
+      } else if (size == "small_font") {
+        _msg.setAttribute("style", "font-size:16pt");
+      } else if (size == "normal_font") {
+        _msg.setAttribute("style", "font-size:20pt");
+      }
+    });
   }
 }

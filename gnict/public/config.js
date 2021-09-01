@@ -8,7 +8,7 @@ const pathSettings = "settings";
 const port = "20080";
 const protocol = "https";
 
-const host = "gnlabs.iptime.org";
+const host = "localhost";
 
 /* -------------------------------------------------------------------------- */
 /*                                Debug setting                               */

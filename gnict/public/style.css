@@ -28,7 +28,7 @@ a:hover {
 nav {
   background-color: var(--background-color);
   color: var(--text-color);
-  padding: 20px 0px;
+  margin: 5px auto;
 }
 
 .items {
@@ -38,35 +38,37 @@ nav {
   align-items: center;
 }
 
-.btn-emotions {
+.btn-emotions,
+.btn-lights {
   overflow: auto;
   margin: 0 auto;
   width: 100%;
 }
 
-.btn-emotions li {
+.btn-emotions li,
+.btn-lights li {
   float: left;
   list-style: none;
   width: 11%;
-  margin-bottom: 5px;
+  height: 40px;
+  line-height: 40px;
 }
 
-.btn_emotion {
+.btn_emotion,
+.btn-light {
   width: 100%;
   display: block;
 }
 
-.btn_emotion:hover {
+.btn_emotion:hover,
+.btn-light:hover {
   background-color: var(--point-color);
-  border-radius: 5px;
   font-weight: bolder;
 }
 
-.btn-toggle {
-  display: none;
-  color: var(--text-color);
-  text-align: right;
-  padding-right: 20px;
+.inp-light {
+  width: 50px;
+  height: 30px;
 }
 
 #mainZone {
@@ -110,20 +112,22 @@ nav {
   display: none;
 }
 
-/* #msgBox, */
-#msgBox {
+.msgBox {
   background-color: var(--background-color);
 }
-#stateWait {
-  display: none;
+.stateWait {
   background-color: #41a201;
 }
-#stateListen {
-  display: none;
+.stateListen {
   background-color: #0059ff;
 }
 
 /*    system state infomation animation   */
+.option_listen,
+.option_wait {
+  display: none;
+}
+
 .msgBox table {
   margin: 0 auto;
 }
@@ -217,15 +221,23 @@ nav {
 .clicked {
   background-color: var(--point-color);
   color: var(--btn-color);
-  /* background-color: #db0000; */
-  /* color: #fff; */
 }
 
 #_bubble {
   position: absolute;
 }
 
-@media screen and (max-width: 768px) and (orientation: portrait) {
+.status {
+  height: 10px;
+  display: block;
+  background-color: gray;
+}
+
+.small_btn {
+  display: none;
+}
+
+@media screen and (max-width: 767px), (orientation: portrait) {
   #mainZone {
     flex-direction: column;
   }
@@ -233,11 +245,6 @@ nav {
   #_face {
     max-width: 100%;
     max-height: 100%;
-  }
-
-  .btn-emotions,
-  .btn-pages {
-    display: none;
   }
 
   .items {
@@ -261,13 +268,9 @@ nav {
     display: block;
   }
 
-  .btn-emotions li {
+  .btn-emotions li,
+  .btn-lights li {
     width: 33.3%;
-  }
-
-  .btn-emotions.active,
-  .btn-pages.active {
-    display: block;
   }
 
   .btns_font {
@@ -280,32 +283,29 @@ nav {
   }
 }
 
-.status {
-  height: 10px;
-  display: block;
-  background-color: gray;
-}
+@media screen and (max-height: 300px) {
+  #_face {
+    max-width: 70%;
+    max-height: 70%;
+  }
 
-/* Light Control */
+  .small_btn {
+    display: block;
+  }
 
-#btn-lights {
-  overflow: auto;
-  margin: auto;
-  width: max-content;
-  margin-bottom: 10px;
-}
+  .btns_font {
+    top: 10px;
+    right: 10px;
+  }
 
-#btn-lights li {
-  float: left;
-  list-style: none;
-  margin-left: 20px;
-}
+  .btn_font:not(.small_btn) {
+    display: none;
+  }
 
-.btn-light {
-  width: 80px;
-  height: 30px;
-}
-
-.btn-light:hover {
-  cursor: pointer;
+  .btn_font {
+    margin: 5px;
+    width: 60px;
+    height: 60px;
+    line-height: 50px;
+  }
 }
