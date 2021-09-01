@@ -34,7 +34,7 @@ sudo apt install python3.8-venv
 Go to the keti directory.
 ```bash
 python3 -m venv venv
-source ./keti-env/bin/activate
+source ./venv/bin/activate
 ```
 
 ### Running
