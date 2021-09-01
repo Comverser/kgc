@@ -31,9 +31,12 @@ sudo apt install ffmpeg
 ```bash
 sudo apt install python3.8-venv
 ```
-Go to the keti directory.
+Create a virtual environment
 ```bash
 python3 -m venv venv
+```
+Activate
+```bash
 source ./venv/bin/activate
 ```
 
