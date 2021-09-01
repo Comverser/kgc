@@ -12,12 +12,12 @@ In parallel to media streams, the browser sends a 'ping' message over the data c
 
 ## Installation
 
-### Ubuntu 18.04
+### Ubuntu 20.04
 
 ```bash
 sudo apt install python3-pip
 pip3 install --upgrade pip
-sudo apt-get install python3-opencv
+sudo apt install python3-opencv
 sudo apt install ffmpeg
 ```
 
@@ -26,6 +26,16 @@ sudo apt install ffmpeg
 - Installation of Visual Studio Development with c++ is required
 - FFmpeg install (https://www.gyan.dev/ffmpeg/builds/)
   - For Windows, add FFmpeg to Windows path using Environment variables
+
+### VENV
+```bash
+sudo apt install python3.8-venv
+```
+Go to the keti directory.
+```bash
+python3 -m venv keti-env
+source ./keti-env/bin/activate
+```
 
 ### Running
 
