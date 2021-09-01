@@ -4,6 +4,9 @@ node_modules/
 # The file containing environment variables 
 .env
 
+# Ignore Python venv directory
+venv/
+
 # temp files
 *.wav
 !server-sent-demo.wav
