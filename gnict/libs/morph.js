@@ -1,3 +1,5 @@
+import anime from '../anime.es.js';
+
 export const path = [
   {
     id: "neutral",

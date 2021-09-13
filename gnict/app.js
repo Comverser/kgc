@@ -16,9 +16,26 @@ const options = {
 };
 
 app.use(express.static("public"));
+app.use("/libs", express.static(__dirname + "/libs"));
 
 app.get("/", (req, res) => {
-  res.render("index");
+  res.sendFile("./views/index.html", { root: __dirname });
+});
+
+app.get("/test", (req, res) => {
+  res.sendFile("./views/test.html", { root: __dirname });
+});
+
+app.get("/anime.min.js", function (req, res) {
+  res.sendFile("/node_modules/animejs/lib/anime.min.js", { root: __dirname });
+});
+
+app.get("/anime.es.js", function (req, res) {
+  res.sendFile("/node_modules/animejs/lib/anime.es.js", { root: __dirname });
+});
+
+app.use((req, res) => {
+  res.status(404).sendFile("./views/404.html", { root: __dirname });
 });
 
 function serInit(port) {
