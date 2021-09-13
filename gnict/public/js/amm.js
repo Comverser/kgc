@@ -1,4 +1,4 @@
-import { morph, path } from "./libs/morph.js";
+import { morph, path } from "../libs/morph.js";
 
 // loading
 const loading = document.querySelector(".loading");

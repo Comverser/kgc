@@ -62,7 +62,7 @@ http://127.0.0.1:20080
 
 ### Talk endpoints
 
-- Replace the API endpoints in gnict/public/config.js with your API endpoints
+- Replace the API endpoints in gnict/public/js/config.js with your API endpoints
 
 ### Kakao OpenAPI for STT/TTS
 

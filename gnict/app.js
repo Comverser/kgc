@@ -26,10 +26,6 @@ app.get("/test", (req, res) => {
   res.sendFile("./views/test.html", { root: __dirname });
 });
 
-app.get("/anime.min.js", function (req, res) {
-  res.sendFile("/node_modules/animejs/lib/anime.min.js", { root: __dirname });
-});
-
 app.get("/anime.es.js", function (req, res) {
   res.sendFile("/node_modules/animejs/lib/anime.es.js", { root: __dirname });
 });
