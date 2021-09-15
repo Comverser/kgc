@@ -1,4 +1,4 @@
-import { settingsEndpoint, offerEndpoint, debugMode } from "./config.js";
+import { settingsEndpoint, offerEndpoint, debugMode } from "./config/config.js";
 
 let useDatachannel,
   useAudio,

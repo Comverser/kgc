@@ -15,35 +15,45 @@ const options = {
   rejectUnauthorized: false,
 };
 
+// register view engine
+app.set("view engine", "ejs");
+
+// middleware & static files
 app.use(express.static("public"));
-app.use("/libs", express.static(__dirname + "/libs"));
-
-app.get("/", (req, res) => {
-  res.sendFile("./views/index.html", { root: __dirname });
-});
-
-app.get("/test", (req, res) => {
-  res.sendFile("./views/test.html", { root: __dirname });
-});
 
 app.get("/anime.es.js", function (req, res) {
   res.sendFile("/node_modules/animejs/lib/anime.es.js", { root: __dirname });
 });
 
-app.use((req, res) => {
-  res.status(404).sendFile("./views/404.html", { root: __dirname });
+app.get("/", (req, res) => {
+  res.render("index");
 });
 
-function serInit(port) {
-  console.log(`App listening on port ${port}`);
-}
+app.get("/settings", (req, res) => {
+  res.render("settings");
+});
+
+app.get("/test", (req, res) => {
+  res.render("test");
+});
+
+app.use((req, res) => {
+  res.status(404).render("404");
+});
+
+// app.use("/libs", express.static(__dirname + "/libs"));
+// app.get("/*", (req, res) => res.redirect("/"));
+
+const handleListen = (port) => console.log(`Listening on port: ${port}`);
 
 // const httpSer = http.createServer(app).listen(3080, serInit(3080));
 // httpSer.on("connection", (client) => {
 //   console.log(`Connected: ${client}`);
 // });
 
-const server = https.createServer(options, app).listen(port, serInit(port));
+const server = https
+  .createServer(options, app)
+  .listen(port, handleListen(port));
 
 /* [Park's code below] */
 /* 

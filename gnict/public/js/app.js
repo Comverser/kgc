@@ -1,5 +1,5 @@
-import { talkEndpoint, debugMode } from "./config.js";
-import { morph, path } from "../libs/morph.js";
+import { talkEndpoint, debugMode } from "./config/config.js";
+import { morph, path } from "./emotions.js";
 
 // set up basic variables for app
 const status = document.querySelector(".status");

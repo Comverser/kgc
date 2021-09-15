@@ -28,14 +28,19 @@ sudo apt install ffmpeg
   - For Windows, add FFmpeg to Windows path using Environment variables
 
 ### VENV
+
 ```bash
 sudo apt install python3.8-venv
 ```
+
 Create a virtual environment
+
 ```bash
 python3 -m venv venv
 ```
+
 Activate
+
 ```bash
 source ./venv/bin/activate
 ```
@@ -62,7 +67,7 @@ http://127.0.0.1:20080
 
 ### Talk endpoints
 
-- Replace the API endpoints in gnict/public/js/config.js with your API endpoints
+- Replace the API endpoints in gnict/public/js/config/config.js with your API endpoints
 
 ### Kakao OpenAPI for STT/TTS
 

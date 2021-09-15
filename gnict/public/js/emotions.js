@@ -1,4 +1,4 @@
-import anime from '../anime.es.js';
+import anime from '../../anime.es.js';
 
 export const path = [
   {
