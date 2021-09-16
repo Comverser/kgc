@@ -1,4 +1,4 @@
-const recordVideo = document.getElementById("record-video");
+const updateBtn = document.getElementById("update");
 
 const useDatachannel = document.getElementById("use-datachannel");
 const useAudio = document.getElementById("use-audio");
@@ -12,10 +12,9 @@ const videoResolution = document.getElementById("video-resolution");
 const videoTransform = document.getElementById("video-transform");
 
 function update() {
-  fetch("/settings", {
+  fetch("/post-settings", {
     method: "POST",
     body: JSON.stringify({
-      recordVideo: recordVideo.checked,
       useDatachannel: useDatachannel.checked,
       useAudio: useAudio.checked,
       useVideo: useVideo.checked,
@@ -38,3 +37,7 @@ function update() {
       alert(e);
     });
 }
+
+updateBtn.addEventListener("click", () => {
+  update();
+});

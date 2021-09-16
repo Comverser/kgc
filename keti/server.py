@@ -34,6 +34,8 @@ headers_synth = {
     "Authorization": "KakaoAK " + rest_api_key,
 }
 
+record_video = False
+
 flag = True
 
 ROOT = os.path.dirname(__file__)
@@ -41,19 +43,6 @@ ROOT = os.path.dirname(__file__)
 logger = logging.getLogger("pc")
 hshin = logging.getLogger("HS")  # HShin
 pcs = set()
-
-settings = {
-    "recordVideo": False,
-    "useDatachannel": False,
-    "useAudio": False,
-    "useVideo": True,
-    "useStun": False,
-    "datachannelParameters": '{"ordered": true}',
-    "audioCodec": "default",
-    "videoCodec": "H264/90000",
-    "videoResolution": "320x240",
-    "videoTransform": "none",
-}
 
 
 def log_debug(msg):
@@ -133,37 +122,6 @@ class VideoTransformTrack(MediaStreamTrack):
 async def index(request):
     content = open(os.path.join(ROOT, "index.html"), "r").read()
     return web.Response(content_type="text/html", text=content)
-
-
-async def get_settings(request):
-    data = {
-        "useDatachannel": settings["useDatachannel"],
-        "useAudio": settings["useAudio"],
-        "useVideo": settings["useVideo"],
-        "useStun": settings["useStun"],
-        "datachannelParameters": settings["datachannelParameters"],
-        "audioCodec": settings["audioCodec"],
-        "videoCodec": settings["videoCodec"],
-        "videoResolution": settings["videoResolution"],
-        "videoTransform": settings["videoTransform"],
-    }
-    return web.json_response(data)
-
-
-async def post_settings(request):
-    params = await request.json()
-    settings["recordVideo"] = params["recordVideo"]  # local setting
-    settings["useDatachannel"] = params["useDatachannel"]
-    settings["useAudio"] = params["useAudio"]
-    settings["useVideo"] = params["useVideo"]
-    settings["useStun"] = params["useStun"]
-    settings["datachannelParameters"] = params["datachannelParameters"]
-    settings["audioCodec"] = params["audioCodec"]
-    settings["videoCodec"] = params["videoCodec"]
-    settings["videoResolution"] = params["videoResolution"]
-    settings["videoTransform"] = params["videoTransform"]
-
-    return web.json_response(settings)
 
 
 async def post_talk(request):
@@ -289,7 +247,7 @@ async def offer(request):
         log_info("Track %s received", track.kind)
 
         if track.kind == "audio":
-            if settings["recordVideo"]:
+            if record_video:
                 pc.addTrack(player.audio)
                 recorder.addTrack(track)
             else:
@@ -299,7 +257,7 @@ async def offer(request):
             local_video = VideoTransformTrack(
                 track, transform=params["video_transform"]
             )
-            if settings["recordVideo"]:
+            if record_video:
                 recorder.addTrack(local_video)
             else:
                 pc.addTrack(local_video)
@@ -377,12 +335,9 @@ if __name__ == "__main__":
         [
             web.get("/", index),
             web.post("/offer", offer),
-            web.post("/settings", post_settings),
-            web.get("/settings", get_settings),
             web.post("/talk", post_talk),
         ]
     )
-    app.router.add_static("/", path="static")
 
     # Configure default CORS settings.
     cors = aiohttp_cors.setup(

@@ -3,21 +3,25 @@
 /* -------------------------------------------------------------------------- */
 const pathTalk = "talk";
 const pathOffer = "offer";
-const pathSettings = "settings";
+const pathSettings = "get-settings";
 
-const port = "20080";
 const protocol = "https";
 
-const host = "localhost";
+const ketiPort = "20080";
+const ketiHost = "localhost";
+
+const gnictPort = "20443";
+const gnictHost = "localhost";
 
 /* -------------------------------------------------------------------------- */
 /*                                Debug setting                               */
 /* -------------------------------------------------------------------------- */
-export const debugMode = false;
+export const debugMode = true;
 
 /* -------------------------------------------------------------------------- */
 /*                                Don't change                                */
 /* -------------------------------------------------------------------------- */
-export const settingsEndpoint = `${protocol}://${host}:${port}/${pathSettings}`;
-export const offerEndpoint = `${protocol}://${host}:${port}/${pathOffer}`;
-export const talkEndpoint = `${protocol}://${host}:${port}/${pathTalk}`;
+export const settingsEndpoint = `${protocol}://${gnictHost}:${gnictPort}/${pathSettings}`;
+
+export const offerEndpoint = `${protocol}://${ketiHost}:${ketiPort}/${pathOffer}`;
+export const talkEndpoint = `${protocol}://${ketiHost}:${ketiPort}/${pathTalk}`;
