@@ -1,8 +1,8 @@
 ## Installation (Ubuntu)
 
 ```bash
-sudo apt install nodejs -y
-sudo apt install npm -y
+curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
+sudo apt-get install -y nodejs
 ```
 
 ## Running
