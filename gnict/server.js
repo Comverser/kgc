@@ -1,15 +1,13 @@
 const express = require("express");
-const morgan = require("morgan");
 const https = require("https");
-// const http = require("http");
+const morgan = require("morgan");
+const fs = require("fs");
 
 const path = require("path");
+const routes = require("./routes/routes");
 
 const app = express();
 const port = 20443;
-
-// set up https
-const fs = require("fs");
 
 const options = {
   key: fs.readFileSync(path.join(__dirname, "cert", "key.pem")),
@@ -18,60 +16,24 @@ const options = {
   rejectUnauthorized: false,
 };
 
-// const httpSer = http.createServer(app).listen(3080, serInit(3080));
-// httpSer.on("connection", (client) => {
-//   console.log(`Connected: ${client}`);
-// });
-
-const handleListen = (port) => console.log(`Listening on port: ${port}`);
-
 const server = https
   .createServer(options, app)
-  .listen(port, handleListen(port));
+  .listen(port, () => console.log(`Listening on port: ${port}`));
 
 // register view engine
 app.set("view engine", "ejs");
 
-// middleware & static files
+// static files and middleware
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(morgan("dev"));
 
-app.get("/anime.es.js", function (req, res) {
-  res.sendFile("/node_modules/animejs/lib/anime.es.js", { root: __dirname });
-});
-
-app.get("/", (req, res) => {
-  res.render("index");
-});
-
-app.get("/settings", (req, res) => {
-  res.render("settings");
-});
-
-app.get("/get-settings", (req, res) => {
-  const params = JSON.parse(fs.readFileSync(__dirname + "/config/params.json"));
-  res.send(params);
-});
-
-app.post("/post-settings", (req, res) => {
-  const params = JSON.stringify(req.body);
-  fs.writeFileSync(__dirname + "/config/params.json", params);
-  res.send(params);
-});
-
-app.get("/test", (req, res) => {
-  const params = JSON.parse(fs.readFileSync(__dirname + "/config/params.json"));
-  res.render("test", params);
-});
+app.use(routes);
 
 app.use((req, res) => {
   res.status(404).render("404");
 });
-
-// app.use("/libs", express.static(__dirname + "/libs"));
-// app.get("/*", (req, res) => res.redirect("/"));
 
 /* [Park's code below] */
 /* 

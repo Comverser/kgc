@@ -312,16 +312,16 @@ function escapeRegExp(string) {
 
 fetch(settingsEndpoint)
   .then((res) => res.json())
-  .then((answer) => {
-    useDatachannel = answer["useDatachannel"];
-    useAudio = answer["useAudio"];
-    useVideo = answer["useVideo"];
-    useStun = answer["useStun"];
-    datachannelParameters = answer["datachannelParameters"];
-    audioCodec = answer["audioCodec"];
-    videoCodec = answer["videoCodec"];
-    videoResolution = answer["videoResolution"];
-    videoTransform = answer["videoTransform"];
+  .then((data) => {
+    useDatachannel = data["use-datachannel"];
+    useAudio = data["use-audio"];
+    useVideo = data["use-video"];
+    useStun = data["use-stun"];
+    datachannelParameters = data["datachannel-parameters"];
+    audioCodec = data["audio-codec"];
+    videoCodec = data["video-codec"];
+    videoResolution = data["video-resolution"];
+    videoTransform = data["video-transform"];
   })
   .then(start)
   .catch(function (e) {

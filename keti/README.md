@@ -15,10 +15,10 @@ In parallel to media streams, the browser sends a 'ping' message over the data c
 ### Ubuntu 20.04
 
 ```bash
-sudo apt install python3-pip
+sudo apt install python3-pip -y
 pip3 install --upgrade pip
-sudo apt install python3-opencv
-sudo apt install ffmpeg
+sudo apt install python3-opencv -y
+sudo apt install ffmpeg -y
 ```
 
 ### Windows 10

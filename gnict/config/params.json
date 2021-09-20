@@ -1,1 +1,0 @@
-{"useDatachannel":false,"useAudio":false,"useVideo":true,"useStun":false,"datachannelParameters":"{\"ordered\": true}","audioCodec":"opus/48000/2","videoCodec":"H264/90000","videoResolution":"320x240","videoTransform":"none"}

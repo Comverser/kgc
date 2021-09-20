@@ -1,0 +1,69 @@
+<div id="debugZone" style="display: none">
+  <h1>Emotion Control</h1>
+  <nav class="menuBar">
+    <ul class="btn-emotions">
+      <li><a id="btn1" class="btn_emotion">NEUTRAL</a></li>
+      <li><a id="btn2" class="btn_emotion">HAPPY</a></li>
+      <li><a id="btn3" class="btn_emotion">DISGUST</a></li>
+      <li><a id="btn4" class="btn_emotion">SURPRISE</a></li>
+      <li><a id="btn5" class="btn_emotion">ANGER</a></li>
+      <li><a id="btn6" class="btn_emotion">SADNESS</a></li>
+      <li><a id="btn7" class="btn_emotion">FEAR</a></li>
+      <li><a id="btn8" class="btn_emotion">WORRY</a></li>
+      <li><a id="btn9" class="btn_emotion">CONTEMPT</a></li>
+    </ul>
+  </nav>
+
+  <h1>Light Control</h1>
+  <nav class="menuBar">
+    <ul class="btn-lights">
+      <li><a class="btn-light" id="lightOn">POWER ON</a></li>
+      <li><a class="btn-light" id="lightOff">POWER OFF</a></li>
+      <li>R <input type="number" class="inp-light" id="inputRed" /></li>
+      <li>G <input type="number" class="inp-light" id="inputGreen" /></li>
+      <li>B <input type="number" class="inp-light" id="inputBlue" /></li>
+      <li><a class="btn-light" id="lightColor">COLOR</a></li>
+      <li><a class="btn-light" id="lightPlus">LIGHT +</a></li>
+      <li><a class="btn-light" id="lightMinus">LIGHT -</a></li>
+    </ul>
+  </nav>
+
+  <div class="status">
+    <h1>Audio test</h1>
+    <div class="wrapper">
+      <section class="main-controls">
+        <canvas class="visualizer" height="60px"></canvas>
+      </section>
+      <section class="sound-clips"></section>
+    </div>
+
+    <h1>WebRTC example</h1>
+    <button id="start">Start</button>
+    <button id="stop" style="display: none">Stop</button>
+
+    <h2>State</h2>
+    <p>ICE gathering state: <span id="ice-gathering-state"></span></p>
+    <p>ICE connection state: <span id="ice-connection-state"></span></p>
+    <p>Signaling state: <span id="signaling-state"></span></p>
+
+    <div id="media" style="display: none">
+      <h2>Media</h2>
+
+      <audio id="webrtc_audio" autoplay="true"></audio>
+      <video id="webrtc_video" autoplay="true" playsinline="true"></video>
+    </div>
+
+    <h2>Data channel</h2>
+    <pre id="data-channel" style="height: 200px"></pre>
+
+    <h2>SDP</h2>
+
+    <h3>Offer</h3>
+    <pre id="offer-sdp"></pre>
+
+    <h3>Answer</h3>
+    <pre id="answer-sdp"></pre>
+  </div>
+</div>
+
+<script type="module" src="js/debug.js"></script>

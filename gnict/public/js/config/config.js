@@ -1,12 +1,6 @@
 /* -------------------------------------------------------------------------- */
 /*                                API endpoints                               */
 /* -------------------------------------------------------------------------- */
-const pathTalk = "talk";
-const pathOffer = "offer";
-const pathSettings = "get-settings";
-
-const protocol = "https";
-
 const ketiPort = "20080";
 const ketiHost = "localhost";
 
@@ -16,11 +10,16 @@ const gnictHost = "localhost";
 /* -------------------------------------------------------------------------- */
 /*                                Debug setting                               */
 /* -------------------------------------------------------------------------- */
-export const debugMode = true;
+export const debugMode = false;
 
 /* -------------------------------------------------------------------------- */
 /*                                Don't change                                */
 /* -------------------------------------------------------------------------- */
+const protocol = "https";
+const pathTalk = "talk";
+const pathOffer = "offer";
+const pathSettings = "settings";
+
 export const settingsEndpoint = `${protocol}://${gnictHost}:${gnictPort}/${pathSettings}`;
 
 export const offerEndpoint = `${protocol}://${ketiHost}:${ketiPort}/${pathOffer}`;
