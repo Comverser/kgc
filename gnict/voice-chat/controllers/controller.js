@@ -9,11 +9,11 @@ const animejs = (req, res) => {
 };
 
 const index = (req, res) => {
-  res.render("index");
+  res.render("index", { title: "Chat" });
 };
 
 const settingsPage = (req, res) => {
-  res.render("settings");
+  res.render("settings", { title: "Settings" });
 };
 
 const readSettings = (req, res) => {

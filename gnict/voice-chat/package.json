@@ -1,7 +1,7 @@
 {
-  "name": "gnict",
+  "name": "voice-chat",
   "version": "1.0.0",
-  "description": "Audio, video and data channel server\r ====================================",
+  "description": "",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
