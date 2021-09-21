@@ -1,6 +1,6 @@
 import { morph, path } from "./emotions.js";
 
-export const changeEmo = (pEmo = "neutral") => {
+const changeEmo = (pEmo = "neutral") => {
   for (let i = 0; i < path.length; i++) {
     if (pEmo == path[i]["id"]) {
       document.getElementById("_face").setAttribute("class", pEmo);
@@ -9,7 +9,7 @@ export const changeEmo = (pEmo = "neutral") => {
   }
 };
 
-export const mouse_ani = () => {
+const mouse_ani = () => {
   var mouseClassName = document.getElementById("mouse").getAttribute("class");
 
   if (mouseClassName != "talk") {
@@ -19,7 +19,7 @@ export const mouse_ani = () => {
   }
 };
 
-export const state_msg = (state) => {
+const state_msg = (state) => {
   var msgBox = document.getElementById("msgBox");
   var bubble = document.getElementById("_bubble");
 
@@ -58,7 +58,7 @@ export const state_msg = (state) => {
   }
 };
 
-export const fontControl = () => {
+const fontControl = () => {
   const btn_fonts = document.querySelectorAll(".btn_font");
   const _msg = document.querySelector("#msgBox");
   var size = "";
@@ -80,3 +80,5 @@ export const fontControl = () => {
     });
   }
 };
+
+export { changeEmo, mouse_ani, state_msg, fontControl };

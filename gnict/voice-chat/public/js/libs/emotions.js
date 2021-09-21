@@ -1,6 +1,6 @@
 import anime from "../../../anime.es.js";
 
-export const path = [
+const path = [
   {
     id: "neutral",
     face: "#FFE600",
@@ -215,7 +215,7 @@ export const path = [
   },
 ];
 
-export const morph = (emotion) => {
+const morph = (emotion) => {
   const time = 1000;
 
   const timeline0 = anime.timeline({
@@ -384,3 +384,5 @@ export const morph = (emotion) => {
       },
     });
 };
+
+export { path, morph };
