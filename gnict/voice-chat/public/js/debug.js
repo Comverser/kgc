@@ -1,4 +1,4 @@
-import { morph, path } from "./emotions.js";
+import { morph, path } from "./libs/emotions.js";
 
 const btn_emotions = document.querySelectorAll(".btn_emotion");
 

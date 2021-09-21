@@ -1,22 +1,17 @@
 import { settingsEndpoint, offerEndpoint, debugMode } from "./config/config.js";
-
-let useDatachannel,
-  useAudio,
-  useVideo,
-  useStun,
-  datachannelParameters,
-  audioCodec,
-  videoCodec,
-  videoResolution,
-  videoTransform;
+import { sdpFilterCodec } from "./libs/webrtc.js";
 
 // get DOM elements
 const startBtn = document.getElementById("start"),
   stopBtn = document.getElementById("stop");
+
 const dataChannelLog = document.getElementById("data-channel"),
   iceConnectionLog = document.getElementById("ice-connection-state"),
   iceGatheringLog = document.getElementById("ice-gathering-state"),
   signalingLog = document.getElementById("signaling-state");
+
+// webrtc params
+let webrtcParams;
 
 // peer connection
 let pc;
@@ -29,7 +24,7 @@ function createPeerConnection() {
     sdpSemantics: "unified-plan",
   };
 
-  if (useStun) {
+  if (webrtcParams["use-stun"]) {
     config.iceServers = [{ urls: ["stun:stun.l.google.com:19302"] }];
   }
 
@@ -103,12 +98,12 @@ function negotiate() {
       let offer = pc.localDescription;
       let codec;
 
-      codec = audioCodec;
+      codec = webrtcParams["audio-codec"];
       if (codec !== "default") {
         offer.sdp = sdpFilterCodec("audio", codec, offer.sdp);
       }
 
-      codec = videoCodec;
+      codec = webrtcParams["video-codec"];
       if (codec !== "default") {
         offer.sdp = sdpFilterCodec("video", codec, offer.sdp);
       }
@@ -121,7 +116,7 @@ function negotiate() {
         body: JSON.stringify({
           sdp: offer.sdp,
           type: offer.type,
-          video_transform: videoTransform,
+          video_transform: webrtcParams["video-transform"],
         }),
         headers: {
           "Content-Type": "application/json",
@@ -159,8 +154,8 @@ function start() {
     }
   }
 
-  if (useDatachannel) {
-    let parameters = JSON.parse(datachannelParameters);
+  if (webrtcParams["use-datachannel"]) {
+    let parameters = JSON.parse(webrtcParams["datachannel-parameters"]);
 
     dc = pc.createDataChannel("chat", parameters);
     dc.onclose = function () {
@@ -186,12 +181,12 @@ function start() {
   }
 
   let constraints = {
-    audio: useAudio,
-    video: useVideo,
+    audio: webrtcParams["use-audio"],
+    video: webrtcParams["use-video"],
   };
 
-  if (useVideo) {
-    videoResolution = videoResolution.split("x");
+  if (webrtcParams["use-video"]) {
+    let videoResolution = webrtcParams["video-resolution"].split("x");
     constraints.video = {
       width: parseInt(videoResolution[0], 0),
       height: parseInt(videoResolution[1], 0),
@@ -249,79 +244,10 @@ function stop() {
   }, 500);
 }
 
-function sdpFilterCodec(kind, codec, realSdp) {
-  let allowed = [];
-  let rtxRegex = new RegExp("a=fmtp:(\\d+) apt=(\\d+)\r$");
-  let codecRegex = new RegExp("a=rtpmap:([0-9]+) " + escapeRegExp(codec));
-  let videoRegex = new RegExp("(m=" + kind + " .*?)( ([0-9]+))*\\s*$");
-
-  let lines = realSdp.split("\n");
-
-  let isKind = false;
-  for (let i = 0; i < lines.length; i++) {
-    if (lines[i].startsWith("m=" + kind + " ")) {
-      isKind = true;
-    } else if (lines[i].startsWith("m=")) {
-      isKind = false;
-    }
-
-    if (isKind) {
-      let match = lines[i].match(codecRegex);
-      if (match) {
-        allowed.push(parseInt(match[1]));
-      }
-
-      match = lines[i].match(rtxRegex);
-      if (match && allowed.includes(parseInt(match[2]))) {
-        allowed.push(parseInt(match[1]));
-      }
-    }
-  }
-
-  let skipRegex = "a=(fmtp|rtcp-fb|rtpmap):([0-9]+)";
-  let sdp = "";
-
-  isKind = false;
-  for (let i = 0; i < lines.length; i++) {
-    if (lines[i].startsWith("m=" + kind + " ")) {
-      isKind = true;
-    } else if (lines[i].startsWith("m=")) {
-      isKind = false;
-    }
-
-    if (isKind) {
-      let skipMatch = lines[i].match(skipRegex);
-      if (skipMatch && !allowed.includes(parseInt(skipMatch[2]))) {
-        continue;
-      } else if (lines[i].match(videoRegex)) {
-        sdp += lines[i].replace(videoRegex, "$1 " + allowed.join(" ")) + "\n";
-      } else {
-        sdp += lines[i] + "\n";
-      }
-    } else {
-      sdp += lines[i] + "\n";
-    }
-  }
-
-  return sdp;
-}
-
-function escapeRegExp(string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
-}
-
 fetch(settingsEndpoint)
   .then((res) => res.json())
   .then((data) => {
-    useDatachannel = data["use-datachannel"];
-    useAudio = data["use-audio"];
-    useVideo = data["use-video"];
-    useStun = data["use-stun"];
-    datachannelParameters = data["datachannel-parameters"];
-    audioCodec = data["audio-codec"];
-    videoCodec = data["video-codec"];
-    videoResolution = data["video-resolution"];
-    videoTransform = data["video-transform"];
+    webrtcParams = data;
   })
   .then(start)
   .catch(function (e) {

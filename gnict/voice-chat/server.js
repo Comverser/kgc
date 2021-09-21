@@ -32,7 +32,7 @@ app.use(morgan("dev"));
 app.use(routes);
 
 app.use((req, res) => {
-  res.status(404).render("404");
+  res.status(404).render("404", { title: "404" });
 });
 
 /* [Park's code below] */
