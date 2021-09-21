@@ -1,4 +1,4 @@
-export function sdpFilterCodec(kind, codec, realSdp) {
+export const sdpFilterCodec = (kind, codec, realSdp) => {
   let allowed = [];
   let rtxRegex = new RegExp("a=fmtp:(\\d+) apt=(\\d+)\r$");
   let codecRegex = new RegExp("a=rtpmap:([0-9]+) " + escapeRegExp(codec));
@@ -53,10 +53,9 @@ export function sdpFilterCodec(kind, codec, realSdp) {
   }
 
   return sdp;
-}
+};
 
 // private functions
-
-function escapeRegExp(string) {
+const escapeRegExp = (string) => {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
-}
+};

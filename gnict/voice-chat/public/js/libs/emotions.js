@@ -1,4 +1,4 @@
-import anime from '../../../anime.es.js';
+import anime from "../../../anime.es.js";
 
 export const path = [
   {
@@ -215,7 +215,7 @@ export const path = [
   },
 ];
 
-export function morph(emotion) {
+export const morph = (emotion) => {
   const time = 1000;
 
   const timeline0 = anime.timeline({
@@ -383,4 +383,4 @@ export function morph(emotion) {
         }
       },
     });
-}
+};

@@ -1,15 +1,15 @@
 import { morph, path } from "./emotions.js";
 
-export function changeEmo(pEmo = "neutral") {
+export const changeEmo = (pEmo = "neutral") => {
   for (let i = 0; i < path.length; i++) {
     if (pEmo == path[i]["id"]) {
       document.getElementById("_face").setAttribute("class", pEmo);
       morph(path[i]);
     }
   }
-}
+};
 
-export function mouse_ani() {
+export const mouse_ani = () => {
   var mouseClassName = document.getElementById("mouse").getAttribute("class");
 
   if (mouseClassName != "talk") {
@@ -17,9 +17,9 @@ export function mouse_ani() {
   } else {
     document.getElementById("mouse").setAttribute("class", "mouse");
   }
-}
+};
 
-export function state_msg(state) {
+export const state_msg = (state) => {
   var msgBox = document.getElementById("msgBox");
   var bubble = document.getElementById("_bubble");
 
@@ -56,9 +56,9 @@ export function state_msg(state) {
     msgBox.classList.remove("stateWait");
     bubble.setAttribute("fill", "#2b2b2b");
   }
-}
+};
 
-export function fontControl() {
+export const fontControl = () => {
   const btn_fonts = document.querySelectorAll(".btn_font");
   const _msg = document.querySelector("#msgBox");
   var size = "";
@@ -79,4 +79,4 @@ export function fontControl() {
       }
     });
   }
-}
+};

@@ -77,7 +77,7 @@ if (navigator.mediaDevices.getUserMedia) {
   };
   let chunks = [];
 
-  let onSuccess = function (stream) {
+  let onSuccess = (stream) => {
     const mediaRecorder = new MediaRecorder(stream);
 
     voiceTracking(stream, mediaRecorder);
@@ -86,7 +86,7 @@ if (navigator.mediaDevices.getUserMedia) {
       systemStatus = "idle";
     }, 5000);
 
-    mediaRecorder.onstop = function (e) {
+    mediaRecorder.onstop = (e) => {
       if (debugMode) {
         const clipContainer = document.createElement("article");
         const audio = document.createElement("audio");
@@ -115,7 +115,7 @@ if (navigator.mediaDevices.getUserMedia) {
 
         reader.readAsDataURL(blob);
 
-        postButton.onclick = function (e) {
+        postButton.onclick = (e) => {
           fetch(talkEndpoint, {
             method: "POST",
             headers: {
@@ -135,7 +135,7 @@ if (navigator.mediaDevices.getUserMedia) {
             });
         };
 
-        deleteButton.onclick = function (e) {
+        deleteButton.onclick = (e) => {
           let evtTgt = e.target;
           evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode);
         };
@@ -179,12 +179,12 @@ if (navigator.mediaDevices.getUserMedia) {
       };
     };
 
-    mediaRecorder.ondataavailable = function (e) {
+    mediaRecorder.ondataavailable = (e) => {
       chunks.push(e.data);
     };
   };
 
-  let onError = function (err) {
+  let onError = (err) => {
     console.log("The following error occured: " + err);
   };
 
@@ -193,7 +193,7 @@ if (navigator.mediaDevices.getUserMedia) {
   alert("getUserMedia not supported on your browser!");
 }
 
-function calMa(pMaBuf, pMaIdx, value) {
+const calMa = (pMaBuf, pMaIdx, value) => {
   pMaBuf.splice(pMaIdx, 1, value);
   if (pMaIdx < pMaBuf.length - 1) {
     pMaIdx++;
@@ -202,9 +202,9 @@ function calMa(pMaBuf, pMaIdx, value) {
   }
   const avg = pMaBuf.reduce((a, b) => a + b) / pMaBuf.length;
   return [avg, pMaIdx, pMaBuf];
-}
+};
 
-function voiceTracking(stream, mediaRecorder) {
+const voiceTracking = (stream, mediaRecorder) => {
   if (!audioCtx) {
     audioCtx = new AudioContext({ sampleRate: 16000 });
   }
@@ -330,4 +330,4 @@ function voiceTracking(stream, mediaRecorder) {
       x += barWidth + 1;
     }
   }
-}
+};

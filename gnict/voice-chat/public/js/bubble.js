@@ -4,7 +4,7 @@ const _window = window.matchMedia(
   "screen and (max-width: 767px), (orientation: portrait)"
 );
 
-function fn_bubble(_window) {
+const fn_bubble = (_window) => {
   if (_window.matches) {
     bubble.setAttribute(
       "d",
@@ -16,7 +16,7 @@ function fn_bubble(_window) {
       "M281.527 177.738L391.62 102.15L409.853 140.772L281.527 177.738Z"
     );
   }
-}
+};
 
 fn_bubble(_window);
 
