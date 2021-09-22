@@ -14,41 +14,14 @@ from av import VideoFrame
 from aiortc import MediaStreamTrack, RTCPeerConnection, RTCSessionDescription
 from aiortc.contrib.media import MediaBlackhole, MediaRecorder, MediaPlayer
 
-# voice processing
-import base64
-import requests
-import ffmpeg
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-recognize_url = "https://kakaoi-newtone-openapi.kakao.com/v1/recognize"
-keti_url = "https://localhost:28443/talk"
-synthesize_url = "https://kakaoi-newtone-openapi.kakao.com/v1/synthesize"
-rest_api_key = os.environ.get("API_KEY")
-headers_recog = {
-    "Content-Type": "application/octet-stream",
-    "Authorization": "KakaoAK " + rest_api_key,
-}
-headers_keti = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-headers_synth = {
-    "Content-Type": "application/xml",
-    "Authorization": "KakaoAK " + rest_api_key,
-}
-
-record_video = False
-
-flag = True
-
 ROOT = os.path.dirname(__file__)
 
 logger = logging.getLogger("pc")
-hshin = logging.getLogger("HS")  # HShin
 pcs = set()
 
 
-def log_debug(msg):
-    hshin.info(f"\033[93m{msg}\033[0m")
+record_video = False
+transform_video = 'edges'
 
 
 class VideoTransformTrack(MediaStreamTrack):
@@ -120,95 +93,13 @@ class VideoTransformTrack(MediaStreamTrack):
         else:
             return frame
 
-
-# async def index(request):
-#     content = open(os.path.join(ROOT, "index.html"), "r").read()
-#     return web.Response(content_type="text/html", text=content)
-
-
 async def post_talk(request):
-    dict_in = await request.json()
-    base64_in = dict_in["audio"].split("data:audio/webm; codecs=opus;base64,", 1)[1]
-    webm_in = base64.b64decode(base64_in)
-
-    temp_file_webm = "temp.webm"
-    temp_file_wav = "temp.wav"
-
-    # save audio data
-    with open(temp_file_webm, "wb") as f:
-        f.write(webm_in)
-
-    # convert webm (48 khz, 32 bits, 1 channel, opus) to wav (16 khz, 16 bits, 1 channel, pcm)
-    stream = ffmpeg.input(temp_file_webm)
-    stream = ffmpeg.output(stream, temp_file_wav, ar=16000)
-    ffmpeg.run(stream, overwrite_output=True)
-
-    #######
-    # STT #
-    #######
-    with open(temp_file_wav, "rb") as f:
-        recog_in = f.read()
-    res_stt = requests.post(recognize_url, headers=headers_recog, data=recog_in)
-    if res_stt.raise_for_status():
-        print("REST API ERR: ", res_stt.raise_for_status())
-
-    try:
-        result_stt_json_str = res_stt.text[
-            res_stt.text.index('{"type":"finalResult"') : res_stt.text.rindex("}") + 1
-        ]
-        result_stt = json.loads(result_stt_json_str)
-    except Exception as e:
-        result_stt = {"value": "다시 말씀해주시겠어요?"}
-        print(e)
-
-    #########
-    # KETI #
-    #########
-    result_stt['audio'] = base64.b64encode(recog_in).decode("ascii")
-    keti_data = requests.post(keti_url, headers=headers_keti, data=json.dumps(result_stt), verify=False)
-    tts_in = keti_data.json()
-
-    #######
-    # TTS #
-    #######
-    synth_in = (
-        f"<speak> <voice name='WOMAN_DIALOG_BRIGHT'> {tts_in} </voice> </speak>".encode(
-            "utf-8"
-        )
-    )
-
-    res_tts = requests.post(synthesize_url, headers=headers_synth, data=synth_in)
-    if res_tts.raise_for_status():
-        print("REST API ERR: ", res_tts.raise_for_status())
-
-    with open("temp.mp3", "wb") as f:
-        f.write(res_tts.content)
-
-    # convert mp3 (1 channel) to webm (24 khz, 32 bits, 1 channel, opus)
-    stream = ffmpeg.input("temp.mp3")
-    stream = ffmpeg.output(stream, temp_file_webm)
-    ffmpeg.run(stream, overwrite_output=True)
-
-    with open(temp_file_webm, "rb") as f:
-        webm_out = f.read()
-
-    ##############################
-    # Response with emotion data #
-    ##############################
-    base64_out = "data:audio/webm; codecs=opus;base64," + base64.b64encode(
-        webm_out
-    ).decode("ascii")
-
-    global flag
-    flag = not flag
-    if flag:
-        emotion = "happy"
-    else:
-        emotion = "surprise"
-
-    dict_out = dict({"audio": base64_out, "emotion": emotion, "text": tts_in})
-    return web.json_response(dict_out)
-
+    print("-----[KETI AI MODEL]-----")
+    speech_data_in = await request.json()
+    print(f"speech_data_in: {speech_data_in}")
+    speech_data_out = speech_data_in["value"]
+    print(f"speech_data_out: {speech_data_out}")
+    return web.json_response(speech_data_out)
 
 async def offer(request):
     params = await request.json()
@@ -217,7 +108,6 @@ async def offer(request):
     pc = RTCPeerConnection()
     pc_id = f"PeerConnection({uuid.uuid4()})"
     pcs.add(pc)
-    log_debug(pcs)
 
     def log_info(msg, *args):
         logger.info(f"\033[35m{pc_id}:{msg}\033[0m", *args)
@@ -258,7 +148,7 @@ async def offer(request):
 
         elif track.kind == "video":
             local_video = VideoTransformTrack(
-                track, transform=params["video_transform"]
+                track, transform=transform_video
             )
             if record_video:
                 recorder.addTrack(local_video)
@@ -289,15 +179,13 @@ async def offer(request):
 async def on_shutdown(app):
     # close peer connections
     coros = [pc.close() for pc in pcs]
-    log_debug("before???????????????")
     await asyncio.gather(*coros)
     pcs.clear()
-    log_debug("after?????????????????")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="WebRTC audio / video / data-channels demo"
+        description="WebRTC audio / video / data-channels"
     )
     parser.add_argument(
         "--cert-file", default="cert/cert.pem", help="SSL certificate file (for HTTPS)"
@@ -308,8 +196,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--port",
         type=int,
-        default=20080,
-        help=f"Port for HTTP server (default: {20080})",
+        default=28443,
+        help=f"Port for HTTP server (default: {28443})",
     )
     parser.add_argument("--verbose", "-v", action="count")
     parser.add_argument(
@@ -336,7 +224,6 @@ if __name__ == "__main__":
 
     app.router.add_routes(
         [
-            # web.get("/", index),
             web.post("/offer", offer),
             web.post("/talk", post_talk),
         ]

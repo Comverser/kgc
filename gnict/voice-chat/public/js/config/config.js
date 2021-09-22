@@ -1,16 +1,17 @@
 /* -------------------------------------------------------------------------- */
 /*                                API endpoints                               */
 /* -------------------------------------------------------------------------- */
-const ketiPort = "20080";
-const ketiHost = "localhost";
-
-const gnictPort = "20443";
+const gnictProcPort = "20080";
+const gnictChatPort = "20443";
 const gnictHost = "localhost";
+
+const ketiPort = "28443";
+const ketiHost = "localhost";
 
 /* -------------------------------------------------------------------------- */
 /*                                Debug setting                               */
 /* -------------------------------------------------------------------------- */
-export const debugMode = true;
+export const debugMode = false;
 
 /* -------------------------------------------------------------------------- */
 /*                                Don't change                                */
@@ -20,7 +21,8 @@ const pathTalk = "talk";
 const pathOffer = "offer";
 const pathSettings = "settings";
 
-export const settingsEndpoint = `${protocol}://${gnictHost}:${gnictPort}/${pathSettings}`;
+export const settingsEndpoint = `${protocol}://${gnictHost}:${gnictChatPort}/${pathSettings}`;
+export const offerLocalEndpoint = `${protocol}://${gnictHost}:${gnictProcPort}/${pathOffer}`;
+export const talkEndpoint = `${protocol}://${gnictHost}:${gnictProcPort}/${pathTalk}`;
 
-export const offerEndpoint = `${protocol}://${ketiHost}:${ketiPort}/${pathOffer}`;
-export const talkEndpoint = `${protocol}://${ketiHost}:${ketiPort}/${pathTalk}`;
+export const offerRemoteEndpoint = `${protocol}://${ketiHost}:${ketiPort}/${pathOffer}`;

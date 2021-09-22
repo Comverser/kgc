@@ -1,23 +1,47 @@
-import { settingsEndpoint, offerEndpoint, debugMode } from "./config/config.js";
+import {
+  settingsEndpoint,
+  offerLocalEndpoint,
+  offerRemoteEndpoint,
+  debugMode,
+} from "./config/config.js";
 import { genDomElem, webrtcStart, webrtcStop } from "./libs/webrtc.js";
 
 // get DOM elements
-const domElem = genDomElem("-remote");
+const domElemLocal = genDomElem("-local");
+const domElemRemote = genDomElem("-remote");
 
-let webrtcObj;
+let webrtcLocal, webrtcRemote;
 
 fetch(settingsEndpoint)
   .then((res) => res.json())
   .then((webrtcParams) => {
-    webrtcObj = webrtcStart(offerEndpoint, webrtcParams, debugMode, domElem);
-    domElem.startBtn.style.display = "none";
-    domElem.stopBtn.style.display = "inline-block";
+    webrtcLocal = webrtcStart(
+      offerLocalEndpoint,
+      webrtcParams,
+      debugMode,
+      domElemLocal
+    );
+    webrtcRemote = webrtcStart(
+      offerRemoteEndpoint,
+      webrtcParams,
+      debugMode,
+      domElemRemote
+    );
+    domElemLocal.startBtn.style.display = "none";
+    domElemLocal.stopBtn.style.display = "inline-block";
+    domElemRemote.startBtn.style.display = "none";
+    domElemRemote.stopBtn.style.display = "inline-block";
   })
   .catch(function (e) {
     alert(e);
   });
 
-domElem.stopBtn.onclick = () => {
-  webrtcStop(webrtcObj);
-  domElem.stopBtn.style.display = "none";
+domElemLocal.stopBtn.onclick = () => {
+  webrtcStop(webrtcLocal);
+  domElemLocal.stopBtn.style.display = "none";
+};
+
+domElemRemote.stopBtn.onclick = () => {
+  webrtcStop(webrtcRemote);
+  domElemRemote.stopBtn.style.display = "none";
 };
