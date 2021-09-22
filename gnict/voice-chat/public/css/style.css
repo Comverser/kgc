@@ -236,7 +236,14 @@ div#settings {
 .status {
   height: 10px;
   display: block;
-  background-color: gray;
+}
+
+.flex-container {
+  display: flex;
+}
+
+.flex-col {
+  border: solid 1px black;
 }
 
 .small_btn {

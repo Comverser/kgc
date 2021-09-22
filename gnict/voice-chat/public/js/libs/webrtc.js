@@ -1,10 +1,26 @@
 // public functions
 
-function webrtcStart(pc, dc, offerEndpoint, webrtcParams, debugMode) {
-  const dataChannelLog = document.getElementById("data-channel");
+const genDomElem = (name = "") => {
+  return {
+    startBtn: document.getElementById(`start${name}`),
+    stopBtn: document.getElementById(`stop${name}`),
+    mediaDiv: document.getElementById(`media${name}`),
+    dataChannelLog: document.getElementById(`data-channel${name}`),
+    iceConnectionLog: document.getElementById(`ice-connection-state${name}`),
+    iceGatheringLog: document.getElementById(`ice-gathering-state${name}`),
+    signalingLog: document.getElementById(`signaling-state${name}`),
+    webrtcVideo: document.getElementById(`webrtc-video${name}`),
+    webrtcAudio: document.getElementById(`webrtc-audio${name}`),
+    offerSdp: document.getElementById(`offer-sdp${name}`),
+    answerSdp: document.getElementById(`answer-sdp${name}`),
+  };
+};
+
+const webrtcStart = (offerEndpoint, webrtcParams, debugMode, domElem) => {
   let dcInterval;
 
-  pc = createPeerConnection(webrtcParams["use-stun"], debugMode);
+  const pc = createPeerConnection(webrtcParams["use-stun"], debugMode, domElem);
+  let dc;
 
   let time_start;
 
@@ -23,22 +39,22 @@ function webrtcStart(pc, dc, offerEndpoint, webrtcParams, debugMode) {
     dc = pc.createDataChannel("chat", parameters);
     dc.onclose = function () {
       clearInterval(dcInterval);
-      dataChannelLog.textContent += "- close\n";
+      domElem.dataChannelLog.textContent += "- close\n";
     };
     dc.onopen = function () {
-      dataChannelLog.textContent += "- open\n";
+      domElem.dataChannelLog.textContent += "- open\n";
       dcInterval = setInterval(function () {
         let message = "ping " + current_stamp();
-        dataChannelLog.textContent += "> " + message + "\n";
+        domElem.dataChannelLog.textContent += "> " + message + "\n";
         dc.send(message);
       }, 1000);
     };
     dc.onmessage = function (evt) {
-      dataChannelLog.textContent += "< " + evt.data + "\n";
+      domElem.dataChannelLog.textContent += "< " + evt.data + "\n";
 
       if (evt.data.substring(0, 4) === "pong") {
         let elapsed_ms = current_stamp() - parseInt(evt.data.substring(5), 10);
-        dataChannelLog.textContent += " RTT " + elapsed_ms + " ms\n";
+        domElem.dataChannelLog.textContent += " RTT " + elapsed_ms + " ms\n";
       }
     };
   }
@@ -58,7 +74,7 @@ function webrtcStart(pc, dc, offerEndpoint, webrtcParams, debugMode) {
 
   if (constraints.audio || constraints.video) {
     if (constraints.video) {
-      document.getElementById("media").style.display = "block";
+      domElem.mediaDiv.style.display = "block";
     }
     navigator.mediaDevices.getUserMedia(constraints).then(
       function (stream) {
@@ -66,20 +82,20 @@ function webrtcStart(pc, dc, offerEndpoint, webrtcParams, debugMode) {
           pc.addTrack(track, stream);
           // console.log("-------------->", track);
         });
-        return negotiate(pc, webrtcParams, offerEndpoint, debugMode);
+        return negotiate(pc, webrtcParams, offerEndpoint, debugMode, domElem);
       },
       function (err) {
         alert("Could not acquire media: " + err);
       }
     );
   } else {
-    negotiate(pc, webrtcParams, offerEndpoint, debugMode);
+    negotiate(pc, webrtcParams, offerEndpoint, debugMode, domElem);
   }
 
   return { pc, dc };
-}
+};
 
-function webrtcStop(pc, dc) {
+const webrtcStop = ({ pc, dc }) => {
   // close data channel
   if (dc) {
     dc.close();
@@ -103,15 +119,11 @@ function webrtcStop(pc, dc) {
   setTimeout(function () {
     pc.close();
   }, 500);
-}
+};
 
 // private functions
 
-const createPeerConnection = (useStun, debugMode) => {
-  const iceConnectionLog = document.getElementById("ice-connection-state"),
-    iceGatheringLog = document.getElementById("ice-gathering-state"),
-    signalingLog = document.getElementById("signaling-state");
-
+const createPeerConnection = (useStun, debugMode, domElem) => {
   let config = {
     sdpSemantics: "unified-plan",
   };
@@ -126,45 +138,43 @@ const createPeerConnection = (useStun, debugMode) => {
   pc.addEventListener(
     "icegatheringstatechange",
     function () {
-      iceGatheringLog.textContent += " -> " + pc.iceGatheringState;
+      domElem.iceGatheringLog.textContent += " -> " + pc.iceGatheringState;
     },
     false
   );
-  iceGatheringLog.textContent = pc.iceGatheringState;
+  domElem.iceGatheringLog.textContent = pc.iceGatheringState;
 
   pc.addEventListener(
     "iceconnectionstatechange",
     function () {
-      iceConnectionLog.textContent += " -> " + pc.iceConnectionState;
+      domElem.iceConnectionLog.textContent += " -> " + pc.iceConnectionState;
     },
     false
   );
-  iceConnectionLog.textContent = pc.iceConnectionState;
+  domElem.iceConnectionLog.textContent = pc.iceConnectionState;
 
   pc.addEventListener(
     "signalingstatechange",
     function () {
-      signalingLog.textContent += " -> " + pc.signalingState;
+      domElem.signalingLog.textContent += " -> " + pc.signalingState;
     },
     false
   );
-  signalingLog.textContent = pc.signalingState;
+  domElem.signalingLog.textContent = pc.signalingState;
 
   // connect audio / video
   pc.addEventListener("track", function (evt) {
     if (evt.track.kind == "video" && debugMode) {
-      document.getElementById("webrtc_video").srcObject = evt.streams[0];
-      // console.log("video received! -------->", evt.streams);
+      domElem.webrtcVideo.srcObject = evt.streams[0];
     } else {
-      document.getElementById("webrtc_audio").srcObject = evt.streams[0];
-      // console.log("Audio received! -------->", evt.streams);
+      domElem.webrtcAudio.srcObject = evt.streams[0];
     }
   });
 
   return pc;
 };
 
-const negotiate = (pc, webrtcParams, offerEndpoint, debugMode) => {
+const negotiate = (pc, webrtcParams, offerEndpoint, debugMode, domElem) => {
   return pc
     .createOffer()
     .then(function (offer) {
@@ -201,7 +211,7 @@ const negotiate = (pc, webrtcParams, offerEndpoint, debugMode) => {
       }
 
       if (debugMode) {
-        document.getElementById("offer-sdp").textContent = offer.sdp;
+        domElem.offerSdp.textContent = offer.sdp;
       }
 
       return fetch(offerEndpoint, {
@@ -221,7 +231,7 @@ const negotiate = (pc, webrtcParams, offerEndpoint, debugMode) => {
     })
     .then(function (answer) {
       if (debugMode) {
-        document.getElementById("answer-sdp").textContent = answer.sdp;
+        domElem.answerSdp.textContent = answer.sdp;
       }
       return pc.setRemoteDescription(answer);
     })
@@ -291,4 +301,4 @@ const escapeRegExp = (string) => {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
 };
 
-export { webrtcStart, webrtcStop };
+export { genDomElem, webrtcStart, webrtcStop };

@@ -1,27 +1,23 @@
 import { settingsEndpoint, offerEndpoint, debugMode } from "./config/config.js";
-import { webrtcStart, webrtcStop } from "./libs/webrtc.js";
+import { genDomElem, webrtcStart, webrtcStop } from "./libs/webrtc.js";
 
 // get DOM elements
-const stopBtn = document.getElementById("stop");
+const domElem = genDomElem("-remote");
 
-// peer connection
-let pc;
-
-// data channel
-let dc;
+let webrtcObj;
 
 fetch(settingsEndpoint)
   .then((res) => res.json())
   .then((webrtcParams) => {
-    ({ pc, dc } = webrtcStart(pc, dc, offerEndpoint, webrtcParams, debugMode));
-    document.getElementById("start").style.display = "none";
-    document.getElementById("stop").style.display = "inline-block";
+    webrtcObj = webrtcStart(offerEndpoint, webrtcParams, debugMode, domElem);
+    domElem.startBtn.style.display = "none";
+    domElem.stopBtn.style.display = "inline-block";
   })
   .catch(function (e) {
     alert(e);
   });
 
-stopBtn.onclick = () => {
-  webrtcStop(pc, dc);
-  stopBtn.style.display = "none";
+domElem.stopBtn.onclick = () => {
+  webrtcStop(webrtcObj);
+  domElem.stopBtn.style.display = "none";
 };

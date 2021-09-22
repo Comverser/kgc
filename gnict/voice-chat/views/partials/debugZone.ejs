@@ -28,41 +28,83 @@
     </ul>
   </nav>
 
-  <div class="status">
-    <h1>Audio test</h1>
-    <div class="wrapper">
-      <section class="main-controls">
-        <canvas class="visualizer" height="60px"></canvas>
-      </section>
-      <section class="sound-clips"></section>
+  <div class="status"></div>
+
+  <h1>Audio test</h1>
+  <div class="wrapper">
+    <section class="main-controls">
+      <canvas class="visualizer" height="60px"></canvas>
+    </section>
+    <section class="sound-clips"></section>
+  </div>
+
+  <div class="flex-container">
+    <div class="flex-col">
+      <h1>GNICT</h1>
+      <button id="start-local">Start</button>
+      <button id="stop-local" style="display: none">Stop</button>
+
+      <h2>State</h2>
+      <p>ICE gathering state: <span id="ice-gathering-state-local"></span></p>
+      <p>ICE connection state: <span id="ice-connection-state-local"></span></p>
+      <p>Signaling state: <span id="signaling-state-local"></span></p>
+
+      <div id="media-local" style="display: none">
+        <h2>Media</h2>
+
+        <audio id="webrtc-audio-local" autoplay="true"></audio>
+        <video
+          id="webrtc-video-local"
+          autoplay="true"
+          playsinline="true"
+        ></video>
+      </div>
+
+      <h2>Data channel</h2>
+      <pre id="data-channel-local" style="height: 200px"></pre>
+
+      <h2>SDP</h2>
+
+      <h3>Offer</h3>
+      <pre id="offer-sdp-local"></pre>
+
+      <h3>Answer</h3>
+      <pre id="answer-sdp-local"></pre>
     </div>
+    <div class="flex-col">
+      <h1>KETI</h1>
+      <button id="start-remote">Start</button>
+      <button id="stop-remote" style="display: none">Stop</button>
 
-    <h1>WebRTC example</h1>
-    <button id="start">Start</button>
-    <button id="stop" style="display: none">Stop</button>
+      <h2>State</h2>
+      <p>ICE gathering state: <span id="ice-gathering-state-remote"></span></p>
+      <p>
+        ICE connection state: <span id="ice-connection-state-remote"></span>
+      </p>
+      <p>Signaling state: <span id="signaling-state-remote"></span></p>
 
-    <h2>State</h2>
-    <p>ICE gathering state: <span id="ice-gathering-state"></span></p>
-    <p>ICE connection state: <span id="ice-connection-state"></span></p>
-    <p>Signaling state: <span id="signaling-state"></span></p>
+      <div id="media-remote" style="display: none">
+        <h2>Media</h2>
 
-    <div id="media" style="display: none">
-      <h2>Media</h2>
+        <audio id="webrtc-audio-remote" autoplay="true"></audio>
+        <video
+          id="webrtc-video-remote"
+          autoplay="true"
+          playsinline="true"
+        ></video>
+      </div>
 
-      <audio id="webrtc_audio" autoplay="true"></audio>
-      <video id="webrtc_video" autoplay="true" playsinline="true"></video>
+      <h2>Data channel</h2>
+      <pre id="data-channel-remote" style="height: 200px"></pre>
+
+      <h2>SDP</h2>
+
+      <h3>Offer</h3>
+      <pre id="offer-sdp-remote"></pre>
+
+      <h3>Answer</h3>
+      <pre id="answer-sdp-remote"></pre>
     </div>
-
-    <h2>Data channel</h2>
-    <pre id="data-channel" style="height: 200px"></pre>
-
-    <h2>SDP</h2>
-
-    <h3>Offer</h3>
-    <pre id="offer-sdp"></pre>
-
-    <h3>Answer</h3>
-    <pre id="answer-sdp"></pre>
   </div>
 </div>
 
