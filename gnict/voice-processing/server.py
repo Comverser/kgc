@@ -23,7 +23,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 recognize_url = "https://kakaoi-newtone-openapi.kakao.com/v1/recognize"
-keti_url = "https://localhost:28443/talk"
+keti_url = "https://106.245.229.10:28443/talk"
 synthesize_url = "https://kakaoi-newtone-openapi.kakao.com/v1/synthesize"
 rest_api_key = os.environ.get("API_KEY")
 headers_recog = {
@@ -126,7 +126,7 @@ class VideoTransformTrack(MediaStreamTrack):
 #     return web.Response(content_type="text/html", text=content)
 
 
-async def post_talk(request):
+async def talk(request):
     dict_in = await request.json()
     base64_in = dict_in["audio"].split("data:audio/webm; codecs=opus;base64,", 1)[1]
     webm_in = base64.b64decode(base64_in)
@@ -338,7 +338,7 @@ if __name__ == "__main__":
         [
             # web.get("/", index),
             web.post("/offer", offer),
-            web.post("/talk", post_talk),
+            web.post("/talk", talk),
         ]
     )
 
