@@ -20,8 +20,9 @@ logger = logging.getLogger("pc")
 pcs = set()
 
 
+port = 28443
 record_video = False
-transform_video = 'edges'
+transform_video = "edges"
 
 
 class VideoTransformTrack(MediaStreamTrack):
@@ -93,13 +94,16 @@ class VideoTransformTrack(MediaStreamTrack):
         else:
             return frame
 
+
 async def talk(request):
     print("-----[KETI AI MODEL]-----")
     speech_data_in = await request.json()
-    print(f"speech_data_in: {speech_data_in}")
+    print(f"speech_data_in['value']: {speech_data_in['value']}")
+    print(f"speech_data_in['audio'][:100]: {speech_data_in['audio'][:100]}")
     speech_data_out = speech_data_in["value"]
     print(f"speech_data_out: {speech_data_out}")
     return web.json_response(speech_data_out)
+
 
 async def offer(request):
     params = await request.json()
@@ -147,9 +151,7 @@ async def offer(request):
                 pc.addTrack(track)
 
         elif track.kind == "video":
-            local_video = VideoTransformTrack(
-                track, transform=transform_video
-            )
+            local_video = VideoTransformTrack(track, transform=transform_video)
             if record_video:
                 recorder.addTrack(local_video)
             else:
@@ -184,9 +186,7 @@ async def on_shutdown(app):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="WebRTC audio / video / data-channels"
-    )
+    parser = argparse.ArgumentParser(description="WebRTC audio / video / data-channels")
     parser.add_argument(
         "--cert-file", default="cert/cert.pem", help="SSL certificate file (for HTTPS)"
     )
@@ -196,8 +196,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--port",
         type=int,
-        default=28443,
-        help=f"Port for HTTP server (default: {28443})",
+        default=port,
+        help=f"Port for HTTP server (default: {port})",
     )
     parser.add_argument("--verbose", "-v", action="count")
     parser.add_argument(

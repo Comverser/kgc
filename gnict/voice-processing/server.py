@@ -30,14 +30,14 @@ headers_recog = {
     "Content-Type": "application/octet-stream",
     "Authorization": "KakaoAK " + rest_api_key,
 }
-headers_keti = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+headers_keti = {"Content-type": "application/json", "Accept": "text/plain"}
 headers_synth = {
     "Content-Type": "application/xml",
     "Authorization": "KakaoAK " + rest_api_key,
 }
 
+port = 20080
 record_video = False
-
 flag = True
 
 ROOT = os.path.dirname(__file__)
@@ -164,8 +164,10 @@ async def talk(request):
     #########
     # KETI #
     #########
-    result_stt['audio'] = base64.b64encode(recog_in).decode("ascii")
-    keti_data = requests.post(keti_url, headers=headers_keti, data=json.dumps(result_stt), verify=False)
+    result_stt["audio"] = base64.b64encode(recog_in).decode("ascii")
+    keti_data = requests.post(
+        keti_url, headers=headers_keti, data=json.dumps(result_stt), verify=False
+    )
     tts_in = keti_data.json()
 
     #######
@@ -308,8 +310,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--port",
         type=int,
-        default=20080,
-        help=f"Port for HTTP server (default: {20080})",
+        default=port,
+        help=f"Port for HTTP server (default: {port})",
     )
     parser.add_argument("--verbose", "-v", action="count")
     parser.add_argument(
