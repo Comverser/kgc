@@ -6,12 +6,12 @@ const gnictChatPort = "20443";
 const gnictHost = "gnlabs.iptime.org";
 
 const ketiPort = "28443";
-const ketiHost = "106.245.229.10";
+const ketiHost = "115.95.228.155";
 
 /* -------------------------------------------------------------------------- */
 /*                                Debug setting                               */
 /* -------------------------------------------------------------------------- */
-export const debugMode = false;
+export const debugMode = true;
 
 /* -------------------------------------------------------------------------- */
 /*                                Don't change                                */
