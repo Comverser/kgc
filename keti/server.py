@@ -93,7 +93,7 @@ class VideoTransformTrack(MediaStreamTrack):
         else:
             return frame
 
-async def post_talk(request):
+async def talk(request):
     print("-----[KETI AI MODEL]-----")
     speech_data_in = await request.json()
     print(f"speech_data_in: {speech_data_in}")
@@ -225,7 +225,7 @@ if __name__ == "__main__":
     app.router.add_routes(
         [
             web.post("/offer", offer),
-            web.post("/talk", post_talk),
+            web.post("/talk", talk),
         ]
     )
 
