@@ -23,7 +23,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 recognize_url = "https://kakaoi-newtone-openapi.kakao.com/v1/recognize"
-keti_url = "https://106.245.229.10:28443/talk"
+keti_url = "https://115.95.228.155:28443/talk"
 synthesize_url = "https://kakaoi-newtone-openapi.kakao.com/v1/synthesize"
 rest_api_key = os.environ.get("API_KEY")
 headers_recog = {
