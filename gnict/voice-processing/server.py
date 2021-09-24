@@ -21,6 +21,9 @@ import ffmpeg
 import os
 from dotenv import load_dotenv
 
+from colorama import Fore, Back, Style
+
+
 load_dotenv()
 recognize_url = "https://kakaoi-newtone-openapi.kakao.com/v1/recognize"
 keti_url = "https://115.95.228.155:28443/talk"
@@ -43,12 +46,12 @@ flag = True
 ROOT = os.path.dirname(__file__)
 
 logger = logging.getLogger("pc")
-hshin = logging.getLogger("HS")  # HShin
+
 pcs = set()
 
 
-def log_debug(msg):
-    hshin.info(f"\033[93m{msg}\033[0m")
+def debug_print(msg):
+    print(Fore.RED + Back.GREEN + msg + Style.RESET_ALL)
 
 
 class VideoTransformTrack(MediaStreamTrack):
@@ -150,7 +153,7 @@ async def talk(request):
         recog_in = f.read()
     res_stt = requests.post(recognize_url, headers=headers_recog, data=recog_in)
     if res_stt.raise_for_status():
-        print("REST API ERR: ", res_stt.raise_for_status())
+        debug_print("REST API ERR: ", res_stt.raise_for_status())
 
     try:
         result_stt_json_str = res_stt.text[
@@ -159,16 +162,21 @@ async def talk(request):
         result_stt = json.loads(result_stt_json_str)
     except Exception as e:
         result_stt = {"value": "다시 말씀해주시겠어요?"}
-        print(e)
+        debug_print(e)
 
     #########
     # KETI #
     #########
     result_stt["audio"] = base64.b64encode(recog_in).decode("ascii")
-    keti_data = requests.post(
-        keti_url, headers=headers_keti, data=json.dumps(result_stt), verify=False
-    )
-    tts_in = keti_data.json()
+    try:
+        keti_data = requests.post(
+            keti_url, headers=headers_keti, data=json.dumps(result_stt), verify=False
+        )
+        keti_data.raise_for_status()  # raise an exception
+        tts_in = keti_data.json()
+    except Exception as e:
+        tts_in = "서버와의 연결을 확인하세요"
+        debug_print(e)
 
     #######
     # TTS #
@@ -181,7 +189,7 @@ async def talk(request):
 
     res_tts = requests.post(synthesize_url, headers=headers_synth, data=synth_in)
     if res_tts.raise_for_status():
-        print("REST API ERR: ", res_tts.raise_for_status())
+        debug_print("REST API ERR: ", res_tts.raise_for_status())
 
     with open("temp.mp3", "wb") as f:
         f.write(res_tts.content)
@@ -219,7 +227,6 @@ async def offer(request):
     pc = RTCPeerConnection()
     pc_id = f"PeerConnection({uuid.uuid4()})"
     pcs.add(pc)
-    log_debug(pcs)
 
     def log_info(msg, *args):
         logger.info(f"\033[35m{pc_id}:{msg}\033[0m", *args)
@@ -291,10 +298,8 @@ async def offer(request):
 async def on_shutdown(app):
     # close peer connections
     coros = [pc.close() for pc in pcs]
-    log_debug("before???????????????")
     await asyncio.gather(*coros)
     pcs.clear()
-    log_debug("after?????????????????")
 
 
 if __name__ == "__main__":
