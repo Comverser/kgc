@@ -162,7 +162,8 @@ async def talk(request):
         result_stt = json.loads(result_stt_json_str)
     except Exception as e:
         result_stt = {"value": "다시 말씀해주시겠어요?"}
-        debug_print(e)
+        debug_print("Exception")
+        print(e)
 
     #########
     # KETI #
@@ -176,7 +177,8 @@ async def talk(request):
         tts_in = keti_data.json()
     except Exception as e:
         tts_in = "서버와의 연결을 확인하세요"
-        debug_print(e)
+        debug_print("Exception")
+        print(e)
 
     #######
     # TTS #

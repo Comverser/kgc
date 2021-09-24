@@ -21,6 +21,11 @@ sudo apt install python3-opencv -y
 sudo apt install ffmpeg -y
 ```
 
+```bash
+pip3 install urllib3==1.26.7
+pip3 install -r requirements.txt --upgrade
+```
+
 ### Windows 10
 
 - Installation of Visual Studio Development with c++ is required
