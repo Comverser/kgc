@@ -23,10 +23,11 @@ from dotenv import load_dotenv
 
 from colorama import Fore, Back, Style
 
+host = "localhost"  # "115.95.228.155"
 
 load_dotenv()
 recognize_url = "https://kakaoi-newtone-openapi.kakao.com/v1/recognize"
-keti_url = "https://115.95.228.155:28443/talk"
+keti_url = f"https://{host}:28443/talk"
 synthesize_url = "https://kakaoi-newtone-openapi.kakao.com/v1/synthesize"
 rest_api_key = os.environ.get("API_KEY")
 headers_recog = {

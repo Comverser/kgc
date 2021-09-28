@@ -27,12 +27,12 @@ const state_msg = (state) => {
     var table = `
     <table>
     <tr><td><i></i></td><td><i></i></td><td><i></i></td></tr>
-    <tr><td>생</td><td>각</td><td>중</td></tr>
     </table>
     `;
+    var msg = "생각 중";
 
     msgBox.innerText = "";
-    msgBox.innerHTML += table;
+    msgBox.innerHTML += table + msg;
 
     msgBox.classList.add("stateWait");
     msgBox.classList.remove("stateListen");
@@ -41,12 +41,12 @@ const state_msg = (state) => {
     var table = `
     <table>
     <tr><td><i></i></td><td><i></i></td><td><i></i></td></tr>
-    <tr><td>듣</td><td>는</td><td>중</td></tr>
     </table>
     `;
+    var msg = "듣는 중";
 
     msgBox.innerText = "";
-    msgBox.innerHTML += table;
+    msgBox.innerHTML += table + msg;
 
     msgBox.classList.add("stateListen");
     msgBox.classList.remove("stateWait");

@@ -3,10 +3,10 @@
 /* -------------------------------------------------------------------------- */
 const gnictProcPort = "20080";
 const gnictChatPort = "20443";
-const gnictHost = "gnlabs.iptime.org";
+const gnictHost = "localhost"; //"gnlabs.iptime.org";
 
 const ketiPort = "28443";
-const ketiHost = "115.95.228.155";
+const ketiHost = "localhost"; //"115.95.228.155";
 
 /* -------------------------------------------------------------------------- */
 /*                                Debug setting                               */

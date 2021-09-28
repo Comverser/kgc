@@ -31,7 +31,7 @@ let maIdxShort = 0;
 // system status management: init -> idle -> listen -> wait -> speak -> idle -> ...
 // let emotion = "happy";
 let emotion = "neutral";
-let message = "안녕하세요.";
+let message = "안녕하세요";
 const msg = document.querySelector("#msgBox");
 let systemStatus = "init";
 let previous;
@@ -58,13 +58,15 @@ setInterval(() => {
       msg.innerText = message;
     }
 
+    state_msg(systemStatus);
+
     console.log(
       `[systemStatus: ${systemStatus.padStart(6)}, ${emotion.padStart(8)}]`
     );
   }
-  previous = systemStatus;
-  state_msg(systemStatus);
   fontControl();
+
+  previous = systemStatus;
 }, vadInterval * 5);
 
 //main block for doing the audio recording
