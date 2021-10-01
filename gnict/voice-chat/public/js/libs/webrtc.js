@@ -80,12 +80,11 @@ const webrtcStart = (offerEndpoint, webrtcParams, debugMode, domElem) => {
       function (stream) {
         stream.getTracks().forEach(function (track) {
           pc.addTrack(track, stream);
-          // console.log("-------------->", track);
         });
         return negotiate(pc, webrtcParams, offerEndpoint, debugMode, domElem);
       },
       function (err) {
-        alert("Could not acquire media: " + err);
+        console.error("Could not acquire media: " + err);
       }
     );
   } else {
@@ -236,7 +235,7 @@ const negotiate = (pc, webrtcParams, offerEndpoint, debugMode, domElem) => {
       return pc.setRemoteDescription(answer);
     })
     .catch(function (e) {
-      alert(e);
+      console.error("negotiate: " + e);
     });
 };
 

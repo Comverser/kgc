@@ -1,4 +1,5 @@
 import { morph, path } from "./libs/emotions.js";
+import { debugMode } from "./config/config.js";
 
 const btn_emotions = document.querySelectorAll(".btn_emotion");
 
@@ -14,4 +15,9 @@ for (let btn_emotion of btn_emotions) {
       }
     }
   });
+}
+
+if (debugMode) {
+  let debugZone = document.getElementById("debugZone");
+  debugZone.style.display = "block";
 }
