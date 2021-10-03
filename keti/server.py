@@ -98,9 +98,11 @@ class VideoTransformTrack(MediaStreamTrack):
 async def talk(request):
     print("-----[KETI AI MODEL]-----")
     speech_data_in = await request.json()
-    print(f"speech_data_in['value']: {speech_data_in['value']}")
-    print(f"speech_data_in['audio'][:100]: {speech_data_in['audio'][:100]}")
-    speech_data_out = speech_data_in["value"]
+    print(f"speech_data_in['text']: {speech_data_in['text']}")
+    print(
+        f"speech_data_in['audio'][:100]: {speech_data_in['audio'][:100]}"
+    )  # OPUS/BASE64
+    speech_data_out = speech_data_in["text"]
     print(f"speech_data_out: {speech_data_out}")
     return web.json_response(speech_data_out)
 

@@ -20,4 +20,6 @@ for (let btn_emotion of btn_emotions) {
 if (debugMode) {
   let debugZone = document.getElementById("debugZone");
   debugZone.style.display = "block";
+
+  console.log(navigator.mediaDevices.getSupportedConstraints()); // may return false positives
 }

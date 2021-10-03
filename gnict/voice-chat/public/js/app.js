@@ -3,43 +3,32 @@ import { changeEmo, mouse_ani, state_msg, fontControl } from "./libs/ui.js";
 
 // set up basic variables for app
 const status = document.querySelector(".status");
-const soundClips = document.querySelector(".sound-clips");
+const msgElem = document.querySelector("#msgBox");
+let listenMsg;
 
 // audio data conversion setup
 const reader = new FileReader();
 let base64data;
 
-let loopTime = 20;
+let loopTime = 50;
 if (debugMode) {
-  loopTime = 200;
+  loopTime = 500;
 }
-
-let listenMsg = document.createElement("p");
 
 // system status management: init -> idle -> listen -> wait -> speak -> idle -> ...
 let emotion = "neutral";
-let message = "안녕하세요";
-const msg = document.querySelector("#msgBox");
+let msgIn = "안녕하세요";
+let msgOut;
 let systemStatus = "init";
 let previous;
 
 let chunks = [];
 
-const constraints = {
-  audio: true,
-};
+const getMedia = async () => {
+  const constraints = {
+    audio: true,
+  };
 
-console.log(navigator.mediaDevices.getSupportedConstraints()); // may return false positives
-
-setTimeout(() => {
-  systemStatus = "idle";
-}, 3000);
-
-const updatePage = (emotion) => {
-  console.log(emotion);
-};
-
-const getMedia = async (constraints) => {
   let stream = null;
 
   try {
@@ -53,15 +42,63 @@ const getMedia = async (constraints) => {
     };
 
     mediaRecorder.onstop = (e) => {
-      const audio = document.createElement("audio");
+      if (systemStatus === "wait") {
+        const soundClips = document.querySelector(".sound-clips");
+        const blob = new Blob(chunks, { type: "audio/webm; codecs=opus" });
+        chunks = [];
+        if (debugMode) {
+          const clipContainer = document.createElement("article");
+          const audio = document.createElement("audio");
 
-      audio.setAttribute("controls", "");
+          clipContainer.classList.add("clip");
+          audio.setAttribute("controls", "");
 
-      const blob = new Blob(chunks, { type: "audio/webm; codecs=opus" });
-      chunks = [];
-      const audioURL = window.URL.createObjectURL(blob);
-      audio.src = audioURL;
-      soundClips.appendChild(audio);
+          clipContainer.appendChild(audio);
+          soundClips.appendChild(clipContainer);
+
+          const audioURL = window.URL.createObjectURL(blob);
+          audio.src = audioURL;
+        }
+        reader.readAsDataURL(blob);
+      }
+      // else {
+      //   console.log("Speech not detected");
+      // }
+    };
+
+    reader.onloadend = () => {
+      base64data = reader.result;
+
+      fetch(talkEndpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          audio: base64data,
+          text: msgOut,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          let snd = new Audio(data.audio);
+          emotion = data.emotion;
+          msgIn = data.text;
+
+          systemStatus = "speak";
+          changeEmo(emotion);
+
+          snd.onended = () => {
+            mouse_ani();
+            systemStatus = "idle";
+          };
+          snd.play();
+          mouse_ani();
+        })
+        .catch((err) => {
+          console.error(err);
+          systemStatus = "idle";
+        });
     };
   } catch (err) {
     console.error(err);
@@ -81,29 +118,36 @@ const kgcSpeechRecognition = (mediaRecorder) => {
     };
 
     recognition.onresult = (e) => {
-      const text = Array.from(e.results)
-        .map((result) => result[0])
-        .map((result) => result.transcript)
-        .join("");
+      if (systemStatus === "idle" || systemStatus === "listen") {
+        systemStatus = "listen";
+        const text = Array.from(e.results)
+          .map((result) => result[0])
+          .map((result) => result.transcript)
+          .join("");
 
-      if (e.results[0].isFinal) {
-        if (text.includes("뀨뀨")) {
-          console.log("뀨뀨?");
+        if (e.results[0].isFinal) {
+          if (text.includes("확인")) {
+            console.log("확인?");
+          }
+          msgOut = text;
         }
-        message = text;
+
+        listenMsg = text;
       }
-
-      listenMsg.innerText = text;
-      texts.appendChild(listenMsg);
     };
 
-    recognition.onerror = () => {
-      console.error("Speech Recognition Error");
-    };
+    // recognition.onerror = () => {
+    //   console.error("Speech Recognition Error");
+    // };
 
     recognition.onend = () => {
-      recognition.start();
       mediaRecorder.stop();
+
+      if (systemStatus === "listen") {
+        systemStatus = "wait";
+      }
+
+      recognition.start();
     };
 
     recognition.start();
@@ -129,112 +173,32 @@ setInterval(() => {
     } else if (systemStatus === "speak") {
       status.style.background = "red";
     }
-    changeEmo(emotion);
-    if (systemStatus !== "init") {
-      msg.innerText = message;
-    }
 
+    changeEmo(emotion);
     state_msg(systemStatus);
 
-    console.log(
-      `[systemStatus: ${systemStatus.padStart(6)}, ${emotion.padStart(8)}]`
-    );
+    if (systemStatus === "idle" || systemStatus === "speak") {
+      msgElem.innerText = msgIn;
+    }
+
+    if (debugMode) {
+      console.log(
+        `[systemStatus: ${systemStatus.padStart(6)}, ${emotion.padStart(8)}]`
+      );
+    }
   }
+
+  if (systemStatus === "listen") {
+    state_msg(systemStatus, listenMsg);
+  }
+
   fontControl();
 
   previous = systemStatus;
-}, loopTime * 5);
+}, loopTime);
 
-mediaRecorder.onstop = (e) => {
-  if (debugMode) {
-    const clipContainer = document.createElement("article");
-    const audio = document.createElement("audio");
-    const postButton = document.createElement("button");
-    const deleteButton = document.createElement("button");
+setTimeout(() => {
+  systemStatus = "idle";
+}, 1000);
 
-    clipContainer.classList.add("clip");
-    audio.setAttribute("controls", "");
-    postButton.textContent = "Post";
-    postButton.className = "post";
-    deleteButton.textContent = "Delete";
-    deleteButton.className = "delete";
-
-    clipContainer.appendChild(audio);
-    clipContainer.appendChild(postButton);
-    clipContainer.appendChild(deleteButton);
-    soundClips.appendChild(clipContainer);
-
-    audio.controls = true;
-    const blob = new Blob(chunks, { type: "audio/webm; codecs=opus" });
-
-    chunks = [];
-    const audioURL = window.URL.createObjectURL(blob);
-    audio.src = audioURL;
-    console.log("recorder stopped");
-
-    reader.readAsDataURL(blob);
-
-    postButton.onclick = (e) => {
-      fetch(talkEndpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          audio: base64data,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          let snd = new Audio(data.audio);
-          snd.play();
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    };
-
-    deleteButton.onclick = (e) => {
-      let evtTgt = e.target;
-      evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode);
-    };
-  } else {
-    const blob = new Blob(chunks, { type: "audio/webm; codecs=opus" });
-    chunks = [];
-    reader.readAsDataURL(blob);
-  }
-
-  reader.onloadend = () => {
-    base64data = reader.result;
-
-    fetch(talkEndpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        audio: base64data,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        let snd = new Audio(data.audio);
-        emotion = data.emotion;
-        message = data.text;
-
-        systemStatus = "speak";
-        changeEmo(emotion);
-
-        snd.onended = () => {
-          mouse_ani();
-          systemStatus = "idle";
-        };
-        snd.play();
-        mouse_ani();
-      })
-      .catch((err) => {
-        console.error(err);
-        systemStatus = "idle";
-      });
-  };
-};
+getMedia();

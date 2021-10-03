@@ -19,7 +19,7 @@ const mouse_ani = () => {
   }
 };
 
-const state_msg = (state) => {
+const state_msg = (state, message = "") => {
   var msgBox = document.getElementById("msgBox");
   var bubble = document.getElementById("_bubble");
 
@@ -43,10 +43,10 @@ const state_msg = (state) => {
     <tr><td><i></i></td><td><i></i></td><td><i></i></td></tr>
     </table>
     `;
-    var msg = "듣는 중";
+    var msg = "듣는 중..." + "<br>";
 
     msgBox.innerText = "";
-    msgBox.innerHTML += table + msg;
+    msgBox.innerHTML += table + msg + message;
 
     msgBox.classList.add("stateListen");
     msgBox.classList.remove("stateWait");

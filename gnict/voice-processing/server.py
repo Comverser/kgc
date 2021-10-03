@@ -23,7 +23,7 @@ from dotenv import load_dotenv
 
 from colorama import Fore, Back, Style
 
-host = "localhost"  # "115.95.228.155"
+host = "115.95.228.155"
 
 load_dotenv()
 recognize_url = "https://kakaoi-newtone-openapi.kakao.com/v1/recognize"
@@ -132,44 +132,48 @@ class VideoTransformTrack(MediaStreamTrack):
 
 async def talk(request):
     dict_in = await request.json()
+    text_in = dict_in["text"]
     base64_in = dict_in["audio"].split("data:audio/webm; codecs=opus;base64,", 1)[1]
-    webm_in = base64.b64decode(base64_in)
+    # webm_in = base64.b64decode(base64_in)
 
     temp_file_webm = "temp.webm"
-    temp_file_wav = "temp.wav"
+    # temp_file_wav = "temp.wav"
 
-    # save audio data
-    with open(temp_file_webm, "wb") as f:
-        f.write(webm_in)
+    # # save audio data
+    # with open(temp_file_webm, "wb") as f:
+    #     f.write(webm_in)
 
-    # convert webm (48 khz, 32 bits, 1 channel, opus) to wav (16 khz, 16 bits, 1 channel, pcm)
-    stream = ffmpeg.input(temp_file_webm)
-    stream = ffmpeg.output(stream, temp_file_wav, ar=16000)
-    ffmpeg.run(stream, overwrite_output=True)
+    # # convert webm (48 khz, 32 bits, 1 channel, opus) to wav (16 khz, 16 bits, 1 channel, pcm)
+    # stream = ffmpeg.input(temp_file_webm)
+    # stream = ffmpeg.output(stream, temp_file_wav, ar=16000)
+    # ffmpeg.run(stream, overwrite_output=True)
 
-    #######
-    # STT #
-    #######
-    with open(temp_file_wav, "rb") as f:
-        recog_in = f.read()
-    res_stt = requests.post(recognize_url, headers=headers_recog, data=recog_in)
-    if res_stt.raise_for_status():
-        debug_print("REST API ERR: ", res_stt.raise_for_status())
+    # #######
+    # # STT #
+    # #######
+    # with open(temp_file_wav, "rb") as f:
+    #     recog_in = f.read()
+    # res_stt = requests.post(recognize_url, headers=headers_recog, data=recog_in)
+    # if res_stt.raise_for_status():
+    #     debug_print("REST API ERR: ", res_stt.raise_for_status())
 
-    try:
-        result_stt_json_str = res_stt.text[
-            res_stt.text.index('{"type":"finalResult"') : res_stt.text.rindex("}") + 1
-        ]
-        result_stt = json.loads(result_stt_json_str)
-    except Exception as e:
-        result_stt = {"value": "다시 말씀해주시겠어요?"}
-        debug_print("Exception")
-        print(e)
+    # try:
+    #     result_stt_json_str = res_stt.text[
+    #         res_stt.text.index('{"type":"finalResult"') : res_stt.text.rindex("}") + 1
+    #     ]
+    #     result_stt = json.loads(result_stt_json_str)
+    # except Exception as e:
+    #     result_stt = {"value": "다시 말씀해주시겠어요?"}
+    #     debug_print("Exception")
+    #     print(e)
 
     #########
     # KETI #
     #########
-    result_stt["audio"] = base64.b64encode(recog_in).decode("ascii")
+    result_stt = {}
+    # result_stt["audio"] = base64.b64encode(recog_in).decode("ascii")
+    result_stt["audio"] = base64_in
+    result_stt["text"] = text_in
     try:
         keti_data = requests.post(
             keti_url, headers=headers_keti, data=json.dumps(result_stt), verify=False
