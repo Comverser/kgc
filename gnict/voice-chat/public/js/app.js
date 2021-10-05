@@ -145,7 +145,9 @@ const kgcSpeechRecognition = (mediaRecorder) => {
     // };
 
     recognition.onend = () => {
-      mediaRecorder.stop();
+      if (mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+      }
 
       if (systemStatus === "listen") {
         systemStatus = "wait";
