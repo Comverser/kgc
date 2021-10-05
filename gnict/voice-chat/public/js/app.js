@@ -14,6 +14,7 @@ let loopTime = 50;
 if (debugMode) {
   loopTime = 500;
 }
+const audioLetency = 200;
 
 // system status management: init -> idle -> listen -> wait -> speak -> idle -> ...
 let emotion = "neutral";
@@ -90,7 +91,9 @@ const getMedia = async () => {
 
           snd.onended = () => {
             mouse_ani();
-            systemStatus = "idle";
+            setTimeout(() => {
+              systemStatus = "idle";
+            }, audioLetency);
           };
           snd.play();
           mouse_ani();
