@@ -114,7 +114,11 @@ const kgcSpeechRecognition = (mediaRecorder) => {
     recognition.interimResults = true;
 
     recognition.onstart = () => {
-      mediaRecorder.start();
+      if (systemStatus === "idle") {
+        mediaRecorder.start();
+      } else {
+        setTimeout(recognition.start, 200);
+      }
     };
 
     recognition.onresult = (e) => {
