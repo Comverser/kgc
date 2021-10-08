@@ -1,0 +1,46 @@
+# Copyright 2021 san kim
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#     http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# docker build -t nipa_demo/voice_processing .
+
+# docker tag nipa_demo/voice_processing 10.0.0.161:5000/voice_processing
+# docker push 10.0.0.161:5000/voice_processing
+
+# docker run --gpus all --rm -d -it -p 20080:20080 --name voice_processing nipa_demo/voice_processing
+# or if you use nvidia-docker
+# nvidia-docker run --rm -d -it -p 20080:20080 --name voice_processing nipa_demo/voice_processing
+
+# docker -H 10.0.0.110:2375 run --gpus all --rm -d -it --network="dockernet" --ip="10.1.92.127" --name voice_processing 10.0.0.161:5000/voice_processing
+
+FROM ubuntu
+
+ENV DEBIAN_FRONTEND noninteractive
+ENV API_KEY abc
+ENV SERVICE_PORT 20080
+
+RUN apt update && apt install ffmpeg -y
+RUN apt-get install -y \
+    python3.8 \
+    python3-pip
+
+ADD app /root/app
+
+WORKDIR /root/app
+
+RUN pip3 install -r requirements.txt --upgrade
+RUN pip3 install colorama --upgrade
+
+CMD ["python3", "server.py"]
+
+EXPOSE ${SERVICE_PORT}

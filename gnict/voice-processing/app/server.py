@@ -6,6 +6,7 @@ import os
 import ssl
 import uuid
 
+
 import cv2
 from aiohttp import web
 import aiohttp_cors
@@ -23,7 +24,7 @@ from dotenv import load_dotenv
 
 from colorama import Fore, Back, Style
 
-host = "115.95.228.155"
+host = "ketiair.com"
 
 load_dotenv()
 recognize_url = "https://kakaoi-newtone-openapi.kakao.com/v1/recognize"
@@ -134,38 +135,43 @@ async def talk(request):
     dict_in = await request.json()
     text_in = dict_in["text"]
     base64_in = dict_in["audio"].split("data:audio/webm; codecs=opus;base64,", 1)[1]
-    # webm_in = base64.b64decode(base64_in)
+    webm_in = base64.b64decode(base64_in)
 
     temp_file_webm = "temp.webm"
-    # temp_file_wav = "temp.wav"
+    temp_file_wav = "temp.wav"
 
-    # # save audio data
-    # with open(temp_file_webm, "wb") as f:
-    #     f.write(webm_in)
+    # save audio data
+    debug_print("Write webm file: {}".format(temp_file_webm))
+    with open(temp_file_webm, "wb") as f:
+        f.write(webm_in)
 
-    # # convert webm (48 khz, 32 bits, 1 channel, opus) to wav (16 khz, 16 bits, 1 channel, pcm)
-    # stream = ffmpeg.input(temp_file_webm)
-    # stream = ffmpeg.output(stream, temp_file_wav, ar=16000)
-    # ffmpeg.run(stream, overwrite_output=True)
+    if os.path.isfile(temp_file_wav):
+        os.remove(temp_file_wav)
 
-    # #######
-    # # STT #
-    # #######
-    # with open(temp_file_wav, "rb") as f:
-    #     recog_in = f.read()
-    # res_stt = requests.post(recognize_url, headers=headers_recog, data=recog_in)
-    # if res_stt.raise_for_status():
-    #     debug_print("REST API ERR: ", res_stt.raise_for_status())
+    # convert webm (48 khz, 32 bits, 1 channel, opus) to wav (16 khz, 16 bits, 1 channel, pcm)
+    stream = ffmpeg.input(temp_file_webm)
+    stream = ffmpeg.output(stream, temp_file_wav, ar=16000)
+    ffmpeg.run(stream, overwrite_output=True)
 
-    # try:
-    #     result_stt_json_str = res_stt.text[
-    #         res_stt.text.index('{"type":"finalResult"') : res_stt.text.rindex("}") + 1
-    #     ]
-    #     result_stt = json.loads(result_stt_json_str)
-    # except Exception as e:
-    #     result_stt = {"value": "다시 말씀해주시겠어요?"}
-    #     debug_print("Exception")
-    #     print(e)
+    #######
+    # STT #
+    #######
+    with open(temp_file_wav, "rb") as f:
+        recog_in = f.read()
+    res_stt = requests.post(recognize_url, headers=headers_recog, data=recog_in)
+    if res_stt.raise_for_status():
+        debug_print("REST API ERR: {}".format(res_stt.raise_for_status()))
+
+    try:
+        result_stt_json_str = res_stt.text[
+            res_stt.text.index('{"type":"finalResult"') : res_stt.text.rindex("}") + 1
+        ]
+        debug_print("STT result: {}".format(result_stt_json_str))
+        result_stt = json.loads(result_stt_json_str)
+    except Exception as e:
+        result_stt = {"value": "다시 말씀해주시겠어요?"}
+        debug_print("Exception")
+        print(e)
 
     #########
     # KETI #
@@ -196,7 +202,7 @@ async def talk(request):
 
     res_tts = requests.post(synthesize_url, headers=headers_synth, data=synth_in)
     if res_tts.raise_for_status():
-        debug_print("REST API ERR: ", res_tts.raise_for_status())
+        debug_print("REST API ERR: {}".format(res_tts.raise_for_status()))
 
     with open("temp.mp3", "wb") as f:
         f.write(res_tts.content)
