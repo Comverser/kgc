@@ -43,10 +43,10 @@ const getMedia = async () => {
     };
 
     mediaRecorder.onstop = (e) => {
+      chunks = [];
       if (systemStatus === "wait") {
         const soundClips = document.querySelector(".sound-clips");
         const blob = new Blob(chunks, { type: "audio/webm; codecs=opus" });
-        chunks = [];
         if (debugMode) {
           const clipContainer = document.createElement("article");
           const audio = document.createElement("audio");
