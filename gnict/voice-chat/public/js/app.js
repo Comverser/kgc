@@ -43,7 +43,6 @@ const getMedia = async () => {
     };
 
     mediaRecorder.onstop = (e) => {
-      chunks = [];
       if (systemStatus === "wait") {
         const soundClips = document.querySelector(".sound-clips");
         const blob = new Blob(chunks, { type: "audio/webm; codecs=opus" });
@@ -62,9 +61,7 @@ const getMedia = async () => {
         }
         reader.readAsDataURL(blob);
       }
-      // else {
-      //   console.log("Speech not detected");
-      // }
+      chunks = [];
     };
 
     reader.onloadend = () => {
