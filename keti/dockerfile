@@ -30,16 +30,42 @@ FROM ubuntu
 ENV DEBIAN_FRONTEND noninteractive
 ENV SERVICE_PORT 28443
 
-ADD app /root/app
-
-WORKDIR /root/app
+ENV DEMO_MAIN_URL 10.1.108.4:5000
 
 RUN apt update && apt-get install -y \
     python3.8 \
     python3-pip
 
-RUN pip3 install -r requirements.txt --upgrade
+# install ffmpeg dev
+RUN apt install -y \
+    git \
+    libavutil-dev \
+    libavcodec-dev \
+    libavformat-dev \
+    libswscale-dev \
+    pkg-config
+
+RUN pip3 install numpy
+
+# install python video encoder, decoder
+RUN cd /root && \
+    git clone https://github.com/AIRC-KETI/python_video_endecoder.git && \
+    cd python_video_endecoder/encoder && \
+    pip3 install . && \
+    cd ../decoder && \
+    pip3 install . && \
+    cd /root \
+    rm -rf python_video_endecoder
+
 RUN pip3 install opencv-python
+RUN pip3 install grpcio protobuf
+
+ADD app /root/app
+
+WORKDIR /root/app
+
+RUN pip3 install -r requirements.txt --upgrade
+
 
 CMD ["python3", "server.py"]
 

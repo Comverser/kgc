@@ -1,4 +1,4 @@
-import { talkEndpoint, debugMode } from "./config/config.js";
+import { talkEndpoint, debugMode, user_id } from "./config/config.js";
 import { changeEmo, mouse_ani, state_msg, fontControl } from "./libs/ui.js";
 
 // set up basic variables for app
@@ -25,7 +25,8 @@ let previous;
 
 let chunks = [];
 
-const getMedia = async () => {
+//const getMedia = async () => {
+async function getMedia() {
   const constraints = {
     audio: true,
   };
@@ -43,10 +44,10 @@ const getMedia = async () => {
     };
 
     mediaRecorder.onstop = (e) => {
+      
       if (systemStatus === "wait") {
         const soundClips = document.querySelector(".sound-clips");
         const blob = new Blob(chunks, { type: "audio/webm; codecs=opus" });
-        chunks = [];
         if (debugMode) {
           const clipContainer = document.createElement("article");
           const audio = document.createElement("audio");
@@ -62,13 +63,13 @@ const getMedia = async () => {
         }
         reader.readAsDataURL(blob);
       }
-      // else {
-      //   console.log("Speech not detected");
-      // }
+      chunks = [];
     };
 
     reader.onloadend = () => {
       base64data = reader.result;
+
+      console.log("reader.onloadend user_id "+ user_id)
 
       fetch(talkEndpoint, {
         method: "POST",
@@ -78,6 +79,7 @@ const getMedia = async () => {
         body: JSON.stringify({
           audio: base64data,
           text: msgOut,
+          uid: user_id,
         }),
       })
         .then((response) => response.json())

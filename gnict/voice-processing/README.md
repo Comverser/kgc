@@ -18,7 +18,19 @@ In parallel to media streams, the browser sends a 'ping' message over the data c
 sudo apt install python3-pip -y
 pip3 install --upgrade pip
 sudo apt install python3-opencv -y
+sudo apt install ffmpeg -y
 ```
+
+```bash
+pip3 install urllib3==1.26.7
+pip3 install -r requirements.txt --upgrade
+```
+
+### Windows 10
+
+- Installation of Visual Studio Development with c++ is required
+- FFmpeg install (https://www.gyan.dev/ffmpeg/builds/)
+  - For Windows, add FFmpeg to Windows path using Environment variables
 
 ### VENV
 
@@ -54,7 +66,21 @@ python3 server.py
 ```
 
 You can then browse to the following page with your browser:
-http://127.0.0.1:28443
+http://127.0.0.1:20080
+
+## API settings
+
+### Talk endpoints
+
+- Replace the API endpoints in gnict/public/js/config/config.js with your API endpoints
+
+### Kakao OpenAPI for STT/TTS
+
+- Create a .env file at the keti directory and add your {API_KEY} to it (e.g. API_KEY=\***\*\*\*\*\*\*\***\*\***\*\*\*\*\*\*\***)
+- https://speech-api.kakao.com/
+- https://developers.kakao.com/docs/latest/ko/voice/rest-api
+- https://docs.kakaoi.ai/skill/ssml_guide/
+- https://ai-creator.tistory.com/70
 
 ## Additional options
 
@@ -70,3 +96,18 @@ The audio file "demo-instruct.wav" was borrowed from the Asterisk
 project. It is licensed as Creative Commons Attribution-Share Alike 3.0:
 
 https://wiki.asterisk.org/wiki/display/AST/Voice+Prompts+and+Music+on+Hold+License
+
+
+## Docker
+
+### Build Docker
+
+```bash
+    docker build -t nipa_demo/voice_processing .
+```
+
+### Run Docker
+
+```bash
+    docker run --gpus all --rm -d -it -e API_KEY 'YOUR_KAKAO_REST_API_KEY' -p 20080:20080 --name voice_processing nipa_demo/voice_processing
+```

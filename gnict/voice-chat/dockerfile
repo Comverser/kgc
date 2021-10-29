@@ -28,6 +28,13 @@ FROM node:slim
 ENV DEBIAN_FRONTEND noninteractive
 ENV SERVICE_PORT 20443
 
+ENV gnictProcPort 20080
+ENV gnictChatPort 20443
+ENV gnictHost gnlabs.iptime.org
+
+ENV ketiPort 28443
+ENV ketiHost ketiair.com
+
 ADD app /root/app
 
 WORKDIR /root/app

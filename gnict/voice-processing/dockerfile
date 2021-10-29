@@ -26,8 +26,10 @@
 FROM ubuntu
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV API_KEY abc
+ENV API_KEY abcd
+ENV HOST_ADDR ketiair.com
 ENV SERVICE_PORT 20080
+ENV HOST_PORT 28443
 
 RUN apt update && apt install ffmpeg -y
 RUN apt-get install -y \
