@@ -3,27 +3,59 @@ import asyncio
 import json
 import logging
 import os
+import queue
 import ssl
-import uuid
+import time
+import pickle
+import threading
 
-import cv2
+import uuid
+import base64
+import requests
+from urllib.parse import urljoin
+
+import grpc
+import nipa_service_pb2 as npb
+import nipa_service_pb2_grpc as ngrpc
+
+import videoencoder
+
+import numpy as np
+#import cv2
 from aiohttp import web
 import aiohttp_cors
 from av import VideoFrame
 
 from aiortc import MediaStreamTrack, RTCPeerConnection, RTCSessionDescription
-from aiortc.contrib.media import MediaBlackhole, MediaRecorder, MediaPlayer
+from aiortc.contrib.media import MediaBlackhole, MediaRecorder, MediaPlayer, MediaRelay
 
 ROOT = os.path.dirname(__file__)
 
 logger = logging.getLogger("pc")
 pcs = set()
+relay = MediaRelay()
 
-
-port = 28443
+#port = 28443
+port = os.environ.get("SERVICE_PORT")
 record_video = False
-transform_video = "edges"
 
+
+demo_main_url = os.environ.get("DEMO_MAIN_URL")
+#demo_main_url = '10.1.108.4:5000'
+ngrpc_channel = grpc.insecure_channel(demo_main_url)
+ngrpc_stub = ngrpc.StreamingServiceStub(
+    ngrpc_channel)
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    IMPORTANT = '\033[35m'
 
 class VideoTransformTrack(MediaStreamTrack):
     """
@@ -32,67 +64,93 @@ class VideoTransformTrack(MediaStreamTrack):
 
     kind = "video"
 
-    def __init__(self, track, transform):
+    def __init__(
+            self, 
+            track, 
+            uid='sane',
+            width=640,
+            height=480,
+            bitrate=1000000,
+            iframeinterval=30,
+            framerate=30,
+            verbose=True):
         super().__init__()  # don't forget this!
         self.track = track
-        self.transform = transform
+        self.uid = uid
 
+        self.verbose=verbose
+        self.frame_num = 0
+
+        # msg queue
+        self.msg_queue = queue.Queue()
+        self.stop_event = threading.Event()
+
+        self.codec = videoencoder.create_codec(
+            "h264", "bgr24", width, height, bitrate, iframeinterval, framerate)
+        
+        self.t = threading.Thread(target=self.msg_thread)
+        self.t.start()
+    
+    def log(self, msg, logtype=None):
+        if self.verbose:
+            if logtype is None:
+                logger.info(msg)
+            else:
+                logger.info(logtype+msg+bcolors.ENDC)
+    
+    def create_generator(self):
+        try:
+            while not self.stop_event.is_set():
+                time.sleep(0.01)
+                if not self.msg_queue.empty():
+                    yield self.msg_queue.get()
+            logger.warning('[stop generator] [uid: {}]'.format(self.uid))
+        except Exception as e:
+            logger.warning('[generator exception] [uid: {}] {}'.format(self.uid, e))
+
+    # relay image
+    def msg_thread(self):
+        try:
+            logger.info('create message thread: uid: {}'.format(self.uid))
+            responses = ngrpc_stub.ImageStreaming(
+                self.create_generator())
+            for item in responses:
+                time.sleep(0.01)
+                if self.stop_event.is_set():
+                    self.log('{}'.format('stop event'), bcolors.FAIL)
+                    break
+            logger.warning('[stop thread] [uid: {}]'.format(self.uid))
+        except Exception as e:
+            logger.warning('[except in message thread] [uid: {}] {}'.format(self.uid, e))
+
+    
     async def recv(self):
         frame = await self.track.recv()
 
-        if self.transform == "cartoon":
-            img = frame.to_ndarray(format="bgr24")
+        img = frame.to_ndarray(format="bgr24")
 
-            # prepare color
-            img_color = cv2.pyrDown(cv2.pyrDown(img))
-            for _ in range(6):
-                img_color = cv2.bilateralFilter(img_color, 9, 9, 7)
-            img_color = cv2.pyrUp(cv2.pyrUp(img_color))
+        # cv2.imwrite("img.jpg", img)
 
-            # prepare edges
-            img_edges = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-            img_edges = cv2.adaptiveThreshold(
-                cv2.medianBlur(img_edges, 7),
-                255,
-                cv2.ADAPTIVE_THRESH_MEAN_C,
-                cv2.THRESH_BINARY,
-                9,
-                2,
-            )
-            img_edges = cv2.cvtColor(img_edges, cv2.COLOR_GRAY2RGB)
+        res = videoencoder.push_frame_data(self.codec, img.tobytes())
 
-            # combine color and edges
-            img = cv2.bitwise_and(img_color, img_edges)
+        if res is not None:
+            msg = npb.ImgRequest(
+                uid=self.uid, 
+                orientation=0, 
+                frame=res, 
+                frame_num=self.frame_num)
+            self.frame_num += 1
+            self.msg_queue.put(msg)
 
-            # rebuild a VideoFrame, preserving timing information
-            new_frame = VideoFrame.from_ndarray(img, format="bgr24")
-            new_frame.pts = frame.pts
-            new_frame.time_base = frame.time_base
-            return new_frame
-        elif self.transform == "edges":
-            # perform edge detection
-            img = frame.to_ndarray(format="bgr24")
-            img = cv2.cvtColor(cv2.Canny(img, 100, 200), cv2.COLOR_GRAY2BGR)
-
-            # rebuild a VideoFrame, preserving timing information
-            new_frame = VideoFrame.from_ndarray(img, format="bgr24")
-            new_frame.pts = frame.pts
-            new_frame.time_base = frame.time_base
-            return new_frame
-        elif self.transform == "rotate":
-            # rotate image
-            img = frame.to_ndarray(format="bgr24")
-            rows, cols, _ = img.shape
-            M = cv2.getRotationMatrix2D((cols / 2, rows / 2), frame.time * 45, 1)
-            img = cv2.warpAffine(img, M, (cols, rows))
-
-            # rebuild a VideoFrame, preserving timing information
-            new_frame = VideoFrame.from_ndarray(img, format="bgr24")
-            new_frame.pts = frame.pts
-            new_frame.time_base = frame.time_base
-            return new_frame
-        else:
-            return frame
+        return frame
+    
+    async def stop_thread(self):
+        self.log('{}'.format('stop event'), bcolors.FAIL)
+        self.stop_event.set()
+    
+    def __del__(self):
+        del self.codec
+        logger.warning('Destructor called, VideoTransformTrack for {} deleted.'.format(self.uid))
 
 
 async def talk(request):
@@ -102,13 +160,34 @@ async def talk(request):
     print(
         f"speech_data_in['audio'][:100]: {speech_data_in['audio'][:100]}"
     )  # OPUS/BASE64
-    speech_data_out = speech_data_in["text"]
+
+    uid = speech_data_in['uid']
+    msg = speech_data_in["text"]
+    audio = speech_data_in['audio']
+
+    response = ngrpc_stub.Chat(npb.ChatRequest(
+                                    uid=uid, 
+                                    text=msg, 
+                                    audio=audio
+                                    ))
+    data = pickle.loads(response.result)
+
+    speech_data_out = data["text"]
+    speech_data_out_emotion = data["emotion"]
+    print("#"*20 + "\nuid: " + uid+ "#"*20 +"\n")
+    print(f"speech_data_in: {msg}")
     print(f"speech_data_out: {speech_data_out}")
-    return web.json_response(speech_data_out)
+    return web.json_response({
+        "text": speech_data_out,
+        "emotion": speech_data_out_emotion})
 
 
 async def offer(request):
     params = await request.json()
+    uid = params["uid"]
+    print("#"*20 + "\nuid: " + uid+ "\n" + "#"*20 +"\n")
+
+    local_video = None
     offer = RTCSessionDescription(sdp=params["sdp"], type=params["type"])
 
     pc = RTCPeerConnection()
@@ -153,15 +232,18 @@ async def offer(request):
                 pc.addTrack(track)
 
         elif track.kind == "video":
-            local_video = VideoTransformTrack(track, transform=transform_video)
+            local_video = VideoTransformTrack(
+                relay.subscribe(track),
+                uid=uid)
+            pc.addTrack(local_video)
             if record_video:
-                recorder.addTrack(local_video)
-            else:
-                pc.addTrack(local_video)
+                recorder.addTrack(relay.subscribe(track))
 
         @track.on("ended")
         async def on_ended():
             log_info("Track %s ended", track.kind)
+            if local_video is not None:
+                await local_video.stop_thread()
             await recorder.stop()
 
     # handle offer

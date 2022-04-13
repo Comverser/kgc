@@ -1,0 +1,73 @@
+# Copyright 2021 san kim
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#     http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# docker build -t nipa_demo/keti .
+
+# docker tag nipa_demo/keti 10.0.0.161:5000/keti
+# docker push 10.0.0.161:5000/keti
+
+# docker run --gpus all --rm -d -it -p 28443:28443 --name keti nipa_demo/keti
+# or if you use nvidia-docker
+# nvidia-docker run --rm -d -it -p 28443:28443 --name keti nipa_demo/keti
+
+# docker -H 10.0.0.110:2375 run --gpus all --rm -d -it --network="dockernet" --ip="10.1.92.125" --name keti 10.0.0.161:5000/keti
+
+# aircketi.com:28443 --> 10.1.92.125:28443
+
+FROM ubuntu
+
+ENV DEBIAN_FRONTEND noninteractive
+ENV SERVICE_PORT 28443
+
+ENV DEMO_MAIN_URL 10.1.108.4:5000
+
+RUN apt update && apt-get install -y \
+    python3.8 \
+    python3-pip
+
+# install ffmpeg dev
+RUN apt install -y \
+    git \
+    libavutil-dev \
+    libavcodec-dev \
+    libavformat-dev \
+    libswscale-dev \
+    pkg-config
+
+RUN pip3 install numpy
+
+# install python video encoder, decoder
+RUN cd /root && \
+    git clone https://github.com/AIRC-KETI/python_video_endecoder.git && \
+    cd python_video_endecoder/encoder && \
+    pip3 install . && \
+    cd ../decoder && \
+    pip3 install . && \
+    cd /root \
+    rm -rf python_video_endecoder
+
+RUN pip3 install opencv-python
+RUN pip3 install grpcio protobuf
+
+ADD app /root/app
+
+WORKDIR /root/app
+
+RUN pip3 install -r requirements.txt --upgrade
+
+
+CMD ["python3", "server.py"]
+
+EXPOSE ${SERVICE_PORT}
+

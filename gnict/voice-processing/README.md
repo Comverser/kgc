@@ -96,3 +96,18 @@ The audio file "demo-instruct.wav" was borrowed from the Asterisk
 project. It is licensed as Creative Commons Attribution-Share Alike 3.0:
 
 https://wiki.asterisk.org/wiki/display/AST/Voice+Prompts+and+Music+on+Hold+License
+
+
+## Docker
+
+### Build Docker
+
+```bash
+    docker build -t nipa_demo/voice_processing .
+```
+
+### Run Docker
+
+```bash
+    docker run --gpus all --rm -d -it -e API_KEY 'YOUR_KAKAO_REST_API_KEY' -p 20080:20080 --name voice_processing nipa_demo/voice_processing
+```

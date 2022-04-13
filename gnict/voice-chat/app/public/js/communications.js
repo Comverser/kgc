@@ -3,6 +3,7 @@ import {
   offerLocalEndpoint,
   offerRemoteEndpoint,
   debugMode,
+  user_id
 } from "./config/config.js";
 import { genDomElem, webrtcStart, webrtcStop } from "./libs/webrtc.js";
 
@@ -19,13 +20,15 @@ fetch(settingsEndpoint)
       offerLocalEndpoint,
       webrtcParams,
       debugMode,
-      domElemLocal
+      domElemLocal,
+      user_id
     );
     webrtcRemote = webrtcStart(
       offerRemoteEndpoint,
       webrtcParams,
       debugMode,
-      domElemRemote
+      domElemRemote,
+      user_id
     );
     domElemLocal.startBtn.style.display = "none";
     domElemLocal.stopBtn.style.display = "inline-block";

@@ -6,6 +6,7 @@ import os
 import ssl
 import uuid
 
+
 import cv2
 from aiohttp import web
 import aiohttp_cors
@@ -23,11 +24,17 @@ from dotenv import load_dotenv
 
 from colorama import Fore, Back, Style
 
-host = "115.95.228.155"
+if not os.path.isdir('tmp'):
+    os.makedirs('tmp', exist_ok=True)
+
+host = os.environ.get("HOST_ADDR")
+# host = "ketiair.com"
+host_port = os.environ.get("HOST_PORT")
+# host_port = 28443
 
 load_dotenv()
 recognize_url = "https://kakaoi-newtone-openapi.kakao.com/v1/recognize"
-keti_url = f"https://{host}:28443/talk"
+keti_url = f"https://{host}:{host_port}/talk"
 synthesize_url = "https://kakaoi-newtone-openapi.kakao.com/v1/synthesize"
 rest_api_key = os.environ.get("API_KEY")
 headers_recog = {
@@ -40,7 +47,7 @@ headers_synth = {
     "Authorization": "KakaoAK " + rest_api_key,
 }
 
-port = 20080
+port = os.environ.get("SERVICE_PORT")
 record_video = False
 flag = True
 
@@ -49,6 +56,49 @@ ROOT = os.path.dirname(__file__)
 logger = logging.getLogger("pc")
 
 pcs = set()
+
+
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    PURPLE = '\033[35m'
+
+    @staticmethod
+    def get_msg(msg, logtype=None):
+        if logtype is None:
+            return msg
+        else:
+            return logtype+msg+bcolors.ENDC
+    
+    @staticmethod
+    def get_info(msg):
+        return bcolors.get_msg(msg, bcolors.BOLD)
+    
+    @staticmethod
+    def get_warning(msg):
+        return bcolors.get_msg(msg, bcolors.WARNING)
+    
+    @staticmethod
+    def get_fail(msg):
+        return bcolors.get_msg(msg, bcolors.FAIL)
+    
+    @staticmethod
+    def get_okgreen(msg):
+        return bcolors.get_msg(msg, bcolors.OKGREEN)
+    
+    @staticmethod
+    def get_okblue(msg):
+        return bcolors.get_msg(msg, bcolors.OKBLUE)
+
+
+
 
 
 def debug_print(msg):
@@ -133,76 +183,107 @@ class VideoTransformTrack(MediaStreamTrack):
 async def talk(request):
     dict_in = await request.json()
     text_in = dict_in["text"]
-    base64_in = dict_in["audio"].split("data:audio/webm; codecs=opus;base64,", 1)[1]
-    # webm_in = base64.b64decode(base64_in)
+    base64_in_split = dict_in["audio"].split("data:audio/webm; codecs=opus;base64,", 1)
+    
 
-    temp_file_webm = "temp.webm"
-    # temp_file_wav = "temp.wav"
+    emotion = "happy"
 
-    # # save audio data
-    # with open(temp_file_webm, "wb") as f:
-    #     f.write(webm_in)
+    #base64_in = dict_in["audio"].split("data:audio/webm; codecs=opus;base64,", 1)[1]
+    if len(base64_in_split) > 1 and len(base64_in_split[1])>0:
+        base64_in = base64_in_split[1]
+        uid_in = dict_in["uid"]
+        webm_in = base64.b64decode(base64_in)
 
-    # # convert webm (48 khz, 32 bits, 1 channel, opus) to wav (16 khz, 16 bits, 1 channel, pcm)
-    # stream = ffmpeg.input(temp_file_webm)
-    # stream = ffmpeg.output(stream, temp_file_wav, ar=16000)
-    # ffmpeg.run(stream, overwrite_output=True)
+        temp_file_webm = "tmp/{}.webm".format(uid_in)
+        temp_file_wav = "tmp/{}.wav".format(uid_in)
 
-    # #######
-    # # STT #
-    # #######
-    # with open(temp_file_wav, "rb") as f:
-    #     recog_in = f.read()
-    # res_stt = requests.post(recognize_url, headers=headers_recog, data=recog_in)
-    # if res_stt.raise_for_status():
-    #     debug_print("REST API ERR: ", res_stt.raise_for_status())
+        # save audio data
+        print(bcolors.get_fail("[{}]Write webm file: {}".format(uid_in, temp_file_webm)))
+        if os.path.isfile(temp_file_webm):
+            os.remove(temp_file_webm)
 
-    # try:
-    #     result_stt_json_str = res_stt.text[
-    #         res_stt.text.index('{"type":"finalResult"') : res_stt.text.rindex("}") + 1
-    #     ]
-    #     result_stt = json.loads(result_stt_json_str)
-    # except Exception as e:
-    #     result_stt = {"value": "다시 말씀해주시겠어요?"}
-    #     debug_print("Exception")
-    #     print(e)
+        with open(temp_file_webm, "wb") as f:
+            f.write(webm_in)
 
-    #########
-    # KETI #
-    #########
-    result_stt = {}
-    # result_stt["audio"] = base64.b64encode(recog_in).decode("ascii")
-    result_stt["audio"] = base64_in
-    result_stt["text"] = text_in
-    try:
-        keti_data = requests.post(
-            keti_url, headers=headers_keti, data=json.dumps(result_stt), verify=False
-        )
-        keti_data.raise_for_status()  # raise an exception
-        tts_in = keti_data.json()
-    except Exception as e:
-        tts_in = "서버와의 연결을 확인하세요"
-        debug_print("Exception")
-        print(e)
+        if os.path.isfile(temp_file_wav):
+            os.remove(temp_file_wav)
+
+        # convert webm (48 khz, 32 bits, 1 channel, opus) to wav (16 khz, 16 bits, 1 channel, pcm)
+        stream = ffmpeg.input(temp_file_webm)
+        stream = ffmpeg.output(stream, temp_file_wav, ar=16000)
+        ffmpeg.run(stream, overwrite_output=True)
+
+        #######
+        # STT #
+        #######
+        with open(temp_file_wav, "rb") as f:
+            recog_in = f.read()
+        res_stt = requests.post(recognize_url, headers=headers_recog, data=recog_in)
+        if res_stt.raise_for_status():
+            debug_print("REST API ERR: {}".format(res_stt.raise_for_status()))
+
+        try:
+            result_stt_json_str = res_stt.text[
+                res_stt.text.index('{"type":"finalResult"') : res_stt.text.rindex("}") + 1
+            ]
+            debug_print("STT result: {}".format(result_stt_json_str))
+            result_stt = json.loads(result_stt_json_str)
+        except Exception as e:
+            result_stt = {"value": "다시 말씀해주시겠어요?"}
+            debug_print("Exception")
+            print(e)
+
+        #########
+        # KETI #
+        #########
+        result_stt = {}
+        # result_stt["audio"] = base64.b64encode(recog_in).decode("ascii")
+        result_stt["audio"] = base64_in
+        result_stt["text"] = text_in
+        result_stt["uid"] = uid_in
+        try:
+            keti_data = requests.post(
+                keti_url, headers=headers_keti, data=json.dumps(result_stt), verify=False
+            )
+            keti_data.raise_for_status()  # raise an exception
+            keti_in = keti_data.json()
+            tts_in = keti_in["text"]
+            emotion = keti_in["emotion"]
+        except Exception as e:
+            tts_in = "서버와의 연결을 확인하세요"
+            debug_print("Exception")
+            print(e)
+    else:
+        tts_in = "GNICT의 voice chat에서 넘어온 음성 데이터가 존재하지 않습니다."
 
     #######
     # TTS #
     #######
-    synth_in = (
-        f"<speak> <voice name='WOMAN_DIALOG_BRIGHT'> {tts_in} </voice> </speak>".encode(
-            "utf-8"
+    try:
+        synth_in = (
+            f"<speak> <voice name='WOMAN_DIALOG_BRIGHT'> {tts_in} </voice> </speak>".encode(
+                "utf-8"
+            )
         )
-    )
 
-    res_tts = requests.post(synthesize_url, headers=headers_synth, data=synth_in)
-    if res_tts.raise_for_status():
-        debug_print("REST API ERR: ", res_tts.raise_for_status())
+        res_tts = requests.post(synthesize_url, headers=headers_synth, data=synth_in)
+        if res_tts.raise_for_status():
+            debug_print("REST API ERR: {}".format(res_tts.raise_for_status()))
 
-    with open("temp.mp3", "wb") as f:
-        f.write(res_tts.content)
+        temp_file_mp3 = "tmp/{}.mp3".format(uid_in)
+        if os.path.isfile(temp_file_mp3):
+            os.remove(temp_file_mp3)
+
+        with open(temp_file_mp3, "wb") as f:
+            f.write(res_tts.content)
+        
+        print(bcolors.get_fail("[{}]Write mp3 file: {}".format(uid_in, temp_file_mp3)))
+    except Exception as e:
+        print(bcolors.get_fail("[{}] Error: {}".format(uid_in, temp_file_mp3)))
+        temp_file_mp3 = "error.mp3"
 
     # convert mp3 (1 channel) to webm (24 khz, 32 bits, 1 channel, opus)
-    stream = ffmpeg.input("temp.mp3")
+    stream = ffmpeg.input(temp_file_mp3)
     stream = ffmpeg.output(stream, temp_file_webm)
     ffmpeg.run(stream, overwrite_output=True)
 
@@ -212,17 +293,13 @@ async def talk(request):
     ##############################
     # Response with emotion data #
     ##############################
+    print(bcolors.get_fail("[{}]webm_out: {}".format(uid_in, len(webm_out))))
     base64_out = "data:audio/webm; codecs=opus;base64," + base64.b64encode(
         webm_out
     ).decode("ascii")
 
-    global flag
-    flag = not flag
-    if flag:
-        emotion = "happy"
-    else:
-        emotion = "surprise"
 
+    print(bcolors.get_fail("[{}]Write mp3 file: {}".format(uid_in, temp_file_mp3)))
     dict_out = dict({"audio": base64_out, "emotion": emotion, "text": tts_in})
     return web.json_response(dict_out)
 
